@@ -1,0 +1,20 @@
+# Node
+node_modules/
+server/node_modules/
+client/node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+server/.env
+client/.env
+
+# Prisma
+server/generated/
+server/.prisma/
+
+# Vite / build outputs
+client/dist/
