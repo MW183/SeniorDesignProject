@@ -7,9 +7,138 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  USER
+  SUPPORT
+}
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  BLOCKED
+  COMPLETED
+  CANCELLED
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
+  phone     String?
+  password  String
+  role      Role
   createdAt DateTime @default(now())
+  createdBy User?    @relation("UserCreated", fields: [createdById], references: [id])
+  createdById String?
+  deletedAt DateTime?
+
+  clients      Client[] @relation("ClientsCreated")
+  weddings     Wedding[] @relation("WeddingsCreated")
+  tasksCreated Task[] @relation("TasksCreated")
+  tasksAssigned Task[] @relation("TasksAssigned")
+  tasksCompleted Task[] @relation("TasksCompleted")
+  usersCreated User[] @relation("UserCreated")
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+  createdBy User     @relation("ClientsCreated", fields: [createdById], references: [id])
+  createdById String
+  notes     String?
+  deletedAt DateTime?
+
+  weddingsAsSpouse1 Wedding[] @relation("Spouse1")
+  weddingsAsSpouse2 Wedding[] @relation("Spouse2")
+}
+
+model Wedding {
+  id          String   @id @default(uuid())
+  date        DateTime
+  location    Address  @relation(fields: [locationId], references: [id])
+  locationId  String
+  tasksRemaining Int?
+  spouse1     Client   @relation("Spouse1", fields: [spouse1Id], references: [id])
+  spouse1Id   String
+  spouse2     Client   @relation("Spouse2", fields: [spouse2Id], references: [id])
+  spouse2Id   String
+  createdAt   DateTime @default(now())
+  createdBy   User     @relation("WeddingsCreated", fields: [createdById], references: [id])
+  createdById String
+  deletedAt   DateTime?
+
+  tasks       Task[]
+}
+
+model Task {
+  id          String   @id @default(uuid())
+  name        String
+  priority    Int
+  dueDate     DateTime
+  createdAt   DateTime @default(now())
+  createdBy   User     @relation("TasksCreated", fields: [createdById], references: [id])
+  createdById String
+  assignedTo  User?    @relation("TasksAssigned", fields: [assignedToId], references: [id])
+  assignedToId String?
+  currentStatus Status  @default(PENDING)
+  completedOn DateTime?
+  completedBy User?     @relation("TasksCompleted", fields: [completedById], references: [id])
+  completedById String?
+  notes       String?
+  wedding     Wedding  @relation(fields: [weddingId], references: [id])
+  weddingId   String
+  deletedAt   DateTime?
+}
+
+model TaskTemplate {
+  id                 String   @id @default(uuid())
+  name               String
+  defaultPriority    Int
+  defaultDueOffsetDays Int
+  notes              String?
+  createdAt          DateTime @default(now())
+}
+
+model Vendor {
+  id        String   @id @default(uuid())
+  name      String
+  address   Address  @relation(fields: [addressId], references: [id])
+  addressId String
+  email     String?
+  phone     String?
+  rating    Int
+  notes     String?
+  deletedAt DateTime?
+
+  tags      VendorTag[]
+}
+
+model Tag {
+  id    String   @id @default(uuid())
+  name  String   @unique
+  vendors VendorTag[]
+}
+
+model VendorTag {
+  vendor   Vendor @relation(fields: [vendorId], references: [id])
+  vendorId String
+  tag      Tag    @relation(fields: [tagId], references: [id])
+  tagId    String
+
+  @@id([vendorId, tagId])
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  street    String
+  city      String
+  state     String
+  zip       String
+  
+  weddings  Wedding[]
+  vendors   Vendor[]
 }
