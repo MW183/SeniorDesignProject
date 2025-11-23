@@ -1,4 +1,4 @@
-# Wedding Planner Application - User Stories
+# Wedding Planner Application — User Stories
 
 1. As a wedding planner, I want to automatically generate a checklist of required tasks when I enter a couple’s wedding date so that I can ensure nothing important is overlooked.
 
@@ -11,3 +11,4 @@
 5. As a couple, I want to securely view contract details and booking confirmations online so that I can easily access important documents without waiting on the planner to resend them.
 
 6. As a wedding planner, I want to generate a high-level timeline of upcoming milestones for each wedding so that I can manage multiple clients more efficiently and balance my workload.
+
