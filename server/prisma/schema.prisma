@@ -29,16 +29,11 @@ model User {
   password  String
   role      Role
   createdAt DateTime @default(now())
-  createdBy User?    @relation("UserCreated", fields: [createdById], references: [id])
-  createdById String?
-  deletedAt DateTime?
+  // Audit fields removed (createdById, deletedAt)
 
-  clients      Client[] @relation("ClientsCreated")
-  weddings     Wedding[] @relation("WeddingsCreated")
-  tasksCreated Task[] @relation("TasksCreated")
+  // Relations
   tasksAssigned Task[] @relation("TasksAssigned")
   tasksCompleted Task[] @relation("TasksCompleted")
-  usersCreated User[] @relation("UserCreated")
 }
 
 model Client {
@@ -47,10 +42,8 @@ model Client {
   email     String?
   phone     String?
   createdAt DateTime @default(now())
-  createdBy User     @relation("ClientsCreated", fields: [createdById], references: [id])
-  createdById String
+  // createdBy removed
   notes     String?
-  deletedAt DateTime?
 
   weddingsAsSpouse1 Wedding[] @relation("Spouse1")
   weddingsAsSpouse2 Wedding[] @relation("Spouse2")
@@ -59,17 +52,17 @@ model Client {
 model Wedding {
   id          String   @id @default(uuid())
   date        DateTime
-  location    Address  @relation(fields: [locationId], references: [id])
-  locationId  String
+  // Allow multiple weddings to share same address; if address removed, null the location
+  location    Address? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  locationId  String?
   tasksRemaining Int?
-  spouse1     Client   @relation("Spouse1", fields: [spouse1Id], references: [id])
-  spouse1Id   String
-  spouse2     Client   @relation("Spouse2", fields: [spouse2Id], references: [id])
-  spouse2Id   String
+  // If a client is deleted, nullify spouse references so wedding records remain
+  spouse1     Client?  @relation("Spouse1", fields: [spouse1Id], references: [id], onDelete: SetNull)
+  spouse1Id   String?
+  spouse2     Client?  @relation("Spouse2", fields: [spouse2Id], references: [id], onDelete: SetNull)
+  spouse2Id   String?
   createdAt   DateTime @default(now())
-  createdBy   User     @relation("WeddingsCreated", fields: [createdById], references: [id])
-  createdById String
-  deletedAt   DateTime?
+  // createdBy and deletedAt removed
 
   tasks       Task[]
 }
@@ -80,8 +73,6 @@ model Task {
   priority    Int
   dueDate     DateTime
   createdAt   DateTime @default(now())
-  createdBy   User     @relation("TasksCreated", fields: [createdById], references: [id])
-  createdById String
   assignedTo  User?    @relation("TasksAssigned", fields: [assignedToId], references: [id])
   assignedToId String?
   currentStatus Status  @default(PENDING)
@@ -89,9 +80,9 @@ model Task {
   completedBy User?     @relation("TasksCompleted", fields: [completedById], references: [id])
   completedById String?
   notes       String?
-  wedding     Wedding  @relation(fields: [weddingId], references: [id])
+  // Task should be deleted when its wedding is deleted
+  wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
   weddingId   String
-  deletedAt   DateTime?
 }
 
 model TaskTemplate {
@@ -106,13 +97,14 @@ model TaskTemplate {
 model Vendor {
   id        String   @id @default(uuid())
   name      String
-  address   Address  @relation(fields: [addressId], references: [id])
-  addressId String
+  // Allow vendors to keep record if address removed; set addressId to null
+  address   Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  addressId String?
   email     String?
   phone     String?
   rating    Int
   notes     String?
-  deletedAt DateTime?
+  // deletedAt removed
 
   tags      VendorTag[]
 }

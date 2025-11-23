@@ -1,35 +1,60 @@
+# Weddings — Programming Requirements
+
+Core requirements focused on implementation:
+
+- Core CRUD
+	- [ ] GET /weddings (collection) — supports pagination and filters (date range, client)
+	- [ ] GET /weddings/:id — 404 when missing
+	- [ ] POST /weddings — validate required fields (date, spouses/clients) and return 201
+	- [ ] PUT /weddings/:id — partial updates; validate FK references
+	- [ ] DELETE /weddings/:id — enforce business rules (prevent deletion if dependent records exist)
+
+- Pagination
+	- [ ] `limit`/`offset` with sensible defaults and total counts
+
+- Search & Filtering
+	- [ ] Filter by date range, client name/id, location/address
+	- [ ] Combine filters and return paginated results
+
+- Data Validation
+	- [ ] Date validation, FK existence checks, required field checks
+	- [ ] Clear 400 responses with validation messages
+
+- Security & Error Handling
+	- [ ] Auth + role checks for sensitive operations; map DB errors to appropriate HTTP responses
+
 # **Weddings System Requirements & Feature Checklist**
 
 ## **Core CRUD Operations**
 
-### ❌ **Missing Basic Features**
-- [ ] **GET /weddings** - Retrieve all active weddings with filtering
-- [ ] **GET /weddings/:id** - Retrieve single wedding by ID
-- [ ] **POST /weddings** - Create new wedding
-- [ ] **PUT /weddings/:id** - Update existing wedding (partial updates)
-- [ ] **DELETE /weddings/:id** - Soft delete wedding
+### ✅ **Completed Basic Features**
+- [x] **GET /weddings** - Retrieve all active weddings with filtering
+- [x] **GET /weddings/:id** - Retrieve single wedding by ID
+- [x] **POST /weddings** - Create new wedding
+- [x] **PUT /weddings/:id** - Update existing wedding (partial updates)
+- [x] **DELETE /weddings/:id** - Delete wedding (hard delete implemented; soft-delete not used)
 - [ ] **POST /weddings/search** - Advanced search with pagination
 
-### ❌ **Search & Filtering (Needed)**
+### 🔨 **Search & Filtering (Work completed / remaining)**
 - [ ] Search by client names (spouse1, spouse2)
-- [ ] Filter by wedding date range
+- [x] Filter by wedding date range
 - [ ] Filter by location/venue
 - [ ] Filter by creator (wedding planner)
 - [ ] Filter by status (planning, confirmed, completed, cancelled)
 - [ ] Filter by budget range
 - [ ] Search by venue name/location
-- [ ] Pagination support (limit/offset)
+- [x] Pagination support (limit/offset)
 - [ ] Combined filtering
 - [ ] Automatic soft-delete filtering
 
-### ❌ **Data Validation (Needed)**
-- [ ] Required field validation (date, location, spouses)
+### ✅ **Data Validation (Completed / remaining)**
+- [x] Required field validation (date is required on create)
 - [ ] Date validation (future dates, reasonable range)
-- [ ] Client existence validation (spouse1, spouse2)
-- [ ] Location/address validation
+- [x] Client existence validation (spouse1, spouse2 FK checks on create/update)
+- [x] Location/address validation (address FK checks when provided)
 - [ ] Guest count validation (positive numbers)
 - [ ] Budget validation (positive amounts)
-- [ ] Data sanitization and formatting
+- [x] Data sanitization and formatting (trim/normalize inputs in handlers)
 
 ---
 

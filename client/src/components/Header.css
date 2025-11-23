@@ -1,0 +1,98 @@
+.site-header {
+  background: #0f172a;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+  height: 64px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+/* Brand */
+.brand a {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: 0.4px;
+  text-decoration: none;
+}
+
+/* Nav */
+.main-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.main-nav a {
+  color: #dbeafe;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+
+.main-nav a:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+/* Mobile: hide nav and show toggle */
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 0;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.hamburger {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #fff;
+  position: relative;
+}
+.hamburger::before,
+.hamburger::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #fff;
+}
+.hamburger::before { top: -6px; }
+.hamburger::after { top: 6px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-toggle { display: block; }
+
+  .main-nav {
+    position: absolute;
+    top: 64px;
+    right: 16px;
+    background: rgba(15,23,42,0.98);
+    flex-direction: column;
+    padding: 12px;
+    border-radius: 8px;
+    display: none;
+    min-width: 160px;
+  }
+
+  .main-nav.open { display: flex; }
+}

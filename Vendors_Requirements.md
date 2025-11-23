@@ -1,13 +1,38 @@
+# Vendors — Programming Requirements
+
+Core requirements focused on implementation:
+
+- Core CRUD
+	- [ ] GET /vendors (collection) — pagination and filtering
+	- [ ] GET /vendors/:id — 404 when missing
+	- [ ] POST /vendors — validate required fields and return 201
+	- [ ] PUT /vendors/:id — partial updates allowed
+	- [ ] DELETE /vendors/:id — enforce business rules / role checks
+
+- Pagination
+	- [ ] `limit`/`offset` with defaults and validation
+
+- Search & Filtering
+	- [ ] Partial name/tag search (case-insensitive), filter by addressId or tag
+	- [ ] Combine filters; return total counts for UI
+
+- Data Validation
+	- [ ] Required fields, FK existence (address), sanitization
+	- [ ] Clear 400 responses for validation failures
+
+- Security & Error Handling
+	- [ ] Auth required for write operations; mapping DB errors to HTTP codes
+
 # **Vendors System Requirements & Feature Checklist**
 
 ## **Core CRUD Operations**
 
-### ❌ **Missing Basic Features**
-- [ ] **GET /vendors** - Retrieve all active vendors with filtering
-- [ ] **GET /vendors/:id** - Retrieve single vendor by ID
-- [ ] **POST /vendors** - Create new vendor
-- [ ] **PUT /vendors/:id** - Update existing vendor (partial updates)
-- [ ] **DELETE /vendors/:id** - Soft delete vendor
+### ✅ **Completed Basic Features**
+- [x] **GET /vendors** - Retrieve all vendors with filtering
+- [x] **GET /vendors/:id** - Retrieve single vendor by ID
+- [x] **POST /vendors** - Create new vendor
+- [x] **PUT /vendors/:id** - Update existing vendor (partial updates)
+- [x] **DELETE /vendors/:id** - Delete vendor (hard delete implemented)
 - [ ] **POST /vendors/search** - Advanced search with pagination
 
 ### ❌ **Search & Filtering (Needed)**
@@ -22,14 +47,14 @@
 - [ ] Combined filtering
 - [ ] Automatic soft-delete filtering
 
-### ❌ **Data Validation (Needed)**
-- [ ] Required field validation (name, address)
+### ✅ **Data Validation (Completed / remaining)**
+- [x] Required field validation (name required on create)
 - [ ] Email format validation (when provided)
 - [ ] Phone format validation (when provided)
 - [ ] Rating range validation (1-5 or 1-10)
-- [ ] Address validation (complete address required)
+- [x] Address validation (address FK checks when provided)
 - [ ] URL validation for website links
-- [ ] Data sanitization (trim, format)
+- [x] Data sanitization (trim/normalize inputs in handlers)
 
 ---
 
