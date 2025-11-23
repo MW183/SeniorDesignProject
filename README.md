@@ -24,32 +24,32 @@ npm run dev
 
 3. User Stories and Design Diagrams
 
-	- User Stories: `Homework/UserStories.md`
-	- Design Diagram Report: `Homework/Design Diagram Report.pdf`
+	- [User Stories](Homework/UserStories.md)
+	- [Design Diagram Report](Homework/Design_Diagram_Report.pdf)
 
 4. Project Tasks & Timeline
 
-	- Task list: `Homework/Tasklist.md`
+	- [Task list](Homework/Tasklist.md)
 
 5. Project Constraints
 
-	- ABET concerns: `Homework/ABETConcerns.md`
+	- [ABET concerns](Homework/ABETConcerns.md)
 
 6. Design Presentation
 
-	- Presentation: `Homework/Fall Design Presentation.pptx`
+	- [Presentation](Homework/Fall_Design_Presentation.pptx)
 
 7. Self-Assessment Essay
 
-	- Capstone Essay: `Homework/CapstoneEssay.md`
+	- [Capstone Essay](Homework/CapstoneEssay.md)
 
 8. Professional Biography
 
-	- Professional Biography: `Homework/ProfessionalBiography.md`
+	- [Professional Biography](Homework/ProfessionalBiography.md)
 
 9. Budget
 
-	- Budget: `Homework/budget.md`
+	- [Budget](Homework/budget.md)
 
 10. Appendix
 
