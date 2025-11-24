@@ -53,6 +53,6 @@ npm run dev
 
 10. Appendix
 
-	- Credit to [@ProgrammingwithMosh] (https://www.youtube.com/@programmingwithmosh) for their very informative videos on React & Typescript.
+	- Credit to [@ProgrammingwithMosh](https://www.youtube.com/@programmingwithmosh) for their very informative videos on React & Typescript.
     - Credit to Will Hawkins for his help and support this semester and next.
     - Meeting notes were not directly recorded due to the team's sole member always being present by himself.
