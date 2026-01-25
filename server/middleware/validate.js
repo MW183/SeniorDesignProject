@@ -1,16 +1,16 @@
-import { z } from 'zod';
-
+//Validate request body
 export function validateBody(schema) {
     return (req, res, next) => {
         const parsed = schema.safeParse(req.body);
         if (!parsed.success) {
             return res.status(400).json({ error: 'validation', details: parsed.error.format() });
         }
-        req.body = parsed.data;
+        req.body = parsed.data; //replaces with sanitized data
         next();
     };
 }
 
+//validate request query params
 export function validateQuery(schema) {
     return (req, res, next) => {
         const parsed = schema.safeParse(req.query || {});
@@ -18,7 +18,7 @@ export function validateQuery(schema) {
             return res.status(400).json({ error: 'validation', details: parsed.error.format() });
         }
         // do not overwrite req.query (may be getter-only in some environments)
-        req.parsedQuery = parsed.data;
+        req.parsedQuery = parsed.data; //attach parsed-data
         next();
     };
 }

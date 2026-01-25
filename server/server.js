@@ -1,6 +1,4 @@
-// Load environment variables before anything else
 import "dotenv/config";  
-
 import express from "express";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
@@ -8,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import usersRouter from "./routes/users.js";
 import clientsRouter from "./routes/clients.js";
 import vendorsRouter from "./routes/vendors.js";
-import addressesRouter from "./routes/addresses.js";
+import addressRouter from "./routes/address.js";
 import tasksRouter from "./routes/tasks.js";
 import weddingsRouter from "./routes/weddings.js";
 import authRouter from "./routes/auth.js";
@@ -30,7 +28,7 @@ app.get('/', (req, res) => {
       users: '/users',
       clients: '/clients',
       vendors: '/vendors',
-      addresses: '/addresses',
+      addresses: '/address',
       tasks: '/tasks',
       weddings: '/weddings',
       auth: '/auth'
@@ -54,7 +52,7 @@ app.get('/', (req, res) => {
           <li><a href="/users">/users</a> — Users collection</li>
           <li><a href="/clients">/clients</a> — Clients collection</li>
           <li><a href="/vendors">/vendors</a> — Vendors collection</li>
-          <li><a href="/addresses">/addresses</a> — Addresses collection</li>
+          <li><a href="/address">/address</a> — Addresses collection</li>
           <li><a href="/tasks">/tasks</a> — Tasks collection</li>
           <li><a href="/weddings">/weddings</a> — Weddings collection</li>
           <li><a href="/auth">/auth</a> — Authentication</li>
@@ -88,7 +86,7 @@ app.get('/healthz', (req, res) => {
 app.use('/users', usersRouter);
 app.use('/clients', clientsRouter);
 app.use('/vendors', vendorsRouter);
-app.use('/addresses', addressesRouter);
+app.use('/address', addressRouter);
 app.use('/tasks', tasksRouter);
 app.use('/weddings', weddingsRouter);
 app.use('/auth', authRouter);
@@ -97,6 +95,22 @@ const PORT = process.env.PORT || 5000;
 
 let serverInstance = null;
 
+
+// Global error handler (after all routes)
+app.use((err, req, res, next) => {
+  console.error('[GLOBAL ERROR]', err);
+
+  // If response headers already sent, delegate to default Express handler
+  if (res.headersSent) return next(err);
+
+  // Use error status if provided, otherwise default to 500
+  const status = err.status || 500;
+
+  res.status(status).json({
+    error: err.name || 'InternalServerError',
+    message: err.message || 'Something went wrong',
+  });
+});
 if (process.env.NODE_ENV !== 'test') {
   serverInstance = app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

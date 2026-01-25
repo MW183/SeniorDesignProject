@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AddressType {
+  Venue
+  Vendor
+  Client
+}
+
 enum Role {
   ADMIN
   USER
@@ -130,6 +136,7 @@ model Address {
   city      String
   state     String
   zip       String
+  type AddressType @default(Venue)
   
   weddings  Wedding[]
   vendors   Vendor[]

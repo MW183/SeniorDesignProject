@@ -1,0 +1,1 @@
+HTTP Request -> Middleware (auth, role) -> Validation (Zod/schema) -> Route Handler (CRUD, DB)

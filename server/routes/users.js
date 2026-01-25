@@ -1,24 +1,21 @@
-// Express router for User CRUD + auth-related user actions
+// Express router for User CRUD + auth-related actions
 import express from 'express';
 import prisma from '../prismaClient.js';
-import { handlePrismaError, hashPassword, comparePassword } from '../utils.js';
+import { handlePrismaError, hashPassword } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
-import { validateBody, validateQuery } from '../middleware/validate.js';
-import { userCreateSchema, userUpdateSchema, userQuerySchema } from '../validators/userSchemas.js';
+import { validateUser } from '../validators/users.js';
 
 const router = express.Router();
 
-// GET /users
-// build query: parse query params and construct Prisma `where` filter
-router.get('/', requireAuth, validateQuery(userQuerySchema), async (req, res) => {
+// GET /users — list users with optional query filters
+router.get('/', requireAuth, async (req, res) => {
   try {
-    const q = req.parsedQuery || req.query || {};
-    const { search, email, role, limit, offset } = q;
-    // initialize where filter
+    // parse query params
+    const { search, email, role, limit, offset } = req.query || {};
     const where = {};
 
-    // if a free-text `search` is provided, match name OR email case-insensitively
+    // free-text search on name OR email (case-insensitive)
     if (search) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
@@ -26,12 +23,13 @@ router.get('/', requireAuth, validateQuery(userQuerySchema), async (req, res) =>
       ];
     }
 
-    // if exact email filter present, add case-insensitive equality
+    // exact email filter
     if (email) where.email = { equals: email, mode: 'insensitive' };
-    // if role filter present, add equality
+
+    // role filter
     if (role) where.role = role;
 
-    // execute query with pagination and ordering, selecting safe fields
+    // query DB with optional pagination
     const users = await prisma.user.findMany({
       where,
       select: { id: true, name: true, email: true, phone: true, role: true, createdAt: true },
@@ -40,75 +38,89 @@ router.get('/', requireAuth, validateQuery(userQuerySchema), async (req, res) =>
       orderBy: { createdAt: 'desc' }
     });
 
-    // return results
     res.json(users);
   } catch (err) {
     handlePrismaError(res, err);
   }
 });
 
-// GET /users/:id — fetch single user by id
-router.get('/:id', async (req, res) => {
+// GET /users/:id — fetch single user
+router.get('/:id', requireAuth, async (req, res) => {
   try {
-    // read path parameter
     const { id } = req.params;
-    // fetch user and select non-sensitive fields
-    const user = await prisma.user.findUnique({ where: { id }, select: { id: true, name: true, email: true, phone: true, role: true, createdAt: true } });
-    // error check: 404 when user not found
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true, name: true, email: true, phone: true, role: true, createdAt: true }
+    });
     if (!user) return res.status(404).json({ error: 'User not found' });
-    // return user
     res.json(user);
   } catch (err) {
     handlePrismaError(res, err);
   }
 });
 
-// POST /users — create a new user (signup is public)
-router.post('/', validateBody(userCreateSchema), async (req, res) => {
+// POST /users — create a new user (signup)
+router.post('/', async (req, res) => {
   try {
-    // extract and validate request body
-    const { name, email, phone, password, role } = req.body;
-    // hash the supplied password before storing
-    const hashed = await hashPassword(password);
-    // create user record; normalize email and trim fields
-    const user = await prisma.user.create({ data: { name: name.trim(), email: email.toLowerCase().trim(), phone: phone?.trim() || null, password: hashed, role }, select: { id: true, name: true, email: true, phone: true, role: true, createdAt: true } });
-    // respond with created user (no password returned)
+    // validate body using generic validator
+    const { data, errors } = validateUser(req.body, { requireAll: true });
+    if (errors.length) return res.status(400).json({ errors });
+
+    // hash password before storing
+    const hashed = await hashPassword(data.password);
+    data.password = hashed;
+
+    // create user in DB
+    const user = await prisma.user.create({
+      data: {
+        ...data,
+        name: data.name.trim(),
+        email: data.email.toLowerCase().trim(),
+        phone: data.phone?.trim() || null
+      },
+      select: { id: true, name: true, email: true, phone: true, role: true, createdAt: true }
+    });
+
     res.status(201).json(user);
   } catch (err) {
     handlePrismaError(res, err);
   }
 });
 
-// PUT /users/:id — partial update of user fields (requires auth)
-router.put('/:id', requireAuth, validateBody(userUpdateSchema), async (req, res) => {
+// PUT /users/:id — partial update (requires auth)
+router.put('/:id', requireAuth, async (req, res) => {
   try {
-    // read path parameter and possible update fields
     const { id } = req.params;
-    const { name, email, phone, role, password } = req.body;
-    const update = {};
-    // conditionally add provided fields to update object
-    if (name !== undefined) update.name = name.trim();
-    if (email !== undefined) update.email = email.toLowerCase().trim();
-    if (phone !== undefined) update.phone = phone ? phone.trim() : null;
-    if (role !== undefined) update.role = role;
-    if (password !== undefined) update.password = await hashPassword(password);
 
-    // perform update and return selected fields
-    const user = await prisma.user.update({ where: { id }, data: update, select: { id: true, name: true, email: true, phone: true, role: true, createdAt: true } });
+    // validate body; requireAll=false for partial updates
+    const { data, errors } = validateUser(req.body, { requireAll: false });
+    if (errors.length) return res.status(400).json({ errors });
+
+    // hash password if updating
+    if (data.password) data.password = await hashPassword(data.password);
+
+    // normalize strings
+    if (data.name) data.name = data.name.trim();
+    if (data.email) data.email = data.email.toLowerCase().trim();
+    if (data.phone !== undefined) data.phone = data.phone?.trim() || null;
+
+    const user = await prisma.user.update({
+      where: { id },
+      data,
+      select: { id: true, name: true, email: true, phone: true, role: true, createdAt: true }
+    });
+
     res.json(user);
   } catch (err) {
     handlePrismaError(res, err);
   }
 });
 
-// DELETE /users/:id — remove a user (restricted to ADMIN and SUPPORT)
-router.delete('/:id', requireAuth, requireRole(['ADMIN','SUPPORT']), async (req, res) => {
+// DELETE /users/:id — remove user (ADMIN or SUPPORT only)
+router.delete('/:id', requireAuth, requireRole(['ADMIN', 'SUPPORT']), async (req, res) => {
   try {
-    // read path parameter
     const { id } = req.params;
-    // delete from DB
     await prisma.user.delete({ where: { id } });
-    // respond with message only
     res.json({ message: 'User deleted' });
   } catch (err) {
     handlePrismaError(res, err);

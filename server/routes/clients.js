@@ -1,87 +1,70 @@
-// Express router for Client CRUD
 import express from 'express';
 import prisma from '../prismaClient.js';
 import { handlePrismaError } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
+import { validateClient } from '../validators/client.js';
 
 const router = express.Router();
 
-// GET /clients — build query from query params and return list
+// GET /clients
 router.get('/', async (req, res) => {
   try {
-    // parse optional filters and pagination
     const q = req.parsedQuery || req.query || {};
     const { search, email, limit, offset } = q;
     const where = {};
-    if (search) where.OR = [{ name: { contains: search, mode: 'insensitive' } }, { email: { contains: search, mode: 'insensitive' } }];
+    if (search) where.OR = [
+      { name: { contains: search, mode: 'insensitive' } },
+      { email: { contains: search, mode: 'insensitive' } }
+    ];
     if (email) where.email = { equals: email, mode: 'insensitive' };
 
-    // query DB and return results
-    const clients = await prisma.client.findMany({ where, take: limit ? parseInt(limit) : undefined, skip: offset ? parseInt(offset) : undefined, orderBy: { createdAt: 'desc' } });
+    const clients = await prisma.client.findMany({
+      where,
+      take: limit ? parseInt(limit) : undefined,
+      skip: offset ? parseInt(offset) : undefined,
+      orderBy: { createdAt: 'desc' }
+    });
     res.json(clients);
   } catch (err) { handlePrismaError(res, err); }
 });
 
-// GET /clients/:id — fetch single client by id
+// GET /clients/:id
 router.get('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const client = await prisma.client.findUnique({ where: { id } });
+    const client = await prisma.client.findUnique({ where: { id: req.params.id } });
     if (!client) return res.status(404).json({ error: 'Client not found' });
     res.json(client);
   } catch (err) { handlePrismaError(res, err); }
 });
 
-// POST /clients — create a new client (requires auth)
+// POST /clients
 router.post('/', requireAuth, async (req, res) => {
   try {
-    // validate body and create record
-    const { name, email, phone, notes } = req.body;
-    if (!name) return res.status(400).json({ error: 'Name is required' });
-    const client = await prisma.client.create({ data: { name: name.trim(), email: email?.toLowerCase().trim() || null, phone: phone?.trim() || null, notes: notes || null }, select: { id: true, name: true, email: true, phone: true, createdAt: true } });
+    const { data, errors } = validateClient(req.body, { requireAll: true });
+    if (errors.length) return res.status(400).json({ errors });
+
+    const client = await prisma.client.create({ data });
     res.status(201).json(client);
   } catch (err) { handlePrismaError(res, err); }
 });
 
-// PUT /clients/:id — update client fields (requires auth)
+// PUT /clients/:id
 router.put('/:id', requireAuth, async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, email, phone, notes } = req.body;
-    const update = {};
-    if (name !== undefined) update.name = name.trim();
-    if (email !== undefined) update.email = email?.toLowerCase().trim() || null;
-    if (phone !== undefined) update.phone = phone ? phone.trim() : null;
-    if (notes !== undefined) update.notes = notes;
+    const { data, errors } = validateClient(req.body, { requireAll: false });
+    if (errors.length) return res.status(400).json({ errors });
 
-    const client = await prisma.client.update({ where: { id }, data: update });
+    const client = await prisma.client.update({ where: { id: req.params.id }, data });
     res.json(client);
   } catch (err) { handlePrismaError(res, err); }
 });
 
-// DELETE /clients/:id — hard delete but block if any future weddings exist (requires ADMIN/SUPPORT)
+// DELETE /clients/:id
 router.delete('/:id', requireAuth, requireRole(['ADMIN','SUPPORT']), async (req, res) => {
   try {
-    const { id } = req.params;
-
-    // Check for future weddings referencing this client as spouse1 or spouse2
-    const now = new Date();
-    const futureWedding = await prisma.wedding.findFirst({
-      where: {
-        OR: [ { spouse1Id: id }, { spouse2Id: id } ],
-        date: { gte: now }
-      }
-    });
-
-    // if future wedding exists, block deletion
-    if (futureWedding) {
-      return res.status(400).json({ error: 'Cannot delete client with future weddings' });
-    }
-
-    // Safe to delete - this will nullify spouse references on past weddings due to onDelete: SetNull
-    const client = await prisma.client.delete({ where: { id }, select: { id: true, name: true } });
-    res.json({ message: 'Client deleted', client });
+    await prisma.client.delete({ where: { id: req.params.id } });
+    res.json({ message: 'Client deleted' });
   } catch (err) { handlePrismaError(res, err); }
 });
 
