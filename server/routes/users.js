@@ -66,6 +66,8 @@ router.post('/', async (req, res) => {
     const { data, errors } = validateUser(req.body, { requireAll: true });
     if (errors.length) return res.status(400).json({ errors });
 
+    if (!data.role) data.role = 'USER';
+
     // hash password before storing
     const hashed = await hashPassword(data.password);
     data.password = hashed;

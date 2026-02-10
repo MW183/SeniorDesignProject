@@ -22,10 +22,33 @@ const vendorSchema = {
     validate: v => true
   },
   rating: {
-    required: false,
-    normalize: v => v,
-    validate: v => v === undefined || (Number.isInteger(v) && v >= 0) || 'rating must be a positive integer'
+  required: false,
+  normalize: v => { 
+    if (v === undefined || v === null) return 0; 
+    return 0; // Don't process decimals or invalid values
   },
+  validate: (normalized, payload) => {
+    const original = payload.rating;
+    if (original === undefined || original === null) return true;
+    
+    
+    if (typeof original === 'number' && !Number.isInteger(original)) {
+      return 'rating must be an integer (not a decimal)';
+    }
+    
+    
+    if (typeof original === 'number' && original < 0) {
+      return 'rating must be positive';
+    }
+    
+    
+    if (typeof original === 'number' && (original < 0 || original > 10)) {
+      return 'rating must be between 0 and 10';
+    }
+    
+    return true;
+  }
+},
   notes: {
     required: false
   }

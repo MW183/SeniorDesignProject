@@ -37,7 +37,7 @@ router.post('/login', validateBody(loginSchema), async (req, res) => {
     });
 
 
-    console.log('[Auth] User ${user.email} logged in');
+    console.log(`[Auth] User ${user.email} logged in`);
 
     res.json({ 
       token, 
@@ -123,7 +123,7 @@ router.post('/reset', validateBody(resetSchema), async (req, res) => {
     const hashed = await hashPassword(newPassword);
     await prisma.user.update({ where: { id: userId }, data: { password: hashed } });
     
-    console.log('[Auth] Password reset for user ${userId}');
+    console.log(`[Auth] Password reset for user ${userId}`);
     res.json({ message: 'Password updated' });
   } catch (err) {
     handlePrismaError(res, err);
@@ -133,7 +133,7 @@ router.post('/reset', validateBody(resetSchema), async (req, res) => {
 // POST /auth/logout — clear the httpOnly cookie
 router.post('/logout', requireAuth, (req, res) => {
   res.clearCookie('token');
-  console.log('[Auth] User ${req.user.id} logged out');
+  console.log(`[Auth] User ${req.user.id} logged out`);
   res.json({ message: 'Logged out' });
 });
 

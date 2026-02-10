@@ -3,6 +3,7 @@ import prisma from '../prismaClient.js';
 import { handlePrismaError, ensureExistsOrRespond } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
+import {validateVendor} from '../validators/vendor.js';
 
 const router = express.Router();
 
@@ -44,29 +45,20 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /vendors — create vendor (requires auth)
+// POST /vendors – create vendor (requires auth)
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { name, addressId, email, phone, rating, notes } = req.body;
-
-    if (!name) return res.status(400).json({ error: 'Name is required' });
+    // Use the validator instead of manual validation
+    const { data, errors } = validateVendor(req.body, { requireAll: true });
+    if (errors.length) return res.status(400).json({ errors });
 
     // Validate addressId if provided
-    if (addressId) {
-      const ok = await ensureExistsOrRespond(res, 'address', addressId, 'addressId');
-      if (!ok) return; // response already sent
+    if (data.addressId) {
+      const ok = await ensureExistsOrRespond(res, 'address', data.addressId, 'addressId');
+      if (!ok) return; 
     }
 
-    const vendorData = {
-      name: name.trim(),
-      addressId: addressId || null,
-      email: email?.toLowerCase().trim() || null,
-      phone: phone?.trim() || null,
-      rating: typeof rating === 'number' ? rating : 0, // ensure Int
-      notes: notes || null
-    };
-
-    const vendor = await prisma.vendor.create({ data: vendorData });
+    const vendor = await prisma.vendor.create({ data });
     res.status(201).json(vendor);
   } catch (err) {
     console.error('[POST /vendors] Error:', err);
@@ -74,29 +66,22 @@ router.post('/', requireAuth, async (req, res) => {
   }
 });
 
-// PUT /vendors/:id — update vendor (requires auth)
+// PUT /vendors/:id – update vendor (requires auth)
 router.put('/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, addressId, email, phone, rating, notes } = req.body;
-
-    const update = {};
-    if (name !== undefined) update.name = name.trim();
-    if (email !== undefined) update.email = email?.toLowerCase().trim() || null;
-    if (phone !== undefined) update.phone = phone?.trim() || null;
-    if (notes !== undefined) update.notes = notes;
-    if (rating !== undefined) update.rating = typeof rating === 'number' ? rating : 0;
+    
+    // Use the validator
+    const { data, errors } = validateVendor(req.body, { requireAll: false });
+    if (errors.length) return res.status(400).json({ errors });
 
     // Validate addressId if provided
-    if (addressId !== undefined) {
-      if (addressId !== null) {
-        const ok = await ensureExistsOrRespond(res, 'address', addressId, 'addressId');
-        if (!ok) return; // response already sent
-      }
-      update.addressId = addressId;
+    if (data.addressId !== undefined && data.addressId !== null) {
+      const ok = await ensureExistsOrRespond(res, 'address', data.addressId, 'addressId');
+      if (!ok) return; 
     }
 
-    const vendor = await prisma.vendor.update({ where: { id }, data: update });
+    const vendor = await prisma.vendor.update({ where: { id }, data });
     res.json(vendor);
   } catch (err) {
     console.error(`[PUT /vendors/${req.params.id}] Error:`, err);

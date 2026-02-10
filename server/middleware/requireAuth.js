@@ -14,9 +14,9 @@ export default function requireAuth(req, res, next) {
   }
     try {
       const payload = verifyJwt(token);
-      req.user = { id: payload.id, role: payload.role };
+      req.user = { id: payload.sub, role: payload.role };
       
-      console.log('[Auth] Valid token for user ${payload.id} (${payload.role})', req.ip, req.path);
+      console.log(`[Auth] Valid token for user ${payload.sub} (${payload.role})`, req.ip, req.path);
       return next();
   } catch (err) {
     console.log('[Auth] Invalid/Expired token:', err.message, req.ip, req.path);

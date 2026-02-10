@@ -6,12 +6,25 @@ export function validateWithSchema(payload, schema, { requireAll = false } = {})
     const value = payload[field];
 
     // Required field check
-    if (value === undefined) {
-      if (requireAll && rules.required) {
-        errors.push(`${field} is required`);
+if (value === undefined) {
+  if (requireAll && rules.required) {
+    errors.push(`${field} is required`);
+    continue;
+  }
+  // NEW: Process optional fields with normalize for defaults
+  if (!rules.required && rules.normalize) {
+    try {
+      const normalized = rules.normalize(value);
+      if (normalized !== undefined) {
+        data[field] = normalized;  // Add default to data
       }
-      continue;
+    } catch {
+      errors.push(`${field} is invalid`);
     }
+  }
+  continue;
+}
+    
 
     // Normalization
     let normalized = value;
