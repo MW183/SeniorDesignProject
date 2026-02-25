@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { api } from '../lib/api';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
+import FormField from '../components/ui/FormField';
 
 export default function Login({ onLogin }: { onLogin: () => void }) {
   const [email, setEmail] = useState('');
@@ -19,23 +23,31 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
 
   return (
     <div className="max-w-md mx-auto mt-12">
-      <div className="card">
+      <Card>
         <h2 className="text-2xl font-semibold mb-4">Login</h2>
         <form onSubmit={submit} className="space-y-4">
+          <FormField label="Email" id="email">
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+          </FormField>
+          <FormField label="Password" id="password">
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+          </FormField>
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input value={email} onChange={e => setEmail(e.target.value)} className="w-full px-3 py-2 rounded border bg-transparent" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full px-3 py-2 rounded border bg-transparent" />
-          </div>
-          <div>
-            <button type="submit" className="btn-primary">Login</button>
+            <Button type="submit">Login</Button>
           </div>
         </form>
         {error && <div className="mt-3 text-sm text-red-400">{error}</div>}
-      </div>
+      </Card>
     </div>
   );
 }

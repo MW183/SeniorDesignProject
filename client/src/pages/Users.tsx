@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../lib/api';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
-export default function Users() {
+export default function Users({ currentUser }: { currentUser?: any }) {
   const [users, setUsers] = useState<any[]>([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const isAdmin = currentUser?.role === 'ADMIN';
 
   async function load() {
     const res = await api('/users');
@@ -27,16 +31,18 @@ export default function Users() {
 
   return (
     <div className="max-w-2xl mx-auto mt-8">
-      <div className="card">
-        <h2 className="text-2xl font-semibold mb-4">Users</h2>
-        <form onSubmit={create} className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-          <input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} className="px-3 py-2 rounded border bg-transparent" />
-          <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} className="px-3 py-2 rounded border bg-transparent" />
-          <div className="flex gap-2">
-            <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} className="flex-1 px-3 py-2 rounded border bg-transparent" />
-            <button type="submit" className="btn-primary">Create</button>
-          </div>
-        </form>
+      <Card>
+        <h2 className="text-2xl font-semibold mb-4">{isAdmin ? 'Users' : 'Planners'}</h2>
+        {isAdmin && (
+          <form onSubmit={create} className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            <Input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} />
+            <Input placeholder="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} />
+            <div className="flex gap-2">
+              <Input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} className="flex-1" />
+              <Button type="submit">Create</Button>
+            </div>
+          </form>
+        )}
 
         <ul className="space-y-2">
           {users.map(u => (
@@ -48,7 +54,7 @@ export default function Users() {
             </li>
           ))}
         </ul>
-      </div>
+      </Card>
     </div>
   );
 }

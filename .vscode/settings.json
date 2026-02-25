@@ -1,0 +1,19 @@
+{
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^'\"`]*)(?:'|\"|`)"]
+  ],
+  "tailwindCSS.experimental.configFile": "client/tailwind.config.js",
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass"
+  ],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": true,
+    "comments": "on"
+  },
+  "tailwindCSS.hovers": true
+}

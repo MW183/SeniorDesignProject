@@ -6,19 +6,33 @@ import requireRole from '../middleware/requireRole.js';
 
 const router = express.Router();
 
-// GET /weddings — filter by date range and return weddings
-router.get('/', async (req, res) => {
+// GET /weddings — filter by date range and return weddings for current planner (or all if admin)
+router.get('/', requireAuth, async (req, res) => {
   try {
     const q = req.parsedQuery || req.query || {};
-    const { dateFrom, dateTo, limit, offset } = q;
+    const { dateFrom, dateTo, limit, offset, plannerId } = q;
     const where = {};
+    const isAdmin = req.user.role === 'ADMIN';
+    
+    // If not admin, only show weddings assigned to current user
+    if (!isAdmin) {
+      where.planners = {
+        some: { plannerId: req.user.id }
+      };
+    } else if (plannerId) {
+      // Admin can filter by specific planner
+      where.planners = {
+        some: { plannerId }
+      };
+    }
+    
     if (dateFrom || dateTo) {
       where.date = {};
       if (dateFrom) where.date.gte = new Date(dateFrom);
       if (dateTo) where.date.lte = new Date(dateTo);
     }
 
-    const weddings = await prisma.wedding.findMany({ where, take: limit ? parseInt(limit) : undefined, skip: offset ? parseInt(offset) : undefined, orderBy: { date: 'asc' } });
+    const weddings = await prisma.wedding.findMany({ where, take: limit ? parseInt(limit) : undefined, skip: offset ? parseInt(offset) : undefined, orderBy: { date: 'asc' }, include: { planners: { include: { planner: true } }, tasks: true } });
     res.json(weddings);
   } catch (err) { handlePrismaError(res, err); }
 });
@@ -33,7 +47,7 @@ router.get('/:id', async (req, res) => {
   } catch (err) { handlePrismaError(res, err); }
 });
 
-// POST /weddings — create wedding (requires auth). Validates optional address and client FKs.
+// POST /weddings — create wedding and assign to current planner (requires auth)
 router.post('/', requireAuth, async (req, res) => {
   try {
     const { date, locationId, spouse1Id, spouse2Id } = req.body;
@@ -50,7 +64,22 @@ router.post('/', requireAuth, async (req, res) => {
       const ok = await ensureExistsOrRespond(res, 'client', spouse2Id, 'spouse2Id');
       if (!ok) return;
     }
-    const wedding = await prisma.wedding.create({ data: { date: new Date(date), locationId: locationId || null, spouse1Id: spouse1Id || null, spouse2Id: spouse2Id || null }, select: { id: true, date: true, locationId: true } });
+    
+    // Create wedding and link to planner in same operation
+    const wedding = await prisma.wedding.create({ 
+      data: { 
+        date: new Date(date), 
+        locationId: locationId || null, 
+        spouse1Id: spouse1Id || null, 
+        spouse2Id: spouse2Id || null,
+        planners: {
+          create: {
+            plannerId: req.user.id
+          }
+        }
+      }, 
+      select: { id: true, date: true, locationId: true, planners: true } 
+    });
     res.status(201).json(wedding);
   } catch (err) { handlePrismaError(res, err); }
 });
@@ -84,12 +113,32 @@ router.put('/:id', requireAuth, async (req, res) => {
   } catch (err) { handlePrismaError(res, err); }
 });
 
-// DELETE /weddings/:id — delete wedding (requires ADMIN or SUPPORT)
-router.delete('/:id', requireAuth, requireRole(['ADMIN','SUPPORT']), async (req, res) => {
+// DELETE /weddings/:id — remove planner from wedding (or delete if any admin/support)
+router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    await prisma.wedding.delete({ where: { id } });
-    res.json({ message: 'Wedding deleted' });
+    const isAdmin = req.user.role === 'ADMIN' || req.user.role === 'SUPPORT';
+    
+    // Check if user has access to this wedding
+    const plannerWedding = await prisma.plannerWedding.findUnique({
+      where: { plannerId_weddingId: { plannerId: req.user.id, weddingId: id } }
+    });
+    
+    if (!plannerWedding && !isAdmin) {
+      return res.status(403).json({ error: 'You do not have access to this wedding' });
+    }
+    
+    if (isAdmin) {
+      // Admins can delete the entire wedding
+      await prisma.wedding.delete({ where: { id } });
+      res.json({ message: 'Wedding deleted' });
+    } else {
+      // Non-admins just remove themselves
+      await prisma.plannerWedding.delete({
+        where: { plannerId_weddingId: { plannerId: req.user.id, weddingId: id } }
+      });
+      res.json({ message: 'Removed from wedding' });
+    }
   } catch (err) { handlePrismaError(res, err); }
 });
 

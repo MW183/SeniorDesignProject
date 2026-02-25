@@ -40,6 +40,7 @@ model User {
   // Relations
   tasksAssigned Task[] @relation("TasksAssigned")
   tasksCompleted Task[] @relation("TasksCompleted")
+  planningWeddings PlannerWedding[] @relation("PlannerWeddings")
 }
 
 model Client {
@@ -58,10 +59,14 @@ model Client {
 model Wedding {
   id          String   @id @default(uuid())
   date        DateTime
+  
   // Allow multiple weddings to share same address; if address removed, null the location
   location    Address? @relation(fields: [locationId], references: [id], onDelete: SetNull)
   locationId  String?
+  
+  planners PlannerWedding[] @relation("WeddingPlanners")
   tasksRemaining Int?
+  
   // If a client is deleted, nullify spouse references so wedding records remain
   spouse1     Client?  @relation("Spouse1", fields: [spouse1Id], references: [id], onDelete: SetNull)
   spouse1Id   String?
@@ -89,6 +94,16 @@ model Task {
   // Task should be deleted when its wedding is deleted
   wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
   weddingId   String
+}
+
+model PlannerWedding {
+  planner   User    @relation("PlannerWeddings", fields: [plannerId], references: [id], onDelete: Cascade)
+  plannerId String
+  wedding   Wedding @relation("WeddingPlanners", fields: [weddingId], references: [id], onDelete: Cascade)
+  weddingId String
+  assignedAt DateTime @default(now())
+
+  @@id([plannerId, weddingId])
 }
 
 model TaskTemplate {
