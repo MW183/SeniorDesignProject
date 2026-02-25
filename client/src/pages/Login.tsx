@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { api, setToken } from '../lib/api';
+import { api } from '../lib/api';
 
 export default function Login({ onLogin }: { onLogin: () => void }) {
   const [email, setEmail] = useState('');
@@ -11,7 +11,6 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
     setError(null);
     const res = await api('/auth/login', { method: 'POST', body: { email, password } });
     if (res.ok && res.body.token) {
-      // server sets httpOnly cookie; client does not persist token in localStorage
       onLogin();
     } else {
       setError(res.body?.error || 'Login failed');
@@ -19,20 +18,24 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
   }
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={submit}>
-        <div>
-          <label>Email</label>
-          <input value={email} onChange={e => setEmail(e.target.value)} />
-        </div>
-        <div>
-          <label>Password</label>
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-      {error && <div style={{color:'red'}}>{error}</div>}
+    <div className="max-w-md mx-auto mt-12">
+      <div className="card">
+        <h2 className="text-2xl font-semibold mb-4">Login</h2>
+        <form onSubmit={submit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input value={email} onChange={e => setEmail(e.target.value)} className="w-full px-3 py-2 rounded border bg-transparent" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full px-3 py-2 rounded border bg-transparent" />
+          </div>
+          <div>
+            <button type="submit" className="btn-primary">Login</button>
+          </div>
+        </form>
+        {error && <div className="mt-3 text-sm text-red-400">{error}</div>}
+      </div>
     </div>
   );
 }

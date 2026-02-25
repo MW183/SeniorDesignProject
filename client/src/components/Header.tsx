@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './Header.css';
 
 export default function Header({ currentUser, onLogout }: { currentUser?: any, onLogout?: () => void }) {
   const [open, setOpen] = useState(false);
@@ -8,34 +7,38 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
   const navigate = useNavigate();
 
   return (
-    <header className="site-header">
-      <div className="container header-inner">
-        <div className="brand">
-          <Link to="/">PlannerApp</Link>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900 text-white h-16 shadow-sm">
+      <div className="max-w-[1100px] mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <div className="brand">
+            <Link to="/" className="text-white font-bold text-lg tracking-wide">PlannerApp</Link>
+          </div>
+
+          <button
+            className="md:hidden p-2"
+            aria-expanded={open}
+            aria-label="Toggle navigation"
+            onClick={() => setOpen(v => !v)}
+          >
+            <span className="block w-5 h-0.5 bg-white my-[3px]" />
+            <span className="block w-5 h-0.5 bg-white my-[3px]" />
+            <span className="block w-5 h-0.5 bg-white my-[3px]" />
+          </button>
+
+          <nav className={`${open ? 'flex' : 'hidden'} md:flex items-center gap-4 md:static absolute top-16 right-4 bg-slate-900 md:bg-transparent flex-col md:flex-row p-3 md:p-0 rounded-md min-w-[160px]`}>
+            <Link to="/planners" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Planners</Link>
+            {isAdmin && <Link to="/admin" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Admin</Link>}
+            <Link to="/users" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Users</Link>
+            {!currentUser ? (
+              <Link to="/login" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Login</Link>
+            ) : (
+              <>
+                <Link to="/account" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Account</Link>
+                <button className="logout-btn text-sky-100 px-2 py-1 rounded-md hover:bg-white/5" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
+              </>
+            )}
+          </nav>
         </div>
-
-        <button
-          className="nav-toggle"
-          aria-expanded={open}
-          aria-label="Toggle navigation"
-          onClick={() => setOpen(v => !v)}
-        >
-          <span className="hamburger" />
-        </button>
-
-        <nav className={`main-nav ${open ? 'open' : ''}`}>
-          <Link to="/planners">Planners</Link>
-          {isAdmin && <Link to="/admin">Admin</Link>}
-          <Link to="/users">Users</Link>
-          {!currentUser ? (
-            <Link to="/login">Login</Link>
-          ) : (
-            <>
-              <Link to="/account">Account</Link>
-              <button className="logout-btn" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
-            </>
-          )}
-        </nav>
       </div>
     </header>
   );

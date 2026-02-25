@@ -26,18 +26,29 @@ export default function Users() {
   }
 
   return (
-    <div>
-      <h2>Users</h2>
-      <form onSubmit={create}>
-        <input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} />
-        <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
-        <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
-        <button type="submit">Create</button>
-      </form>
+    <div className="max-w-2xl mx-auto mt-8">
+      <div className="card">
+        <h2 className="text-2xl font-semibold mb-4">Users</h2>
+        <form onSubmit={create} className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+          <input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} className="px-3 py-2 rounded border bg-transparent" />
+          <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} className="px-3 py-2 rounded border bg-transparent" />
+          <div className="flex gap-2">
+            <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} className="flex-1 px-3 py-2 rounded border bg-transparent" />
+            <button type="submit" className="btn-primary">Create</button>
+          </div>
+        </form>
 
-      <ul>
-        {users.map(u => <li key={u.id}>{u.name} — {u.email}</li>)}
-      </ul>
+        <ul className="space-y-2">
+          {users.map(u => (
+            <li key={u.id} className="flex items-center justify-between">
+              <div>
+                <div className="font-medium">{u.name}</div>
+                <div className="text-sm text-slate-300">{u.email}</div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

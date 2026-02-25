@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import './App.css'
 import Login from './pages/Login'
 import Users from './pages/Users'
 import AdminHome from './pages/AdminHome'
@@ -35,16 +34,17 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Layout currentUser={currentUser} onLogout={serverLogout}>
-        <Routes>
-          <Route path="/" element={<Users />} />
-          <Route path="/login" element={<Login onLogin={onLogin} />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/admin" element={<AdminHome />} />
-          <Route path="/planners" element={<AdminHome />} />
-          
-        </Routes>
-      </Layout>
+      <div className="min-h-screen w-full">
+        <Layout currentUser={currentUser} onLogout={serverLogout}>
+          <Routes>
+            <Route path="/" element={<Users />} />
+            <Route path="/login" element={<Login onLogin={onLogin} />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/admin" element={<AdminHome />} />
+            <Route path="/planners" element={<AdminHome />} />
+          </Routes>
+        </Layout>
+      </div>
     </BrowserRouter>
   )
 }
