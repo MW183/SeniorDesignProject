@@ -22,9 +22,29 @@ async function run() {
   const results = [];
 
 
-  // 1. Generate a test JWT (as ADMIN)
+  // 1. Create a test user (for auth)
 
-  const adminToken = signJwt({ sub: 'test-user-id', role: 'ADMIN' }, '1h');
+  let testUserId = null;
+  try {
+    const res = await fetch(`${base}/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        name: 'Test Admin User', 
+        email: `testadmin${Date.now()}@example.com`, 
+        password: 'testpass123',
+        role: 'ADMIN'
+      })
+    });
+    const body = await res.json();
+    if (res.ok && body.id) testUserId = body.id;
+    results.push({ path: '/users POST', status: res.status, body });
+  } catch (err) {
+    results.push({ path: '/users POST', error: err.message });
+  }
+
+  // 2. Generate a test JWT using the real user ID
+  const adminToken = signJwt({ sub: testUserId, role: 'ADMIN' }, '1h');
 
   // Helper to include Authorization header
   const authHeader = { Authorization: `Bearer ${adminToken}`, 'Content-Type': 'application/json' };
@@ -98,14 +118,31 @@ async function run() {
   }
 
 
-  // 6. Create a task (requires wedding)
+  // 6. Create a task category (requires wedding)
+
+  let categoryId = null;
+  try {
+    const res = await fetch(`${base}/task-categories`, {
+      method: 'POST',
+      headers: authHeader,
+      body: JSON.stringify({ name: 'Test Category', sortOrder: 0, weddingId })
+    });
+    const body = await res.json();
+    if (res.ok && body.id) categoryId = body.id;
+    results.push({ path: '/task-categories POST', status: res.status, body });
+  } catch (err) {
+    results.push({ path: '/task-categories POST', error: err.message });
+  }
+
+
+  // 7. Create a task (requires category)
 
   let taskId = null;
   try {
     const res = await fetch(`${base}/tasks`, {
       method: 'POST',
       headers: authHeader,
-      body: JSON.stringify({ name: 'Test Task', priority: 1, dueDate: new Date().toISOString(), weddingId })
+      body: JSON.stringify({ name: 'Test Task', priority: 1, dueDate: new Date().toISOString(), categoryId, sortOrder: 0 })
     });
     const body = await res.json();
     if (res.ok && body.id) taskId = body.id;
@@ -115,9 +152,9 @@ async function run() {
   }
 
 
-  // 7. Test GET collections (auth required)
+  // 8. Test GET collections (auth required)
 
-  const collections = ['/users', '/clients', '/vendors', '/address', '/weddings', '/tasks'];
+  const collections = ['/users', '/clients', '/vendors', '/address', '/weddings', '/tasks', '/task-categories', '/wedding-templates'];
   for (const path of collections) {
     try {
       const res = await fetch(base + path, { headers: authHeader });
@@ -129,14 +166,16 @@ async function run() {
   }
 
 
-  // 8. Cleanup — delete created records in reverse order
+  // 9. Cleanup — delete created records in reverse order
 
   const cleanup = [
     { path: `/tasks/${taskId}`, method: 'DELETE' },
+    { path: `/task-categories/${categoryId}`, method: 'DELETE' },
     { path: `/weddings/${weddingId}`, method: 'DELETE' },
     { path: `/vendors/${vendorId}`, method: 'DELETE' },
     { path: `/clients/${clientId}`, method: 'DELETE' },
     { path: `/address/${addressId}`, method: 'DELETE' },
+    { path: `/users/${testUserId}`, method: 'DELETE' },
   ];
 
   for (const c of cleanup) {

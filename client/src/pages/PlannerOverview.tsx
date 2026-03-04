@@ -14,6 +14,7 @@ type PlannerStats = {
   inProgress: number;
   completed: number;
   blocked: number;
+  cancelled: number;
 };
 
 export default function PlannerOverview({ currentUser }: { currentUser?: any }) {
@@ -43,6 +44,7 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
             inProgress: 0,
             completed: 0,
             blocked: 0,
+            cancelled: 0,
           });
         }
       });
@@ -64,6 +66,9 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
               break;
             case 'BLOCKED':
               plannerStats.blocked++;
+            case 'CANCELLED':
+              plannerStats.cancelled++;
+              break;
               break;
           }
         }
@@ -126,6 +131,14 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
         <span className="text-red-400">{stat.blocked}</span>
+      )
+    },
+    { 
+      key: 'cancelled', 
+      label: 'Cancelled', 
+      className: 'text-center pb-2 w-[100px]',
+      render: (stat: PlannerStats) => (
+        <span className="text-gray-400">{stat.cancelled}</span>
       )
     },
   ];

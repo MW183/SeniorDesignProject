@@ -10,6 +10,10 @@ import addressRouter from "./routes/address.js";
 import tasksRouter from "./routes/tasks.js";
 import weddingsRouter from "./routes/weddings.js";
 import authRouter from "./routes/auth.js";
+import weddingTemplatesRouter from "./routes/weddingTemplates.js";
+import templateCategoriesRouter from "./routes/templateCategories.js";
+import templateTasksRouter from "./routes/templateTasks.js";
+import taskCategoriesRouter from "./routes/taskCategories.js";
 
 const app = express();
 
@@ -35,7 +39,11 @@ app.get('/', (req, res) => {
       addresses: '/address',
       tasks: '/tasks',
       weddings: '/weddings',
-      auth: '/auth'
+      auth: '/auth',
+      weddingTemplates: '/wedding-templates',
+      templateCategories: '/template-categories',
+      templateTasks: '/template-tasks',
+      taskCategories: '/task-categories'
     }
   };
 
@@ -60,6 +68,10 @@ app.get('/', (req, res) => {
           <li><a href="/tasks">/tasks</a> — Tasks collection</li>
           <li><a href="/weddings">/weddings</a> — Weddings collection</li>
           <li><a href="/auth">/auth</a> — Authentication</li>
+          <li><a href="/wedding-templates">/wedding-templates</a> — Wedding Templates</li>
+          <li><a href="/template-categories">/template-categories</a> — Template Categories</li>
+          <li><a href="/template-tasks">/template-tasks</a> — Template Tasks</li>
+          <li><a href="/task-categories">/task-categories</a> — Task Categories</li>
         </ul>
         <h3>Utilities</h3>
         <ul>
@@ -94,6 +106,10 @@ app.use('/address', addressRouter);
 app.use('/tasks', tasksRouter);
 app.use('/weddings', weddingsRouter);
 app.use('/auth', authRouter);
+app.use('/wedding-templates', weddingTemplatesRouter);
+app.use('/template-categories', templateCategoriesRouter);
+app.use('/template-tasks', templateTasksRouter);
+app.use('/task-categories', taskCategoriesRouter);
 
 const PORT = process.env.PORT || 5000;
 

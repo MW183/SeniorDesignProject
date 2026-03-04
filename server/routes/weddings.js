@@ -32,7 +32,23 @@ router.get('/', requireAuth, async (req, res) => {
       if (dateTo) where.date.lte = new Date(dateTo);
     }
 
-    const weddings = await prisma.wedding.findMany({ where, take: limit ? parseInt(limit) : undefined, skip: offset ? parseInt(offset) : undefined, orderBy: { date: 'asc' }, include: { planners: { include: { planner: true } }, tasks: true } });
+    const weddings = await prisma.wedding.findMany({ 
+      where, 
+      take: limit ? parseInt(limit) : undefined, 
+      skip: offset ? parseInt(offset) : undefined, 
+      orderBy: { date: 'asc' }, 
+      include: { 
+        planners: { include: { planner: true } }, 
+        categories: { 
+          include: { tasks: true },
+          orderBy: { sortOrder: 'asc' }
+        },
+        spouse1: true,
+        spouse2: true,
+        location: true,
+        template: true
+      } 
+    });
     res.json(weddings);
   } catch (err) { handlePrismaError(res, err); }
 });
@@ -50,7 +66,7 @@ router.get('/:id', async (req, res) => {
 // POST /weddings — create wedding and assign to current planner (requires auth)
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { date, locationId, spouse1Id, spouse2Id } = req.body;
+    const { date, locationId, spouse1Id, spouse2Id, templateId } = req.body;
     if (!date) return res.status(400).json({ error: 'date is required' });
     if (locationId) {
       const ok = await ensureExistsOrRespond(res, 'address', locationId, 'locationId');
@@ -64,6 +80,10 @@ router.post('/', requireAuth, async (req, res) => {
       const ok = await ensureExistsOrRespond(res, 'client', spouse2Id, 'spouse2Id');
       if (!ok) return;
     }
+    if (templateId) {
+      const ok = await ensureExistsOrRespond(res, 'weddingTemplate', templateId, 'templateId');
+      if (!ok) return;
+    }
     
     // Create wedding and link to planner in same operation
     const wedding = await prisma.wedding.create({ 
@@ -72,13 +92,14 @@ router.post('/', requireAuth, async (req, res) => {
         locationId: locationId || null, 
         spouse1Id: spouse1Id || null, 
         spouse2Id: spouse2Id || null,
+        templateId: templateId || null,
         planners: {
           create: {
             plannerId: req.user.id
           }
         }
       }, 
-      select: { id: true, date: true, locationId: true, planners: true } 
+      select: { id: true, date: true, locationId: true, templateId: true, planners: true } 
     });
     res.status(201).json(wedding);
   } catch (err) { handlePrismaError(res, err); }
@@ -88,12 +109,13 @@ router.post('/', requireAuth, async (req, res) => {
 router.put('/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { date, locationId, spouse1Id, spouse2Id } = req.body;
+    const { date, locationId, spouse1Id, spouse2Id, templateId } = req.body;
     const update = {};
     if (date !== undefined) update.date = new Date(date);
     if (locationId !== undefined) update.locationId = locationId;
     if (spouse1Id !== undefined) update.spouse1Id = spouse1Id;
     if (spouse2Id !== undefined) update.spouse2Id = spouse2Id;
+    if (templateId !== undefined) update.templateId = templateId;
     // validate FKs if provided
     if (locationId !== undefined && locationId !== null) {
       const ok = await ensureExistsOrRespond(res, 'address', locationId, 'locationId');
@@ -105,6 +127,10 @@ router.put('/:id', requireAuth, async (req, res) => {
     }
     if (spouse2Id !== undefined && spouse2Id !== null) {
       const ok = await ensureExistsOrRespond(res, 'client', spouse2Id, 'spouse2Id');
+      if (!ok) return;
+    }
+    if (templateId !== undefined && templateId !== null) {
+      const ok = await ensureExistsOrRespond(res, 'weddingTemplate', templateId, 'templateId');
       if (!ok) return;
     }
 

@@ -27,6 +27,7 @@ enum Status {
   CANCELLED
 }
 
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -35,110 +36,172 @@ model User {
   password  String
   role      Role
   createdAt DateTime @default(now())
-  // Audit fields removed (createdById, deletedAt)
 
-  // Relations
-  tasksAssigned Task[] @relation("TasksAssigned")
-  tasksCompleted Task[] @relation("TasksCompleted")
-  planningWeddings PlannerWedding[] @relation("PlannerWeddings")
+  tasksAssigned   Task[] @relation("TasksAssigned")
+  tasksCompleted  Task[] @relation("TasksCompleted")
+  planningWeddings PlannerWedding[]
 }
+
 
 model Client {
   id        String   @id @default(uuid())
   name      String
   email     String?
   phone     String?
-  createdAt DateTime @default(now())
-  // createdBy removed
   notes     String?
+  createdAt DateTime @default(now())
 
   weddingsAsSpouse1 Wedding[] @relation("Spouse1")
   weddingsAsSpouse2 Wedding[] @relation("Spouse2")
 }
 
+model WeddingTemplate {
+  id        String   @id @default(uuid())
+  name      String
+  version   Int
+  createdAt DateTime @default(now())
+
+  categories TemplateCategory[]
+  weddings   Wedding[]
+
+  @@unique([name, version])
+}
+
+model TemplateCategory {
+  id         String   @id @default(uuid())
+  name       String
+  sortOrder  Int
+
+  template   WeddingTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  templateId String
+
+  tasks      TemplateTask[]
+}
+
+model TemplateTask {
+  id                   String   @id @default(uuid())
+  name                 String
+  description          String?
+  defaultPriority      Int
+  defaultDueOffsetDays Int
+  sortOrder            Int
+  createdAt            DateTime @default(now())
+
+  category   TemplateCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+
+  // Self-referencing dependency
+  dependsOnId String?
+  dependsOn   TemplateTask?  @relation("TemplateDependency", fields: [dependsOnId], references: [id])
+  dependents  TemplateTask[] @relation("TemplateDependency")
+
+  // Track which actual tasks were generated from this template
+  generatedTasks Task[] @relation("TemplateTaskGenerated")
+}
+
+
 model Wedding {
   id          String   @id @default(uuid())
   date        DateTime
-  
-  // Allow multiple weddings to share same address; if address removed, null the location
+  createdAt   DateTime @default(now())
+
+  template     WeddingTemplate? @relation(fields: [templateId], references: [id])
+  templateId   String?
+
   location    Address? @relation(fields: [locationId], references: [id], onDelete: SetNull)
   locationId  String?
-  
-  planners PlannerWedding[] @relation("WeddingPlanners")
-  tasksRemaining Int?
-  
-  // If a client is deleted, nullify spouse references so wedding records remain
+
   spouse1     Client?  @relation("Spouse1", fields: [spouse1Id], references: [id], onDelete: SetNull)
   spouse1Id   String?
   spouse2     Client?  @relation("Spouse2", fields: [spouse2Id], references: [id], onDelete: SetNull)
   spouse2Id   String?
-  createdAt   DateTime @default(now())
-  // createdBy and deletedAt removed
 
-  tasks       Task[]
+  planners    PlannerWedding[]
+  categories  TaskCategory[]
+}
+
+model TaskCategory {
+  id        String   @id @default(uuid())
+  name      String
+  sortOrder Int
+
+  wedding   Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  weddingId String
+
+  tasks     Task[]
 }
 
 model Task {
   id          String   @id @default(uuid())
   name        String
+  description String?
   priority    Int
   dueDate     DateTime
+  sortOrder   Int
   createdAt   DateTime @default(now())
-  assignedTo  User?    @relation("TasksAssigned", fields: [assignedToId], references: [id])
+
+  currentStatus Status @default(PENDING)
+
+  assignedTo   User?   @relation("TasksAssigned", fields: [assignedToId], references: [id])
   assignedToId String?
-  currentStatus Status  @default(PENDING)
-  completedOn DateTime?
-  completedBy User?     @relation("TasksCompleted", fields: [completedById], references: [id])
+
+  completedOn  DateTime?
+  completedBy  User?   @relation("TasksCompleted", fields: [completedById], references: [id])
   completedById String?
+
   notes       String?
-  // Task should be deleted when its wedding is deleted
-  wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
-  weddingId   String
+
+  category    TaskCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId  String
+
+  // Self-referencing dependency for runtime tasks
+  dependsOnId String?
+  dependsOn   Task?   @relation("TaskDependency", fields: [dependsOnId], references: [id])
+  dependents  Task[]  @relation("TaskDependency")
+
+  // Track which template task generated this task
+  templateTask   TemplateTask? @relation("TemplateTaskGenerated", fields: [templateTaskId], references: [id])
+  templateTaskId String?  // nullable in case tasks are added manually later
 }
 
+
 model PlannerWedding {
-  planner   User    @relation("PlannerWeddings", fields: [plannerId], references: [id], onDelete: Cascade)
+  planner   User    @relation(fields: [plannerId], references: [id], onDelete: Cascade)
   plannerId String
-  wedding   Wedding @relation("WeddingPlanners", fields: [weddingId], references: [id], onDelete: Cascade)
+
+  wedding   Wedding @relation(fields: [weddingId], references: [id], onDelete: Cascade)
   weddingId String
+
   assignedAt DateTime @default(now())
 
   @@id([plannerId, weddingId])
 }
 
-model TaskTemplate {
-  id                 String   @id @default(uuid())
-  name               String
-  defaultPriority    Int
-  defaultDueOffsetDays Int
-  notes              String?
-  createdAt          DateTime @default(now())
-}
 
 model Vendor {
   id        String   @id @default(uuid())
   name      String
-  // Allow vendors to keep record if address removed; set addressId to null
-  address   Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
-  addressId String?
   email     String?
   phone     String?
   rating    Int
   notes     String?
-  // deletedAt removed
+
+  address   Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  addressId String?
 
   tags      VendorTag[]
 }
 
 model Tag {
-  id    String   @id @default(uuid())
-  name  String   @unique
+  id      String   @id @default(uuid())
+  name    String   @unique
   vendors VendorTag[]
 }
 
 model VendorTag {
   vendor   Vendor @relation(fields: [vendorId], references: [id])
   vendorId String
+
   tag      Tag    @relation(fields: [tagId], references: [id])
   tagId    String
 
@@ -146,13 +209,13 @@ model VendorTag {
 }
 
 model Address {
-  id        String   @id @default(uuid())
-  street    String
-  city      String
-  state     String
-  zip       String
-  type AddressType @default(Venue)
-  
-  weddings  Wedding[]
-  vendors   Vendor[]
+  id     String   @id @default(uuid())
+  street String
+  city   String
+  state  String
+  zip    String
+  type   AddressType @default(Venue)
+
+  weddings Wedding[]
+  vendors  Vendor[]
 }

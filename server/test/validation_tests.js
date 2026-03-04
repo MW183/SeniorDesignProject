@@ -83,15 +83,39 @@ function assertErrorContains(body, text, message) {
 
 async function runValidationTests() {
     const {server, port} = await startServer();
-    const base = `http:localhost:${port}`;
+    const base = `http://localhost:${port}`;
     const runner = new TestRunner();
 
     console.log(`Running validation tests`);
 
+    // Create real test users for JWT tokens
+    const adminUserRes = await request(base, '/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            name: 'Admin Test User',
+            email: `admintest${Date.now()}@example.com`,
+            password: 'testpass123',
+            role: 'ADMIN'
+        })
+    });
+    const adminUserId = adminUserRes.body.id;
 
-    //generate test tokens
-    const adminToken = signJwt({sub: 'admin-test-id', role: 'ADMIN'}, '1h');
-    const userToken = signJwt({sub: 'user-test-id', role:'USER'}, '1h');
+    const regularUserRes = await request(base, '/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            name: 'Regular Test User',
+            email: `usertest${Date.now()}@example.com`,
+            password: 'testpass123',
+            role: 'USER'
+        })
+    });
+    const regularUserId = regularUserRes.body.id;
+
+    //generate test tokens with real user IDs
+    const adminToken = signJwt({sub: adminUserId, role: 'ADMIN'}, '1h');
+    const userToken = signJwt({sub: regularUserId, role:'USER'}, '1h');
 
 
     const adminHeader = {
@@ -673,7 +697,7 @@ await runner.test('Client: missing required name', async () => {
 
  console.log(`\n--- Task Validation Tests ---`);
 
-  // First create a wedding for task tests
+  // First create a wedding and task category for task tests
   const weddingRes = await request(base, `/weddings`, {
     method: 'POST',
     headers: adminHeader,
@@ -682,6 +706,17 @@ await runner.test('Client: missing required name', async () => {
     })
   });
   const testWeddingId = weddingRes.body.id;
+
+  const categoryRes = await request(base, `/task-categories`, {
+    method: 'POST',
+    headers: adminHeader,
+    body: JSON.stringify({
+      name: 'Test Category',
+      sortOrder: 0,
+      weddingId: testWeddingId
+    })
+  });
+  const testCategoryId = categoryRes.body.id;
 
   await runner.test('Task: missing all required fields', async () => {
     const { status, body } = await request(base, '/tasks', {
@@ -700,7 +735,8 @@ await runner.test('Client: missing required name', async () => {
       body: JSON.stringify({
         priority: 1,
         dueDate: new Date().toISOString(),
-        weddingId: testWeddingId
+        categoryId: testCategoryId,
+        sortOrder: 0
       })
     });
     assertStatus(status, 400, 'Should reject missing name');
@@ -713,7 +749,8 @@ await runner.test('Client: missing required name', async () => {
       body: JSON.stringify({
         name: 'Test Task',
         dueDate: new Date().toISOString(),
-        weddingId: testWeddingId
+        categoryId: testCategoryId,
+        sortOrder: 0
       })
     });
     assertStatus(status, 400, 'Should reject missing priority');
@@ -726,26 +763,14 @@ await runner.test('Client: missing required name', async () => {
       body: JSON.stringify({
         name: 'Test Task',
         priority: 1,
-        weddingId: testWeddingId
+        categoryId: testCategoryId,
+        sortOrder: 0
       })
     });
     assertStatus(status, 400, 'Should reject missing dueDate');
   });
 
-  await runner.test('Task: missing weddingId', async () => {
-    const { status, body } = await request(base, '/tasks', {
-      method: 'POST',
-      headers: adminHeader,
-      body: JSON.stringify({
-        name: 'Test Task',
-        priority: 1,
-        dueDate: new Date().toISOString()
-      })
-    });
-    assertStatus(status, 400, 'Should reject missing weddingId');
-  });
-
-  await runner.test('Task: invalid weddingId (non-existent)', async () => {
+  await runner.test('Task: missing categoryId', async () => {
     const { status, body } = await request(base, '/tasks', {
       method: 'POST',
       headers: adminHeader,
@@ -753,10 +778,25 @@ await runner.test('Client: missing required name', async () => {
         name: 'Test Task',
         priority: 1,
         dueDate: new Date().toISOString(),
-        weddingId: 'non-existent-id'
+        sortOrder: 0
       })
     });
-    assertStatus(status, 400, 'Should reject invalid weddingId');
+    assertStatus(status, 400, 'Should reject missing categoryId');
+  });
+
+  await runner.test('Task: invalid categoryId (non-existent)', async () => {
+    const { status, body } = await request(base, '/tasks', {
+      method: 'POST',
+      headers: adminHeader,
+      body: JSON.stringify({
+        name: 'Test Task',
+        priority: 1,
+        dueDate: new Date().toISOString(),
+        categoryId: 'non-existent-id',
+        sortOrder: 0
+      })
+    });
+    assertStatus(status, 400, 'Should reject invalid categoryId');
   });
 
   await runner.test('Task: valid with required fields', async () => {
@@ -767,7 +807,8 @@ await runner.test('Client: missing required name', async () => {
         name: 'Valid Task',
         priority: 2,
         dueDate: new Date().toISOString(),
-        weddingId: testWeddingId
+        categoryId: testCategoryId,
+        sortOrder: 0
       })
     });
     assertStatus(status, 201, 'Should accept valid task');
@@ -780,7 +821,11 @@ await runner.test('Client: missing required name', async () => {
     });
   });
 
-  // Cleanup wedding
+  // Cleanup category and wedding
+  await request(base, `/task-categories/${testCategoryId}`, {
+    method: 'DELETE',
+    headers: adminHeader
+  });
   await request(base, `/weddings/${testWeddingId}`, {
     method: 'DELETE',
     headers: adminHeader
@@ -1043,6 +1088,16 @@ await runner.test('Auth Login: missing email', async () => {
 
   // Cleanup
   await request(base, `/clients/${clientId}`, {
+    method: 'DELETE',
+    headers: adminHeader
+  });
+
+  // Cleanup test users
+  await request(base, `/users/${regularUserId}`, {
+    method: 'DELETE',
+    headers: adminHeader
+  });
+  await request(base, `/users/${adminUserId}`, {
     method: 'DELETE',
     headers: adminHeader
   });
