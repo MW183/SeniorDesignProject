@@ -1,6 +1,6 @@
 /**
  * CSV Parser to automatically generate the wedding planning template
- * Usage: node server/parseTemplateFromCSV.js
+ * Usage: node server/template/parseTemplateFromCSV.js
  *
  * This script reads the CSV file and generates the weddingPlanningTemplate.js
  * No external dependencies required - uses Node's built-in fs module
@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const CSV_PATH = path.join(__dirname, 'full planning template for mike.csv');
-const OUTPUT_PATH = path.join(__dirname, 'templates', 'weddingPlanningTemplate.js');
+const OUTPUT_PATH = path.join(__dirname, 'weddingPlanningTemplate.js');
 
 // Priority mapping
 const PRIORITY_MAP = {
@@ -23,6 +23,22 @@ const PRIORITY_MAP = {
   NORMAL: 3,
   '': 3, // Default to NORMAL if empty
 };
+
+// Helper function to get the next version number by reading the current template file
+function getNextVersionNumber() {
+  try {
+    if (fs.existsSync(OUTPUT_PATH)) {
+      const content = fs.readFileSync(OUTPUT_PATH, 'utf-8');
+      const versionMatch = content.match(/version:\s*(\d+)/);
+      if (versionMatch) {
+        return parseInt(versionMatch[1], 10) + 1;
+      }
+    }
+  } catch (err) {
+    console.warn('Warning: Could not read current template version, starting at 1');
+  }
+  return 1;
+}
 
 // Helper function to parse time anchor strings like "54 Weeks Out" into days
 function parseTimeAnchor(timeAnchorStr) {
@@ -195,7 +211,7 @@ function parseCsvTemplate() {
 
   return {
     name: 'Full Planning Wedding Day',
-    version: 1,
+    version: getNextVersionNumber(),
     description: 'Comprehensive wedding planning template with all major phases and vendor categories',
     categories: categoriesArray,
   };

@@ -7,13 +7,31 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 /**
+ * Shift a date to Friday if it falls on a weekend (Saturday or Sunday)
+ * @param {Date} date - The date to check and adjust
+ * @returns {Date} - The adjusted date (or original if weekday)
+ */
+function shiftWeekendToFriday(date) {
+  const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  if (dayOfWeek === 0) {
+    // Sunday: go back 2 days to Friday
+    date.setDate(date.getDate() - 2);
+  } else if (dayOfWeek === 6) {
+    // Saturday: go back 1 day to Friday
+    date.setDate(date.getDate() - 1);
+  }
+  return date;
+}
+
+/**
  * Calculate a task due date based on wedding date and days offset
  * Subtracts days from the wedding date (e.g., 54 weeks = 378 days before wedding)
+ * If the calculated date falls on a weekend, shifts it back to Friday
  */
 function calculateDueDate(weddingDate, offsetDays) {
   const date = new Date(weddingDate);
   date.setDate(date.getDate() - offsetDays);
-  return date;
+  return shiftWeekendToFriday(date);
 }
 
 /**

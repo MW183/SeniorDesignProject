@@ -181,7 +181,7 @@ Client Deletion Business Rule
 Developer Notes
 - A smoke test script was added at `server/test/run_api_tests.js` that starts the app in-process and exercises the main endpoints (creates address → client → vendor → wedding → task sequence and then cleans up). This is run locally to verify the flow.
 
-Security & Next Steps
+Security 
 - Passwords are hashed with bcrypt on create/update.
 - The server issues an `httpOnly` session cookie for authentication. The client must include credentials on requests (fetch with `credentials: 'include'`) to use cookie-based auth. The client no longer stores tokens in `localStorage` by default.
 

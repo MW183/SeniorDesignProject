@@ -3,6 +3,7 @@ import prisma from '../prismaClient.js';
 import { handlePrismaError, ensureExistsOrRespond } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
+import { instantiateWeddingTemplate } from '../utils/instantiateWeddingTemplate.js';
 
 const router = express.Router();
 
@@ -101,6 +102,17 @@ router.post('/', requireAuth, async (req, res) => {
       }, 
       select: { id: true, date: true, locationId: true, templateId: true, planners: true } 
     });
+
+    // If templateId provided, auto-populate tasks
+    if (templateId) {
+      try {
+        await instantiateWeddingTemplate(wedding.id, templateId);
+      } catch (err) {
+        console.error('Error instantiating template:', err);
+        // Don't fail the wedding creation, but log the error
+      }
+    }
+
     res.status(201).json(wedding);
   } catch (err) { handlePrismaError(res, err); }
 });

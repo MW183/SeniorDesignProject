@@ -3,7 +3,7 @@
  * Immutable template for generating wedding planning tasks
  * 
  * AUTO-GENERATED from CSV - DO NOT EDIT MANUALLY
- * To update: node server/parseTemplateFromCSV.js
+ * To update: node server/templates/parseTemplateFromCSV.js
  */
 
 // Priority mapping

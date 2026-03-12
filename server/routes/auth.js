@@ -3,7 +3,7 @@ import prisma from '../prismaClient.js';
 import { handlePrismaError, comparePassword, hashPassword, signJwt, verifyJwt } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import {z} from 'zod';
-import { validateBody } from '../middleware/validate.js';
+import { validateBody } from '../validators/validateBase.js';
 
 const router = express.Router();
 

@@ -8,7 +8,7 @@ import {
   WEDDING_PLANNING_TEMPLATE,
   parseTimeAnchor,
   getPriorityValue,
-} from './templates/weddingPlanningTemplate.js';
+} from './weddingPlanningTemplate.js';
 
 const prisma = new PrismaClient();
 
