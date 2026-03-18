@@ -4,7 +4,7 @@ import prisma from '../prismaClient.js';
 import { handlePrismaError, hashPassword } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
-import { validateUser } from '../validators/users.js';
+import { validateUser } from '../validators/validateUsers.js';
 
 const router = express.Router();
 

@@ -27,6 +27,11 @@ enum Status {
   CANCELLED
 }
 
+enum TaskType {
+  Task
+  CoupleTask
+}
+
 
 model User {
   id        String   @id @default(uuid())
@@ -76,12 +81,15 @@ model TemplateCategory {
   templateId String
 
   tasks      TemplateTask[]
+  dependencies TemplateTaskDependency[] @relation("TemplateCategoryDependencies")
 }
 
 model TemplateTask {
   id                   String   @id @default(uuid())
   name                 String
   description          String?
+  taskType             TaskType @default(Task)
+  dependencyMetadata   String?
   defaultPriority      Int
   defaultDueOffsetDays Int
   sortOrder            Int
@@ -90,13 +98,36 @@ model TemplateTask {
   category   TemplateCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId String
 
-  // Self-referencing dependency
-  dependsOnId String?
-  dependsOn   TemplateTask?  @relation("TemplateDependency", fields: [dependsOnId], references: [id])
-  dependents  TemplateTask[] @relation("TemplateDependency")
+  // Multiple dependencies: can depend on other template tasks or categories
+  dependencies   TemplateTaskDependency[] @relation("TemplateTaskDependencies")
+  dependedOnBy   TemplateTaskDependency[] @relation("TemplateTaskDependedOnBy")
 
   // Track which actual tasks were generated from this template
   generatedTasks Task[] @relation("TemplateTaskGenerated")
+}
+
+// Junction table for template task dependencies
+model TemplateTaskDependency {
+  id          String   @id @default(uuid())
+
+  // The template task that has the dependency
+  task        TemplateTask @relation("TemplateTaskDependencies", fields: [taskId], references: [id], onDelete: Cascade)
+  taskId      String
+
+  // Either depends on another template task...
+  dependsOnTask   TemplateTask?  @relation("TemplateTaskDependedOnBy", fields: [dependsOnTaskId], references: [id], onDelete: Cascade)
+  dependsOnTaskId String?
+
+  // ...or depends on a template category being completed
+  dependsOnCategory   TemplateCategory? @relation("TemplateCategoryDependencies", fields: [dependsOnCategoryId], references: [id], onDelete: Cascade)
+  dependsOnCategoryId String?
+
+  createdAt   DateTime @default(now())
+
+  @@unique([taskId, dependsOnTaskId, dependsOnCategoryId])
+  @@index([taskId])
+  @@index([dependsOnTaskId])
+  @@index([dependsOnCategoryId])
 }
 
 
@@ -129,6 +160,7 @@ model TaskCategory {
   weddingId String
 
   tasks     Task[]
+  dependencies TaskDependency[] @relation("TaskCategoryDependencies")
 }
 
 model Task {
@@ -154,14 +186,38 @@ model Task {
   category    TaskCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId  String
 
-  // Self-referencing dependency for runtime tasks
-  dependsOnId String?
-  dependsOn   Task?   @relation("TaskDependency", fields: [dependsOnId], references: [id])
-  dependents  Task[]  @relation("TaskDependency")
+  // Multiple dependencies: can depend on other tasks or categories
+  dependencies   TaskDependency[] @relation("TaskDependencies")
+  dependedOnBy   TaskDependency[] @relation("TaskDependedOnBy")
 
   // Track which template task generated this task
   templateTask   TemplateTask? @relation("TemplateTaskGenerated", fields: [templateTaskId], references: [id])
   templateTaskId String?  // nullable in case tasks are added manually later
+}
+
+// Junction table for task dependencies
+// A task can depend on multiple tasks and/or categories
+model TaskDependency {
+  id          String   @id @default(uuid())
+
+  // The task that has the dependency
+  task        Task     @relation("TaskDependencies", fields: [taskId], references: [id], onDelete: Cascade)
+  taskId      String
+
+  // Either depends on another task...
+  dependsOnTask   Task?    @relation("TaskDependedOnBy", fields: [dependsOnTaskId], references: [id], onDelete: Cascade)
+  dependsOnTaskId String?
+
+  // ...or depends on a category being completed
+  dependsOnCategory   TaskCategory? @relation("TaskCategoryDependencies", fields: [dependsOnCategoryId], references: [id], onDelete: Cascade)
+  dependsOnCategoryId String?
+
+  createdAt   DateTime @default(now())
+
+  @@unique([taskId, dependsOnTaskId, dependsOnCategoryId])
+  @@index([taskId])
+  @@index([dependsOnTaskId])
+  @@index([dependsOnCategoryId])
 }
 
 

@@ -3,7 +3,7 @@ import prisma from '../prismaClient.js';
 import { handlePrismaError, ensureExistsOrRespond } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
-import { validateTemplateTask } from '../validators/templateTask.js';
+import { validateTemplateTask } from '../validators/validateTemplateTask.js';
 
 const router = express.Router();
 
@@ -42,18 +42,6 @@ router.get('/', async (req, res) => {
               }
             }
           }
-        },
-        dependsOn: {
-          select: {
-            id: true,
-            name: true
-          }
-        },
-        dependents: {
-          select: {
-            id: true,
-            name: true
-          }
         }
       }
     });
@@ -84,18 +72,6 @@ router.get('/:id', async (req, res) => {
               }
             }
           }
-        },
-        dependsOn: {
-          select: {
-            id: true,
-            name: true
-          }
-        },
-        dependents: {
-          select: {
-            id: true,
-            name: true
-          }
         }
       }
     });
@@ -119,12 +95,6 @@ router.post('/', requireAuth, async (req, res) => {
     // Validate category exists
     const ok = await ensureExistsOrRespond(res, 'templateCategory', data.categoryId, 'categoryId');
     if (!ok) return;
-
-    // Validate dependency if provided
-    if (data.dependsOnId) {
-      const depOk = await ensureExistsOrRespond(res, 'templateTask', data.dependsOnId, 'dependsOnId');
-      if (!depOk) return;
-    }
 
     const task = await prisma.templateTask.create({
       data,
@@ -152,12 +122,6 @@ router.put('/:id', requireAuth, async (req, res) => {
     const { data, errors } = validateTemplateTask(req.body, { requireAll: false });
     if (errors.length) return res.status(400).json({ errors });
 
-    // Validate dependency if provided
-    if (data.dependsOnId !== undefined && data.dependsOnId !== null) {
-      const depOk = await ensureExistsOrRespond(res, 'templateTask', data.dependsOnId, 'dependsOnId');
-      if (!depOk) return;
-    }
-
     const task = await prisma.templateTask.update({
       where: { id },
       data
@@ -173,17 +137,6 @@ router.put('/:id', requireAuth, async (req, res) => {
 router.delete('/:id', requireAuth, requireRole(['ADMIN', 'SUPPORT']), async (req, res) => {
   try {
     const { id } = req.params;
-    
-    // Check if any tasks depend on this template task
-    const dependentTasks = await prisma.templateTask.count({
-      where: { dependsOnId: id }
-    });
-    
-    if (dependentTasks > 0) {
-      return res.status(400).json({ 
-        error: `Cannot delete: ${dependentTasks} task(s) depend on this template task` 
-      });
-    }
     
     await prisma.templateTask.delete({ where: { id } });
     res.json({ message: 'Template task deleted' });

@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react'
 import Login from './pages/Login'
 import UserManagement from './pages/UserManagement'
 import PlanningDashboard from './pages/PlanningDashboard'
-import PlannerOverview from './pages/PlannerOverview' 
+import PlannerOverview from './pages/PlannerOverview'
+import PlannerTasks from './pages/PlannerTasks'
+import AssignedWeddings from './pages/AssignedWeddings'
 import { setToken } from './lib/api'
 import { api } from './lib/api'
 import Layout from './components/Layout'
@@ -45,6 +47,9 @@ function App() {
             <Route path="/" element={currentUser ? <Navigate to="/planners" replace /> : <Navigate to="/login" replace />} />
             <Route path="/login" element={!currentUser ? <Login onLogin={onLogin} /> : <Navigate to="/planners" replace />} />
             <Route path="/planners" element={currentUser ? <PlanningDashboard currentUser={currentUser} /> : <Navigate to="/login" replace />} />
+            <Route path="/my-weddings" element={currentUser ? <AssignedWeddings currentUser={currentUser} /> : <Navigate to="/login" replace />} />
+            <Route path="/my-weddings/:weddingId/tasks" element={currentUser ? <PlannerTasks currentUser={currentUser} /> : <Navigate to="/login" replace />} />
+            <Route path="/my-tasks" element={currentUser ? <PlannerTasks currentUser={currentUser} /> : <Navigate to="/login" replace />} />
             <Route path="/account-management" element={currentUser?.role === 'ADMIN' ? <UserManagement currentUser={currentUser} /> : <Navigate to="/planners" replace />} />
             <Route path="/planner-overview" element={currentUser?.role === 'ADMIN' ? <PlannerOverview currentUser={currentUser} /> : <Navigate to="/planners" replace />} />
           </Routes>

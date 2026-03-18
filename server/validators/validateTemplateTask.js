@@ -11,6 +11,16 @@ const templateTaskSchema = {
     normalize: v => v?.trim(),
     validate: v => true
   },
+  taskType: {
+    required: false,
+    normalize: v => v?.trim() || 'Task',
+    validate: v => ['Task', 'CoupleTask'].includes(v) || 'taskType must be "Task" or "CoupleTask"'
+  },
+  dependencyMetadata: {
+    required: false,
+    normalize: v => v?.trim(),
+    validate: v => true // Metadata string, no validation needed
+  },
   defaultPriority: {
     required: true,
     normalize: v => {
@@ -42,11 +52,6 @@ const templateTaskSchema = {
     required: true,
     normalize: v => v?.trim(),
     validate: v => v && v.length > 0 || 'categoryId cannot be empty'
-  },
-  dependsOnId: {
-    required: false,
-    normalize: v => v?.trim(),
-    validate: v => true // FK validation will be handled in route
   }
 };
 

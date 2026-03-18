@@ -3,7 +3,7 @@ import prisma from '../prismaClient.js';
 import { handlePrismaError, ensureExistsOrRespond } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
-import { validateTemplateCategory } from '../validators/templateCategory.js';
+import { validateTemplateCategory } from '../validators/validateTemplateCategory.js';
 
 const router = express.Router();
 

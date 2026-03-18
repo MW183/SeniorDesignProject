@@ -100,13 +100,32 @@ router.post('/', requireAuth, async (req, res) => {
           }
         }
       }, 
-      select: { id: true, date: true, locationId: true, templateId: true, planners: true } 
+      include: {
+        categories: {
+          include: { tasks: true },
+          orderBy: { sortOrder: 'asc' }
+        },
+        template: true
+      }
     });
 
     // If templateId provided, auto-populate tasks
     if (templateId) {
       try {
         await instantiateWeddingTemplate(wedding.id, templateId);
+        // Refetch to include newly created tasks
+        const updatedWedding = await prisma.wedding.findUnique({
+          where: { id: wedding.id },
+          include: {
+            categories: {
+              include: { tasks: true },
+              orderBy: { sortOrder: 'asc' }
+            },
+            template: true
+          }
+        });
+        res.status(201).json(updatedWedding);
+        return;
       } catch (err) {
         console.error('Error instantiating template:', err);
         // Don't fail the wedding creation, but log the error
@@ -177,6 +196,173 @@ router.delete('/:id', requireAuth, async (req, res) => {
       });
       res.json({ message: 'Removed from wedding' });
     }
+  } catch (err) { handlePrismaError(res, err); }
+});
+
+// POST /weddings/:id/assign-planner — assign a planner to a wedding (requires admin)
+router.post('/:id/assign-planner', requireAuth, requireRole(['ADMIN']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { plannerId } = req.body;
+
+    if (!plannerId) {
+      return res.status(400).json({ error: 'plannerId is required' });
+    }
+
+    // Verify wedding exists
+    const wedding = await prisma.wedding.findUnique({ where: { id } });
+    if (!wedding) {
+      return res.status(404).json({ error: 'Wedding not found' });
+    }
+
+    // Verify planner exists
+    const planner = await prisma.user.findUnique({ where: { id: plannerId } });
+    if (!planner) {
+      return res.status(404).json({ error: 'Planner not found' });
+    }
+
+    // Check if already assigned
+    const existing = await prisma.plannerWedding.findUnique({
+      where: { plannerId_weddingId: { plannerId, weddingId: id } }
+    });
+    
+    if (existing) {
+      return res.status(409).json({ error: 'Planner is already assigned to this wedding' });
+    }
+
+    // Create assignment
+    const assignment = await prisma.plannerWedding.create({
+      data: {
+        plannerId,
+        weddingId: id
+      },
+      include: {
+        planner: { select: { id: true, name: true, email: true } },
+        wedding: true
+      }
+    });
+
+    // Assign all unassigned tasks in this wedding's categories to the new planner
+    await prisma.task.updateMany({
+      where: {
+        category: {
+          weddingId: id
+        },
+        assignedToId: null
+      },
+      data: {
+        assignedToId: plannerId
+      }
+    });
+
+    console.log(`[Weddings] Assigned ${plannerId} to wedding ${id} and auto-assigned unassigned tasks`);
+
+    res.status(201).json(assignment);
+  } catch (err) { handlePrismaError(res, err); }
+});
+
+// GET /weddings/:id/planners — get all planners assigned to a wedding
+router.get('/:id/planners', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const planners = await prisma.plannerWedding.findMany({
+      where: { weddingId: id },
+      include: {
+        planner: { select: { id: true, name: true, email: true } }
+      }
+    });
+
+    res.json(planners.map(pw => pw.planner));
+  } catch (err) { handlePrismaError(res, err); }
+});
+
+// DELETE /weddings/:id/planners/:plannerId — remove a planner from a wedding (requires admin)
+router.delete('/:id/planners/:plannerId', requireAuth, requireRole(['ADMIN']), async (req, res) => {
+  try {
+    const { id, plannerId } = req.params;
+
+    const assignment = await prisma.plannerWedding.findUnique({
+      where: { plannerId_weddingId: { plannerId, weddingId: id } }
+    });
+
+    if (!assignment) {
+      return res.status(404).json({ error: 'Planner is not assigned to this wedding' });
+    }
+
+    // Unassign all tasks assigned to this planner in this wedding
+    await prisma.task.updateMany({
+      where: {
+        assignedToId: plannerId,
+        category: {
+          weddingId: id
+        }
+      },
+      data: {
+        assignedToId: null
+      }
+    });
+
+    await prisma.plannerWedding.delete({
+      where: { plannerId_weddingId: { plannerId, weddingId: id } }
+    });
+
+    console.log(`[Weddings] Removed ${plannerId} from wedding ${id} and unassigned their tasks`);
+
+    res.json({ message: 'Planner removed from wedding' });
+  } catch (err) { handlePrismaError(res, err); }
+});
+
+// PUT /weddings/:id/reassign-tasks — bulk reassign tasks from one planner to another (requires admin)
+router.put('/:id/reassign-tasks', requireAuth, requireRole(['ADMIN']), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fromPlannerId, toPlannerId } = req.body;
+
+    if (!fromPlannerId || !toPlannerId) {
+      return res.status(400).json({ error: 'fromPlannerId and toPlannerId are required' });
+    }
+
+    if (fromPlannerId === toPlannerId) {
+      return res.status(400).json({ error: 'Cannot reassign tasks to the same planner' });
+    }
+
+    // Verify wedding exists
+    const wedding = await prisma.wedding.findUnique({ where: { id } });
+    if (!wedding) {
+      return res.status(404).json({ error: 'Wedding not found' });
+    }
+
+    // Verify both planners exist
+    const fromPlanner = await prisma.user.findUnique({ where: { id: fromPlannerId } });
+    if (!fromPlanner) {
+      return res.status(404).json({ error: 'From planner not found' });
+    }
+
+    const toPlanner = await prisma.user.findUnique({ where: { id: toPlannerId } });
+    if (!toPlanner) {
+      return res.status(404).json({ error: 'To planner not found' });
+    }
+
+    // Bulk reassign tasks
+    const result = await prisma.task.updateMany({
+      where: {
+        assignedToId: fromPlannerId,
+        category: {
+          weddingId: id
+        }
+      },
+      data: {
+        assignedToId: toPlannerId
+      }
+    });
+
+    console.log(`[Weddings] Reassigned ${result.count} tasks from ${fromPlannerId} to ${toPlannerId} for wedding ${id}`);
+
+    res.json({ 
+      message: `Reassigned ${result.count} tasks from ${fromPlanner.name} to ${toPlanner.name}`,
+      count: result.count 
+    });
   } catch (err) { handlePrismaError(res, err); }
 });
 

@@ -1,0 +1,440 @@
+Task Type,Task Name,Task Category,Dependencies,Priority,Time Anchor (drop down)
+Category,Onboarding,Onboarding,,NORMAL,54 Weeks Out
+Task,Create Canva Doc,Onboarding,,NORMAL,54 Weeks Out
+Task,Create Email Folder,Onboarding,,NORMAL,54 Weeks Out
+Task,Create Laptop Folder,Onboarding,,NORMAL,54 Weeks Out
+Task,Create Budget Tracker,Onboarding,,NORMAL,54 Weeks Out
+Task,Choose ceremony time and duration,Onboarding,,NORMAL,54 Weeks Out
+Category,Couple Tasks - 12+ Months Out,,Onboarding,NORMAL,54 Weeks Out
+Couple Tasks,Define Budget,Couple Tasks - 12+ Months Out,,NORMAL,54 Weeks Out
+Couple Tasks,Start Wedding Website,Couple Tasks - 12+ Months Out,,NORMAL,54 Weeks Out
+Couple Tasks,Preliminary Guest List,Couple Tasks - 12+ Months Out,,NORMAL,54 Weeks Out
+Couple Tasks,Visit Venues,Couple Tasks - 12+ Months Out,,NORMAL,54 Weeks Out
+Couple Tasks,Set Wedding Date,Couple Tasks - 12+ Months Out,,NORMAL,54 Weeks Out
+Couple Tasks,Review Google Budget Sheet,Couple Tasks - 12+ Months Out,,NORMAL,54 Weeks Out
+Category,Research Venue,,Couple Tasks - 12+ Months Out,HIGH,54 Weeks Out
+Task,Compile initial venue wish-list from couple's questionnaire,Research Venue,,NORMAL,53 Weeks Out
+Task,"Cross-check guest count, budget, location constraints",Research Venue,,NORMAL,53 Weeks Out
+Task,Pull pricing guides & availability for top venues,Research Venue,,NORMAL,53 Weeks Out
+Task,Create side-by-side comparison sheet,Research Venue,,NORMAL,52 Weeks Out
+Task,Schedule in-person site visits (hold tentative dates),Research Venue,,NORMAL,52 Weeks Out
+Task,Conduct site visit & capture photos/video for client review,Research Venue,,NORMAL,53 Weeks Out
+Task,Verify venues inclusive vs. exclusive vendor policies,Research Venue,,NORMAL,53 Weeks Out
+Task,"Check noise ordinances, curfew, insurance requirements",Research Venue,,NORMAL,53 Weeks Out
+Category,Couple Tasks - 12 Months Out,,Onboarding,NORMAL,54 Weeks Out
+Couple Tasks,Schedule Dress Shopping Appointments,Couple Tasks - 12 Months Out,,NORMAL,54 Weeks Out
+Couple Tasks,Brainstorm Honeymoon Locations,Couple Tasks - 12 Months Out,,NORMAL,54 Weeks Out
+Category,Book Venue,,Research Venue,URGENT,52 Weeks Out
+Task,Present short-list & gather client feedback,Book Venue,,NORMAL,52 Weeks Out
+Task,"Confirm package inclusions (tables, chairs, getting-ready suites, rain plan)",Book Venue,,NORMAL,52 Weeks Out
+Task,Gather venue inventory list to avoid duplication when booking rentals,Book Venue,,NORMAL,52 Weeks Out
+Task,Send contract to client for signature & deposit payment link,Book Venue,,NORMAL,51 Weeks Out
+Task,Upload signed agreement to couple's folder,Book Venue,,NORMAL,50 Weeks Out
+Task,Collect updated COI requirements & share with vendors,Book Venue,,NORMAL,52 Weeks Out
+Task,Request certificate of additional insured for venue,Book Venue,,NORMAL,52 Weeks Out
+Task,Add venue logistics to master timeline & layout doc,Book Venue,,NORMAL,51 Weeks Out
+Task,Input venue information into Canva doc,Book Venue,,NORMAL,52 Weeks Out
+Task,Put payment dates into calendar,Book Venue,,NORMAL,52 Weeks Out
+Phase,PLANNING,,,NORMAL,52 Weeks Out
+Category,Research Photographer,,,NORMAL,54 Weeks Out
+Task,"Source options via referrals, IG/Pinterest inspiration and questionnaire",Research Photographer,,NORMAL,54 Weeks Out
+Task,Check date availability & starting rates,Research Photographer,,NORMAL,54 Weeks Out
+Task,"Build comparison chart (hours, edits, second shooter, travel)",Research Photographer,,NORMAL,54 Weeks Out
+Task,Verify vendor liability insurance & backup gear protocol,Research Photographer,,NORMAL,53 Weeks Out
+Category,Book Photographer,,Research Photographer,NORMAL,52 Weeks Out
+Task,Negotiate package upgrades/discounts if multi-day coverage,Book Photographer,,NORMAL,53 Weeks Out
+Task,Send photographer contract to client,Book Photographer,,NORMAL,53 Weeks Out
+Task,Track deposit invoice & payment confirmation,Book Photographer,,NORMAL,52 Weeks Out
+Task,Receive signed contract; save to Photographer folder,Book Photographer,,NORMAL,52 Weeks Out
+Task,"Send ""Photographer Questionnaire"" to couple (shot list, VIPs, restrictions)",Book Photographer,,NORMAL,52 Weeks Out
+Task,Share questionnaire with couple; set 2-week completion reminder,Book Photographer,,NORMAL,52 Weeks Out
+Task,Remind couple to schedule engagement session (if included),Book Photographer,,NORMAL,51 Weeks Out
+Task,Set reminder to confirm final timeline & balance (30 days out),Book Photographer,,NORMAL,51 Weeks Out
+Task,Input photographer info into Canva doc,Book Photographer,,NORMAL,51 Weeks Out
+Task,Put payment dates into calendar (photographer),Book Photographer,,NORMAL,51 Weeks Out
+Category,Research Entertainment ,,,NORMAL,52 Weeks Out
+Task,Gather genre preferences & must-play / do-not-play list from questionnaire,Research Entertainment ,,NORMAL,52 Weeks Out
+Task,"Gather band & DJ referrals; live sets, demos, and mixes to share",Research Entertainment ,,NORMAL,52 Weeks Out
+Task,Confirm power requirements & stage footprint for entertainment,Research Entertainment ,,NORMAL,50 Weeks Out
+Task,Check date availability & set-length packages,Research Entertainment ,,NORMAL,52 Weeks Out
+Task,Request proposals (include ceremony + cocktail hour options),Research Entertainment ,,NORMAL,52 Weeks Out
+Task,"Compare MC services, lighting, travel, overtime fees",Research Entertainment ,,NORMAL,51 Weeks Out
+Task,Review equipment rider; ensure venue compliance,Research Entertainment ,,NORMAL,51 Weeks Out
+Task,Verify liability & equipment insurance,Research Entertainment ,,NORMAL,51 Weeks Out
+Task,"Confirm lapel mic, speaker set up for ceremony/cocktail hour, backup power plan, lights, and rain plan",Research Entertainment ,,NORMAL,
+Category,Book Entertainment,,Research Entertainment ,HIGH,51 Weeks Out
+Task,"Negotiate hours, add-ons, inclusions",Book Entertainment,,NORMAL,51 Weeks Out
+Task,Send contract & deposit link to client,Book Entertainment,,NORMAL,50 Weeks Out
+Task,Upload signed agreement to couple's folder,Book Entertainment,,NORMAL,50 Weeks Out
+Task,Input entertainment info into Canva doc,Book Entertainment,,NORMAL,51 Weeks Out
+Task,Put payment dates into calendar (entertainment),Book Entertainment,,NORMAL,51 Weeks Out
+Category,Research Videographer ,,,NORMAL,48 Weeks Out
+Task,Source reels or videos for couple to view based on inspo and questionnaire,Research Videographer ,,NORMAL,48 Weeks Out
+Task,"Request proposals (with raw-footage, add-ons, pricing, editing timeline and deliverables)",Research Videographer ,,NORMAL,48 Weeks Out
+Category,Research Specialty Vendor ,,,NORMAL,47 Weeks Out
+Task,Brainstorm experiential add-ons with couple,Research Specialty Vendor ,,NORMAL,47 Weeks Out
+Task,Research vendors based on brainstorm and questionnaire,Research Specialty Vendor ,,NORMAL,
+Task,Research vendor offerings & footprint needs,Research Specialty Vendor ,,NORMAL,47 Weeks Out
+Task,"Check set up, power, or space requirements",Research Specialty Vendor ,,NORMAL,47 Weeks Out
+Task,Collect pricing sheets & package inclusions,Research Specialty Vendor ,,NORMAL,47 Weeks Out
+Category,Book Videographer,,,HIGH,48 Weeks Out
+Task,Align coverage hours with photographer timeline,Book Videographer,Research Videographer ,NORMAL,48 Weeks Out
+Task,Negotiate Videographer Contract,Book Videographer,,NORMAL,48 Weeks Out
+Task,"Send contract to couple, secure deposit",Book Videographer,,NORMAL,
+Task,Track insurance certificate & gear list,Book Videographer,,NORMAL,47 Weeks Out
+Task,Add videographer to timeline (sync with photographer),Book Videographer,,NORMAL,46 Weeks Out
+Task,Upload contract to couples folders,Book Videographer,,NORMAL,
+Task,"create ""videographer Questionnaire"" for couple (shot list, VIPs, restrictions)",Book Videographer,,NORMAL,
+Task,Share questionnaire with couple; set 2-week completion reminder,Book Videographer,,NORMAL,
+Task,Set reminder to confirm final timeline & balance (30 days out),Book Videographer,,NORMAL,
+Task,Input videographer info into Canva doc,Book Videographer,,NORMAL,48 Weeks Out
+Task,Put payment dates into calendar (videographer),Book Videographer,,NORMAL,48 Weeks Out
+Category,Book specialty vendors,,,HIGH,48 Weeks Out
+Task,Negotiate Specialty Vendor Contract,Book specialty vendors,Research Specialty Vendor ,NORMAL,48 Weeks Out
+Task,Confirm any necessary deadlines and add to calendar,Book specialty vendors,,NORMAL,47 Weeks Out
+Task,Send contract; secure deposit,Book specialty vendors,,NORMAL,48 Weeks Out
+Task,Submit venue COI requirements to vendor,Book specialty vendors,,NORMAL,46 Weeks Out
+Task,Input specialty vendor info into Canva doc,Book specialty vendors,,NORMAL,46 Weeks Out
+Task,Put payment dates into calendar (specialty vendors),Book specialty vendors,,NORMAL,46 Weeks Out
+Category,Research/source rentals and design,,Book Venue,NORMAL,44 Weeks Out
+Task,Gather venue inventory list to avoid duplication,Research/source rentals and design,,NORMAL,45 Weeks Out
+Task,"Build preliminary rental checklist (tables, chairs, linens, lounge, etc.)",Research/source rentals and design,,NORMAL,45 Weeks Out
+Task,Schedule showroom visit for couple (if local),Research/source rentals and design,,NORMAL,40 Weeks Out
+Task,Create visual layout and floor plan mockups,Research/source rentals and design,,NORMAL,45 Weeks Out
+Task,Request itemized quotes + delivery/pick-up fees,Research/source rentals and design,,NORMAL,44 Weeks Out
+Task,Request details on drop off/set up and pickup requirements,Research/source rentals and design,,NORMAL,
+Task,"Compare style, condition, and minimum order requirements",Research/source rentals and design,,NORMAL,44 Weeks Out
+Category,Research Florals,,,NORMAL,44 Weeks Out
+Task,"Develop floral mood board (color palette, inspiration images)",Research Florals,,NORMAL,44 Weeks Out
+Task,Identify must-have blooms & absolutely nots from questionnaire,Research Florals,,NORMAL,44 Weeks Out
+Task,Research local vs. imported flower availability by season,Research Florals,,NORMAL,44 Weeks Out
+Task,Request proposals with itemized counts & additional strike (breakdown) fees,Research Florals,,NORMAL,43 Weeks Out
+Task,Schedule design consultation (Zoom/in-person),Research Florals,,NORMAL,43 Weeks Out
+Task,Review proposal; suggest substitutions for budget fit,Research Florals,,NORMAL,42 Weeks Out
+Category,Research Catering Companies,,,NORMAL,43 Weeks Out
+Task,"Gather dietary restrictions, service style & cuisine preferences from questionnaire",Research Catering Companies,,NORMAL,43 Weeks Out
+Task,Request sample menus & per-person pricing,Research Catering Companies,,NORMAL,42 Weeks Out
+Task,"Compare staffing numbers, uniform, plateware, rentals, service style",Research Catering Companies,,NORMAL,42 Weeks Out
+Task,Schedule tasting & collect client feedback,Research Catering Companies,,NORMAL,41 Weeks Out
+Task,Find out what is included with set up and breakdown,Research Catering Companies,,NORMAL,
+Category,Book Rentals,,Research/source rentals and design,HIGH,44 Weeks Out
+Task,Negotiate Rentals Contract,Book Rentals,,NORMAL,44 Weeks Out
+Task,Review rental agreement & damage waiver,Book Rentals,,NORMAL,44 Weeks Out
+Category,Couple Tasks - 11 Months Out,,Book Rentals,NORMAL,44 Weeks Out
+Task,Input rentals info into Canva doc,Couple Tasks - 11 Months Out,,NORMAL,43 Weeks Out
+Task,Put payment dates into calendar (rentals),Couple Tasks - 11 Months Out,,NORMAL,43 Weeks Out
+Category,Book Florist,,Research Florals,HIGH,43 Weeks Out
+Task,"Confirm rentals (arches, vessels, candles) via floral company",Book Florist,,NORMAL,36 Weeks Out
+Task,Approve sample centerpiece or bouquet trial (if requested),Book Florist,,NORMAL,36 Weeks Out
+Task,send contract & confirm deposit,Book Florist,,NORMAL,43 Weeks Out
+Task,Input florist info into Canva doc,Book Florist,,NORMAL,42 Weeks Out
+Task,Put payment dates into calendar (florist),Book Florist,,NORMAL,42 Weeks Out
+Category,Book Catering,,Research Catering Companies,HIGH,42 Weeks Out
+Task,"Review contract terms: service charge, gratuity, taxes",Book Catering,,NORMAL,42 Weeks Out
+Task,Secure COI & health permit copies,Book Catering,,NORMAL,42 Weeks Out
+Task,"Coordinate rentals (china, glassware, flatware) crossover",Book Catering,,NORMAL,36 Weeks Out
+Task,Input catering info into Canva doc,Book Catering,,NORMAL,41 Weeks Out
+Task,Put payment dates into calendar (catering),Book Catering,,NORMAL,41 Weeks Out
+Category,Research Alcohol Vendors,,,NORMAL,41 Weeks Out
+Task,Verify venue liquor license or BYO policy,Research Alcohol Vendors,,NORMAL,41 Weeks Out
+Task,Decide hosted vs. cash vs. consumption bar with couple,Research Alcohol Vendors,,NORMAL,41 Weeks Out
+Task,Source mobile bartenders & beverage caterers,Research Alcohol Vendors,,NORMAL,40 Weeks Out
+Task,Estimate case counts using consumption calculator,Research Alcohol Vendors,,NORMAL,40 Weeks Out
+Task,Confirm liability insurance & ABC permits,Research Alcohol Vendors,,NORMAL,40 Weeks Out
+Task,Finalize design deck,,,NORMAL,40 Weeks Out
+Category,Book Alcohol Vendor,,Research Alcohol Vendors,NORMAL,40 Weeks Out
+Task,"Request package pricing (beer/wine, full bar, specialty cocktails)",Book Alcohol Vendor,,NORMAL,40 Weeks Out
+Task,send contract & confirm deposit,Book Alcohol Vendor,,NORMAL,40 Weeks Out
+Category,Research Guest Accommodations,,,NORMAL,40 Weeks Out
+Task,Research hotels within 15 minutes of venue,"Research Guest Accommodations (Hotels, etc.)",,NORMAL,40 Weeks Out
+Task,Request courtesy vs. contract block rates & attrition terms,"Research Guest Accommodations (Hotels, etc.)",,NORMAL,40 Weeks Out
+Task,"Compare amenities, shuttle options, welcome-bag policies","Research Guest Accommodations (Hotels, etc.)",,NORMAL,40 Weeks Out
+Task,Present block options & booking links to couple,"Research Guest Accommodations (Hotels, etc.)",,NORMAL,40 Weeks Out
+Category,Couple Tasks - 10 Months Out,,Couple Tasks - 11 Months Out,NORMAL,40 Weeks Out
+Couple Tasks,Gather Guest Addresses,Couple Tasks - 10 Months Out,,NORMAL,40 Weeks Out
+Couple Tasks,Start Registry,Couple Tasks - 10 Months Out,,NORMAL,40 Weeks Out
+Couple Tasks,Set up RSVP system (wedding website),Couple Tasks - 10 Months Out,,NORMAL,40 Weeks Out
+Task,create QR code for save-the-dates and invitations if requested by couple,Couple Tasks - 10 Months Out,,NORMAL,
+Task,Finalize Save the Dates Design,Couple Tasks - 10 Months Out,,NORMAL,40 Weeks Out
+Category,"Book Guest Accommodations (Hotels, etc.)",,"Research Guest Accommodations (Hotels, etc.)",NORMAL,36 Weeks Out
+Task,Secure signed agreement for selected hotel(s),"Book Guest Accommodations (Hotels, etc.)",,NORMAL,36 Weeks Out
+Task,Negotiate Book Guest Accommodations Contracts,"Book Guest Accommodations (Hotels, etc.)",,NORMAL,38 Weeks Out
+Task,Confirm rooming list deadline & attrition reminders,"Book Guest Accommodations (Hotels, etc.)",,NORMAL,36 Weeks Out
+Category,Research Hair & Makeup Artists,,,NORMAL,37 Weeks Out
+Task,Collect inspo photos & preferred glam level,Research Hair & Makeup Artists,,NORMAL,37 Weeks Out
+Task,"Source HMU teams, request pricing sheets, package inclusions, verify minimums & travel fees",Research Hair & Makeup Artists,,NORMAL,36 Weeks Out
+Task,Check getting-ready location lighting & space requirements,Research Hair & Makeup Artists,,NORMAL,36 Weeks Out
+Task,Schedule trial sessions; add dates to calendar,Research Hair & Makeup Artists,,NORMAL,30 Weeks Out
+Category,Book Hair & Makeup Artists,,Research Hair & Makeup Artists,NORMAL,36 Weeks Out
+Task,send contract & confirm deposit,Book Hair & Makeup Artists,,NORMAL,36 Weeks Out
+Task,Gather preliminary timeline to share with bridal party,Book Hair & Makeup Artists,,NORMAL,
+Category,Research Wedding Party Attire,,,NORMAL,36 Weeks Out
+Task,Review color palette & formality guidelines,Research Wedding Party Attire,,NORMAL,44 Weeks Out
+Task,Research designers/shops within budget,Research Wedding Party Attire,,NORMAL,36 Weeks Out
+Task,Schedule shopping appointments; share inspiration board,Research Wedding Party Attire,,NORMAL,36 Weeks Out
+Task,Confirm group discount codes or rental options,Research Wedding Party Attire,,NORMAL,36 Weeks Out
+Category,Couple Tasks -  9 Months Out,,Couple Tasks - 10 Months Out,NORMAL,36 Weeks Out
+Couple Tasks,Wrap up Dress Shopping,Couple Tasks -  9 Months Out,,NORMAL,36 Weeks Out
+Couple Tasks,Finalize Guest List,Couple Tasks -  9 Months Out,,NORMAL,36 Weeks Out
+Task,Finalize Wedding Website and Registry,Couple Tasks -  9 Months Out,,NORMAL,36 Weeks Out
+Task,Schedule Catering Tastings (confirm choices),Couple Tasks -  9 Months Out,,NORMAL,36 Weeks Out
+Category,Book Wedding Party Attire,,,NORMAL,35 Weeks Out
+Task,Coordinate deposit payments & order confirmations,Book Wedding Party Attire,,NORMAL,34 Weeks Out
+Task,Log alteration timelines & pick-up dates,Book Wedding Party Attire,,NORMAL,20 Weeks Out
+Category,Research Dessert Providers,,,NORMAL,33 Weeks Out
+Task,"Determine dessert style (tiered cake, dessert bar, both)",Research Dessert Providers,,NORMAL,33 Weeks Out
+Task,Source bakeries & review portfolios + flavor lists,Research Dessert Providers,,NORMAL,33 Weeks Out
+Task,Schedule tasting; record couple's top flavors,Research Dessert Providers,,NORMAL,30 Weeks Out
+Task,Request quotes including delivery & stand rentals,Research Dessert Providers,,NORMAL,33 Weeks Out
+Task,Negotiate Dessert Provider Contract,Research Dessert Providers,,NORMAL,33 Weeks Out
+Category,Book Dessert Provider,,,NORMAL,32 Weeks Out
+Task,Send contract & confirm deposit,Book Dessert Provider,Research Dessert Providers,NORMAL,32 Weeks Out
+Category,Couple Tasks - 8 Months Out,,,NORMAL,32 Weeks Out
+Couple Tasks,Send Save the Dates,Couple Tasks - 8 Months Out,Couple Tasks -  9 Months Out,NORMAL,32 Weeks Out
+Task,Groom Attire Shopping,Couple Tasks - 8 Months Out,,NORMAL,32 Weeks Out
+Task,Premarital Counseling,Couple Tasks - 8 Months Out,,NORMAL,32 Weeks Out
+Task,Wrap up Dress Shopping,Couple Tasks - 8 Months Out,,NORMAL,32 Weeks Out
+Category,Research Officiant,,,NORMAL,29 Weeks Out
+Task,Clarify ceremony style & religious/secular preferences,Research Officiant,,NORMAL,29 Weeks Out
+Task,Source licensed officiants or friend-officiant ordination guides,Research Officiant,,NORMAL,29 Weeks Out
+Task,Confirm date availability & fee structure,Research Officiant,,NORMAL,29 Weeks Out
+Task,Schedule intro call to discuss love story & tone,Research Officiant,,NORMAL,20 Weeks Out
+Category,Book Officiant,,Research Officiant,NORMAL,28 Weeks Out
+Couple Tasks,Sign agreement & submit deposit,Book Officiant,,NORMAL,29 Weeks Out
+Category,Couple Tasks - 7 Months Out,,Couple Tasks - 8 Months Out,NORMAL,28 Weeks Out
+Couple Tasks,Dance Lessons,Couple Tasks - 7 Months Out,,NORMAL,28 Weeks Out
+Couple Tasks,Wrap up Groom Attire Shopping,Couple Tasks - 7 Months Out,,NORMAL,28 Weeks Out
+Couple Tasks,Schedule Hair/Makeup Trial,Couple Tasks - 7 Months Out,,NORMAL,28 Weeks Out
+Category,Research Transportation,,,NORMAL,27 Weeks Out
+Task,Map route from transportation locations,Research Transportation,,NORMAL,27 Weeks Out
+Task,"Collect quotes (shuttles, limo, classic car, get-away vehicle)",Research Transportation,,NORMAL,27 Weeks Out
+Task,Verify insurance & driver gratuity policies,Research Transportation,,NORMAL,27 Weeks Out
+Category,Book Transportation,,Research Transportation,NORMAL,24 Weeks Out
+Task,Negotiate Transportation Contracts,Book Transportation,,NORMAL,26 Weeks Out
+Task,Send contract & confirm deposit,Book Transportation,,NORMAL,24 Weeks Out
+Category,Couple Tasks - 6 Months Out,,Couple Tasks - 7 Months Out,NORMAL,24 Weeks Out
+Couple Tasks,Finalize Groom Attire,Couple Tasks - 6 Months Out,,NORMAL,24 Weeks Out
+Couple Tasks,Schedule Cake Tasting,Couple Tasks - 6 Months Out,,NORMAL,24 Weeks Out
+Couple Tasks,Decide on Wedding Party Attire,Couple Tasks - 6 Months Out,,NORMAL,24 Weeks Out
+Couple Tasks,Finalize Invitation Design,Couple Tasks - 6 Months Out,,NORMAL,24 Weeks Out
+Category,Research Specialty Vendors (Secondary),,,NORMAL,26 Weeks Out
+Task,Identify unique experience wish-list with couple,Research Specialty Vendors (Secondary),,NORMAL,26 Weeks Out
+Task,Research permitting or fire-marshal requirements (if applicable),Research Specialty Vendors (Secondary),,NORMAL,24 Weeks Out
+Task,Gather vendor quotes & insurance docs,Research Specialty Vendors (Secondary),,NORMAL,26 Weeks Out
+Category,Book Specialty Vendor (Secondary),,Research Specialty Vendors (Secondary),NORMAL,23 Weeks Out
+Task,Negotiate Specialty Vendor (Secondary) Contracts,Book Specialty Vendor (Secondary),,NORMAL,23 Weeks Out
+Task,Sign contract & submit deposit,Book Specialty Vendor (Secondary),,NORMAL,22 Weeks Out
+Category,Research Rehearsal Dinner Locations,,,NORMAL,23 Weeks Out
+Task,Confirm host(s) & budget responsibility,Research Rehearsal Dinner Locations,,NORMAL,22 Weeks Out
+Task,Secure guest list & invitation timeline,Research Rehearsal Dinner Locations,,NORMAL,36 Weeks Out
+Task,Research venues or private rooms near hotel/venue,Research Rehearsal Dinner Locations,,NORMAL,36 Weeks Out
+Task,Request prix-fixe menus & bar packages,Research Rehearsal Dinner Locations,,NORMAL,23 Weeks Out
+Task,"Compare minimums, AV needs, decor allowances",Research Rehearsal Dinner Locations,,NORMAL,23 Weeks Out
+Task,Invitations Sent,,,NORMAL,21 Weeks Out
+Category,Couple Tasks - 5 Months Out,,Couple Tasks - 6 Months Out,NORMAL,20 Weeks Out
+Couple Tasks,Song List/ Entertainment Portal,Couple Tasks - 5 Months Out,,NORMAL,20 Weeks Out
+Couple Tasks,Verify travel documents for honeymoon,Couple Tasks - 5 Months Out,,NORMAL,20 Weeks Out
+Couple Tasks,Send Invitations,Couple Tasks - 5 Months Out,,NORMAL,20 Weeks Out
+Category,Book Rehearsal Dinner Location,,Research Rehearsal Dinner Locations,NORMAL,20 Weeks Out
+Task,Book venue & sign contract,Book Rehearsal Dinner Location,,NORMAL,20 Weeks Out
+Task,Design/send rehearsal dinner invitations (paper or digital),Book Rehearsal Dinner Location,,NORMAL,36 Weeks Out
+Task,Create seating plan & toast schedule,Book Rehearsal Dinner Location,,NORMAL,20 Weeks Out
+Task,"Coordinate decor, favors, slideshow or entertainment needs",Book Rehearsal Dinner Location,,NORMAL,19 Weeks Out
+Task,Confirm all Vendors are Booked,,,URGENT,17 Weeks Out
+Category,Couple Tasks - 4 Months Out,,Couple Tasks - 5 Months Out,NORMAL,16 Weeks Out
+Couple Tasks,Final Vendor Related Meeting,Couple Tasks - 4 Months Out,,NORMAL,
+Task,Fill out inventory lists on Canva doc,Couple Tasks - 4 Months Out,,NORMAL,16 Weeks Out
+Task,Fill out music on Canva doc,Couple Tasks - 4 Months Out,,NORMAL,
+Task,Share Canva Doc w/ Couple,Couple Tasks - 4 Months Out,,NORMAL,17 Weeks Out
+Phase,Finalization Misc,,,NORMAL,16 Weeks Out
+Task,"Fill Out Canva Doc Timeline, Vendor Details, and Big Picture Logistics",Finalization Misc,,NORMAL,16 Weeks Out
+Task,Share final timeline & parking instructions (4 weeks out),Finalization Misc,,NORMAL,4 Weeks Out
+Task,Restock emergency kit with all required elements,Finalization Misc,,NORMAL,2 Weeks Out
+Task,Print Contracts for Binder,Finalization Misc,,NORMAL,12 Weeks Out
+Task,Create Rae & Co. Timeline,Finalization Misc,,HIGH,10 Weeks Out
+Task,Confirm Insurance and Permits,Finalization Misc,,NORMAL,4 Weeks Out
+Category,Venue finalization tasks,,Book Venue,NORMAL,16 Weeks Out
+Task,Schedule final walk-through (30 days out),Venue finalization tasks,,NORMAL,4 Weeks Out
+Task,Schedule Ceremony Rehearsal,Venue finalization tasks,,NORMAL,4 Weeks Out
+Task,Block vendor parking / load-in notes on floor-plan,Venue finalization tasks,,NORMAL,8 Weeks Out
+Task,Schedule Final Meetings or Walkthroughs,Venue finalization tasks,,NORMAL,10 Weeks Out
+Task,Confirm Backup Plans and Rain Plan,Venue finalization tasks,,NORMAL,10 Weeks Out
+Task,Confirm allowed arrival time,Venue finalization tasks,,NORMAL,1 Week Out
+Task,Confirm final payment received,Venue finalization tasks,,NORMAL,
+Task,Send Final Headcount,Venue finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Venue finalization tasks,,NORMAL,
+Category,Videographer finalization tasks,,Book Videographer,NORMAL,16 Weeks Out
+Task,Verify drone licensing & venue restrictions,Videographer finalization tasks,,NORMAL,16 Weeks Out
+Task,"Check audio capture methods (lav mics, recorders)",Videographer finalization tasks,,NORMAL,16 Weeks Out
+Task,Coordinate letter-reading or first-look audio capture slots,Videographer finalization tasks,,NORMAL,16 Weeks Out
+Task,Schedule timeline review call (60 days out),Videographer finalization tasks,,NORMAL,8 Weeks Out
+Task,"Share final timeline, vendor parking, meal count (4 weeks out)",Videographer finalization tasks,,NORMAL,4 Weeks Out
+Task,Verify backup storage plan & archival period,Videographer finalization tasks,,NORMAL,16 Weeks Out
+Task,Confirm final payment received,Videographer finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Videographer finalization tasks,,NORMAL,
+Task,Confirm arrival time,Videographer finalization tasks,,NORMAL,
+Category,Photographer finalization tasks,,Book Photographer,NORMAL,16 Weeks Out
+Task,Email photographer final timeline + family shot list (2 weeks out),Photographer finalization tasks,,NORMAL,2 Weeks Out
+Task,Confirm final payment received,Photographer finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Photographer finalization tasks,,NORMAL,
+Task,Confirm arrival time,Photographer finalization tasks,,NORMAL,
+Category,Specialty Vendor finalization tasks,,Book Specialty Vendors,NORMAL,
+Task,Align activation times with reception flow,Specialty Vendor finalization tasks,,NORMAL,16 Weeks Out
+Task,Add load-in/out schedule to timeline,Specialty Vendor finalization tasks,,NORMAL,16 Weeks Out
+Task,Confirm prop storage & attendant dress code,Specialty Vendor finalization tasks,,NORMAL,16 Weeks Out
+Task,Share final guest count for supply planning,Specialty Vendor finalization tasks,,NORMAL,4 Weeks Out
+Task,Confirm setup/strike footprint & venue approval,Specialty Vendor finalization tasks,,NORMAL,16 Weeks Out
+Task,Add activation cues to master timeline,Specialty Vendor finalization tasks,,NORMAL,16 Weeks Out
+Task,Verify weather-contingency or backup plan,Specialty Vendor finalization tasks,,NORMAL,16 Weeks Out
+Task,Re-confirm logistics & payment (14 days out),Specialty Vendor finalization tasks,,NORMAL,2 Weeks Out
+Task,Confirm final payment received,Specialty Vendor finalization tasks,,NORMAL,
+Task,Send Final Headcount,Specialty Vendor finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Specialty Vendor finalization tasks,,NORMAL,
+Task,Confirm arrival time,Specialty Vendor finalization tasks,,NORMAL,
+Category,Entertainment finalization tasks,,,NORMAL,
+Task,Collect playlist worksheet & pronunciation guide,Entertainment finalization tasks,,NORMAL,16 Weeks Out
+Task,Add sound-check time to master timeline,Entertainment finalization tasks,,NORMAL,16 Weeks Out
+Task,"Confirm final set lists & special moments (first dance, parent dances)",Entertainment finalization tasks,,NORMAL,16 Weeks Out
+Task,Secure back-up playlist for emergencies,Entertainment finalization tasks,,NORMAL,16 Weeks Out
+Task,Confirm final payment received,Entertainment finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Entertainment finalization tasks,,NORMAL,
+Task,Confirm arrival time,Entertainment finalization tasks,,NORMAL,
+Category,Rentals finalization tasks,,,NORMAL,
+Task,Confirm delivery windows with venue restrictions,Rentals finalization tasks,,NORMAL,16 Weeks Out
+Task,Finalize quantities after RSVP deadline,Rentals finalization tasks,,NORMAL,8 Weeks Out
+Task,Update floor-plan with final selections,Rentals finalization tasks,,NORMAL,16 Weeks Out
+Task,Add delivery/pick-up times to timeline,Rentals finalization tasks,,NORMAL,12 Weeks Out
+Task,Re-confirm quantities & balance payment (14 days out),Rentals finalization tasks,,NORMAL,2 Weeks Out
+Task,Arrange on-site point-of-contact for counts & damages,Rentals finalization tasks,,NORMAL,4 Weeks Out
+Task,Confirm final payment received,Rentals finalization tasks,,NORMAL,
+Task,Send Final Headcount,Rentals finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Rentals finalization tasks,,NORMAL,
+Task,Confirm arrival time,Rentals finalization tasks,,NORMAL,
+Category,Florist finalization tasks,,,NORMAL,
+Task,"Provide day-of logistics: load-in route, set-up cut-off, strike time",Florist finalization tasks,,NORMAL,4 Weeks Out
+Task,Share final table counts & floor-plan (30 days out),Florist finalization tasks,,NORMAL,4 Weeks Out
+Task,Confirm centerpiece repurpose plan (ceremony to reception),Florist finalization tasks,,NORMAL,8 Weeks Out
+Task,Verify delivery of preservation kit for bouquet (if ordered),Florist finalization tasks,,NORMAL,4 Weeks Out
+Task,Re-confirm balance & fresh flower substitutions (7 days out),Florist finalization tasks,,NORMAL,1 Week Out
+Task,Confirm final payment received,Florist finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Florist finalization tasks,,NORMAL,
+Task,Confirm arrival time,Florist finalization tasks,,NORMAL,
+Category,Catering finalization tasks,,,NORMAL,
+Task,Coordinate vendor meal request with caterer,Catering finalization tasks,,NORMAL,4 Weeks Out
+Task,"Finalize menu selections, dietary restrictions & quantities",Catering finalization tasks,,NORMAL,16 Weeks Out
+Task,Confirm bar service integration OR separate bartender vendor,Catering finalization tasks,,NORMAL,16 Weeks Out
+Task,Create table-side allergy matrix for servers,Catering finalization tasks,,NORMAL,16 Weeks Out
+Task,Provide vendor meal count & timeline (45 days out),Catering finalization tasks,,NORMAL,6 Weeks Out
+Task,Confirm kitchen equipment needs & venue rules,Catering finalization tasks,,NORMAL,16 Weeks Out
+Task,Re-check guest count & meal splits after RSVPs due,Catering finalization tasks,,NORMAL,4 Weeks Out
+Task,Verify final invoice & payment (14 days out),Catering finalization tasks,,NORMAL,2 Weeks Out
+Task,Share final timeline with plating cues & special announcements,Catering finalization tasks,,NORMAL,4 Weeks Out
+Task,Confirm final payment received,Catering finalization tasks,,NORMAL,
+Task,Send Final Headcount,Catering finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Catering finalization tasks,,NORMAL,
+Task,Confirm arrival time,Catering finalization tasks,,NORMAL,
+Category,Bartending finalization tasks,,,NORMAL,
+Task,Review bar menu & signature cocktail recipes,Bartending finalization tasks,,NORMAL,16 Weeks Out
+Task,"Approve rental list (bar fronts, glassware, ice bins)",Bartending finalization tasks,,NORMAL,16 Weeks Out
+Task,Coordinate alcohol delivery or will-call pick-up logistics,Bartending finalization tasks,,NORMAL,16 Weeks Out
+Task,Provide vendor meal count & timeline (same as catering),Bartending finalization tasks,,NORMAL,4 Weeks Out
+Task,Confirm final quantities & payment (10 days out),Bartending finalization tasks,,NORMAL,2 Weeks Out
+Task,Share final timeline with last-call announcement cue,Bartending finalization tasks,,NORMAL,4 Weeks Out
+Task,Confirm final payment received,Bartending finalization tasks,,NORMAL,
+Task,Send Final Headcount,Bartending finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Bartending finalization tasks,,NORMAL,
+Task,Confirm arrival time,Bartending finalization tasks,,NORMAL,
+Category,Transportation finalization tasks,,,NORMAL,
+Task,Calculate headcounts for each shuttle or vehicle type,Transportation finalization tasks,,NORMAL,8 Weeks Out
+Task,Provide pickup schedule & addresses (21 days out),Transportation finalization tasks,,NORMAL,4 Weeks Out
+Task,Share driver contact info & day-of coordinator details,Transportation finalization tasks,,NORMAL,4 Weeks Out
+Task,Re-confirm timeline & passenger list (72 hours out),Transportation finalization tasks,,NORMAL,2 Weeks Out
+Task,Confirm final payment received,Transportation finalization tasks,,NORMAL,
+Task,Send Final Headcount,Transportation finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Transportation finalization tasks,,NORMAL,
+Task,Confirm arrival time,Transportation finalization tasks,,NORMAL,
+Category,Accommodations finalization tasks,,,NORMAL,
+Task,Verify Room Block Numbers,Accommodations finalization tasks,,NORMAL,12 Weeks Out
+Task,Create welcome-bag stuffing & delivery schedule,Accommodations finalization tasks,,NORMAL,10 Weeks Out
+Task,Coordinate shuttle pick-up/drop-off times with transportation vendor,Accommodations finalization tasks,,NORMAL,16 Weeks Out
+Task,Send block reminder emails to guests (with RSVP nudges),Accommodations finalization tasks,,NORMAL,12 Weeks Out
+Task,Verify guest count & final pickup dates for welcome bags,Accommodations finalization tasks,,NORMAL,8 Weeks Out
+Task,Deliver welcome bags to hotel front desk (day before check-in),Accommodations finalization tasks,,NORMAL,1 Week Out
+Task,Reminder that Hotel Blocks Close,Accommodations finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Accommodations finalization tasks,,NORMAL,
+Task,Confirm arrival time,Accommodations finalization tasks,,NORMAL,
+Category,Hair and Makeup finalization tasks,,,NORMAL,
+Task,Confirm service timeline & number of artists,Hair and Makeup finalization tasks,,NORMAL,16 Weeks Out
+Task,"Build getting-ready schedule (bride, attendants, family)",Hair and Makeup finalization tasks,,NORMAL,16 Weeks Out
+Task,Provide final headcount & style notes (30 days out),Hair and Makeup finalization tasks,,NORMAL,4 Weeks Out
+Task,Share parking instructions & prep guide with wedding party,Hair and Makeup finalization tasks,,NORMAL,4 Weeks Out
+Task,"Re-confirm timeline, allergies, balance payment (7 days out)",Hair and Makeup finalization tasks,,NORMAL,2 Weeks Out
+Task,Collect Venmo information for tipping,Hair and Makeup finalization tasks,,NORMAL,2 Weeks Out
+Task,Confirm final payment received,Hair and Makeup finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Hair and Makeup finalization tasks,,NORMAL,
+Task,Confirm arrival time,Hair and Makeup finalization tasks,,NORMAL,
+Category,Rehearsal Dinner Finalization Tasks,,,NORMAL,
+Task,Confirm final headcount & menu selections (7 days out),Rehearsal Dinner Finalization Tasks,,NORMAL,2 Weeks Out
+Task,Add rehearsal dinner timeline to master weekend schedule,Rehearsal Dinner Finalization Tasks,,NORMAL,16 Weeks Out
+Category,Officiant finalization tasks,,,NORMAL,
+Task,Draft ceremony outline & approval process,Officiant finalization tasks,,NORMAL,12 Weeks Out
+Task,Provide marriage license instructions & deadlines,Officiant finalization tasks,,NORMAL,8 Weeks Out
+Task,Share rehearsal details & timeline (30 days out),Officiant finalization tasks,,NORMAL,4 Weeks Out
+Task,Finalize script edits (14 days out),Officiant finalization tasks,,NORMAL,2 Weeks Out
+Task,Confirm microphone preferences & sound-check plans,Officiant finalization tasks,,NORMAL,4 Weeks Out
+Task,Confirm final payment received,Officiant finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Officiant finalization tasks,,NORMAL,
+Task,Confirm arrival time,Officiant finalization tasks,,NORMAL,
+Category,Dessert finalization tasks,,,NORMAL,
+Task,"Confirm linen, cake cutting set, florals for display",Dessert finalization tasks,,NORMAL,16 Weeks Out
+Task,Provide final guest count & dietary notes (21 days out),Dessert finalization tasks,,NORMAL,4 Weeks Out
+Task,Confirm delivery window & on-site contact,Dessert finalization tasks,,NORMAL,4 Weeks Out
+Task,Add cake cutting time to timeline,Dessert finalization tasks,,NORMAL,16 Weeks Out
+Task,Confirm final payment received,Dessert finalization tasks,,NORMAL,
+Task,Send Final Headcount,Dessert finalization tasks,,NORMAL,
+Task,Schedule meeting to go over logistics and timeline,Dessert finalization tasks,,NORMAL,
+Task,Confirm arrival time,Dessert finalization tasks,,NORMAL,
+Category,Couple Tasks - 3 Months Out,,Couple Tasks - 4 Months Out,NORMAL,12 Weeks Out
+Couple Tasks,Schedule Site Visit,Couple Tasks - 3 Months Out,,NORMAL,
+Couple Tasks,Start Writing Vows/Speeches,Couple Tasks - 3 Months Out,,NORMAL,
+Couple Tasks,Hotel Welcome Bags,Couple Tasks - 3 Months Out,,NORMAL,
+Couple Tasks,Finalize Seating Chart,Couple Tasks - 3 Months Out,,NORMAL,
+Couple Tasks,Wedding Day Accessories,Couple Tasks - 3 Months Out,,NORMAL,
+Task,RSVP's are due,Couple Tasks - 3 Months Out,,HIGH,8 Weeks Out
+Category,Couple Tasks - 2 Months Out,,Couple Tasks - 3 Months Out,NORMAL,8 Weeks Out
+Task,Dress Fitting/Attire Alterations,Couple Tasks - 2 Months Out,,NORMAL,
+Task,Break in Wedding Shoes,Couple Tasks - 2 Months Out,,NORMAL,
+Task,Final Rae & Co. Payment,Couple Tasks - 2 Months Out,,NORMAL,
+Task,Pack for Honeymoon,Couple Tasks - 2 Months Out,,NORMAL,
+Task,Canva Doc Finished (Preliminary),Couple Tasks - 2 Months Out,,NORMAL,8 Weeks Out
+Category,Couple Tasks - 1 Months Out,,Couple Tasks - 2 Months Out,NORMAL,4 Weeks Out
+Task,Purchase Event Insurance,Couple Tasks - 1 Months Out,,NORMAL,
+Task,Marriage License,Couple Tasks - 1 Months Out,,NORMAL,
+Task,Final Fittings,Couple Tasks - 1 Months Out,,NORMAL,
+Task,List of Personal Items/Inventory,Couple Tasks - 1 Months Out,,NORMAL,
+Task,Collect final fitting confirmations (30 days out),Couple Tasks - 1 Months Out,,NORMAL,4 Weeks Out
+Category,Couple Tasks - 2 Weeks Out,,Couple Tasks - 1 Months Out,NORMAL,2 Weeks Out
+Task,Pickup Attire,Couple Tasks - 2 Weeks Out,,NORMAL,
+Category,Couple Tasks - 1 Week Out,,Couple Tasks - 2 Weeks Out,NORMAL,1 Week Out
+Task,"Practice Vows, Speeches",Couple Tasks - 1 Week Out,,NORMAL,
+Task,Haircut/Nails/Spray Tan,Couple Tasks - 1 Week Out,,NORMAL,
+Task,Steam/Prep All Attire,Couple Tasks - 1 Week Out,,NORMAL,
+Task,Final Timeline Approved,,,HIGH,5 Weeks Out
+Task,Rehearsal Complete,,,,1 Day Out
+Category,Day-Of ,Day-Of ,,,
+Task,"Day-of: Verify load-in, sound-check completion, cue sheets ready",Day-Of ,,,Wedding Day
+Task,Day of: Collect unused alcohol for client (if allowed),Day-Of ,,,Wedding Day
+Category,WEDDING DAY (Anchor),,,,Wedding Day
+Task,Counter-sign Contract,Wedding Day,,,
+Task,"If client wants to meet with photographer, schedule meeting",Day-Of ,,,
+Task,Present short-list & gather client feedback,Day-Of ,,,
+Task,indoor/outdoor cocktail hour and ceremony space,Day-Of ,,,
+Task,Add payment dates into calendar,Day-Of ,,,
+Task,parking and driveway/traffic flow,Day-Of ,,,
+Task,vendor parking,Day-Of ,,,
+Task,red flags and green flags,Day-Of ,,,
+Task,"ceremony set up, wedding party line up location",Day-Of ,,,
+Task,catering set up and workflow,Day-Of ,,,
+Task,vendor load in,Day-Of ,,,
+Task,number of guests and size of reception space,Day-Of ,,,
+Task,Bride and Groom suite size and set up,Day-Of ,,,

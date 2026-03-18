@@ -31,6 +31,7 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
             ) : (
               <>
                 <Link to="/planners" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Home</Link>
+                <Link to="/my-weddings" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">My Weddings</Link>
                 {isAdmin && (
                   <>
                     <Link to="/account-management" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Account Management</Link>

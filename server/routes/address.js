@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
     const { city, state, zip, limit, offset } = q;
 
     const where = {};
-    if (city) where.city = { equals: city, mode: 'insensitive' };
+    if (city) where.city = { contains: city, mode: 'insensitive' };
     if (state) where.state = { equals: state, mode: 'insensitive' };
     if (zip) where.zip = { equals: zip };
 

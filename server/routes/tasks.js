@@ -47,6 +47,72 @@ router.get('/', async (req, res) => {
   } catch (err) { handlePrismaError(res, err); }
 });
 
+// GET /tasks/assigned/me — get tasks assigned to current user grouped by category
+router.get('/assigned/me', requireAuth, async (req, res) => {
+  try {
+    const q = req.parsedQuery || req.query || {};
+    const { status, weddingId } = q;
+    const where = {
+      assignedToId: req.user.id
+    };
+    if (status) where.currentStatus = status;
+    if (weddingId) {
+      where.category = {
+        weddingId: weddingId
+      };
+    }
+
+    const tasks = await prisma.task.findMany({
+      where,
+      orderBy: { name: 'asc' },
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+            weddingId: true,
+            sortOrder: true
+          }
+        },
+        assignedTo: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
+        dependsOn: {
+          select: {
+            id: true,
+            name: true,
+            currentStatus: true
+          }
+        },
+        dependents: {
+          select: {
+            id: true,
+            name: true,
+            currentStatus: true
+          }
+        }
+      }
+    });
+    
+    // Sort by category's sortOrder on the client side
+    const sorted = tasks.sort((a, b) => {
+      if (a.category.sortOrder !== b.category.sortOrder) {
+        return a.category.sortOrder - b.category.sortOrder;
+      }
+      return a.name.localeCompare(b.name);
+    });
+    
+    res.json(sorted);
+  } catch (err) { 
+    console.error('[Tasks/assigned/me] Error:', err);
+    handlePrismaError(res, err); 
+  }
+});
+
 // GET /tasks/:id — fetch a single task by id
 router.get('/:id', async (req, res) => {
   try {

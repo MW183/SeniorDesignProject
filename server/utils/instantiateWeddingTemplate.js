@@ -155,12 +155,9 @@ async function instantiateWeddingTemplate(weddingId, templateId) {
       }
     }
 
-    // Update wedding tasksRemaining count
+    // Update wedding to link template (already done during creation, but ensure it's set)
     const taskCount = createdTasks.length;
-    await prisma.wedding.update({
-      where: { id: weddingId },
-      data: { tasksRemaining: taskCount },
-    });
+    console.log(`Successfully created ${taskCount} tasks for wedding ${weddingId}`);
 
     return {
       success: true,

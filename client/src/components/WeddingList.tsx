@@ -3,6 +3,7 @@ import { api } from '../lib/api';
 import Table from '../components/ui/Table';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import WeddingDetailsEditor from './WeddingDetailsEditor';
 
 type Wedding = {
   id: string;
@@ -11,12 +12,22 @@ type Wedding = {
   spouse2Id?: string;
   locationId?: string;
   tasksRemaining?: number;
+  categories?: Array<{
+    id: string;
+    name: string;
+    tasks?: Array<{
+      id: string;
+      currentStatus: string;
+      [key: string]: any;
+    }>;
+  }>;
   createdAt: string;
 };
 
 const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUser?: any }, ref) {
   const [weddings, setWeddings] = useState<Wedding[]>([]);
   const [loading, setLoading] = useState(false);
+  const [expandedWeddingId, setExpandedWeddingId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -53,6 +64,23 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
     });
   };
 
+  const getTaskCounts = (wedding: Wedding) => {
+    if (!wedding.categories) return { remaining: 0, total: 0 };
+    let total = 0;
+    let remaining = 0;
+    wedding.categories.forEach(cat => {
+      if (cat.tasks) {
+        cat.tasks.forEach(task => {
+          total++;
+          if (task.currentStatus !== 'COMPLETED' && task.currentStatus !== 'CANCELLED') {
+            remaining++;
+          }
+        });
+      }
+    });
+    return { remaining, total };
+  };
+
   const columns = [
     {
       key: 'date',
@@ -66,9 +94,10 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
       key: 'tasksRemaining',
       label: 'Remaining Tasks',
       className: 'text-center pb-2 w-1/6',
-      render: (wedding: Wedding) => (
-        <span>{wedding.tasksRemaining ?? 0}</span>
-      )
+      render: (wedding: Wedding) => {
+        const { remaining, total } = getTaskCounts(wedding);
+        return <span>{remaining}/{total}</span>;
+      }
     },
     {
       key: 'createdAt',
@@ -81,9 +110,15 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
     {
       key: 'actions',
       label: 'Actions',
-      className: 'text-center pb-2 w-[100px]',
+      className: 'text-center pb-2 w-[160px]',
       render: (wedding: Wedding) => (
-        <div className="flex gap-2 justify-center">
+        <div className="flex gap-2 justify-center flex-wrap">
+          <Button 
+            size="sm" 
+            onClick={() => setExpandedWeddingId(expandedWeddingId === wedding.id ? null : wedding.id)}
+          >
+            {expandedWeddingId === wedding.id ? 'Close' : 'Edit'}
+          </Button>
           <Button variant="danger" size="sm" onClick={() => deleteWedding(wedding.id)}>
             Remove
           </Button>
@@ -93,22 +128,36 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
   ];
 
   return (
-    <Card>
-      <div className="flex items-baseline justify-between gap-4 mb-4">
-        <h3 className="text-lg font-semibold m-0">Your Weddings</h3>
-        <p className="m-0 text-sm text-slate-400">
-          {weddings.length} wedding{weddings.length !== 1 ? 's' : ''}
-        </p>
-      </div>
+    <>
+      <Card>
+        <div className="flex items-baseline justify-between gap-4 mb-4">
+          <h3 className="text-lg font-semibold m-0">
+            {currentUser?.role === 'ADMIN' ? 'All Weddings' : 'Your Weddings'}
+          </h3>
+          <p className="m-0 text-sm text-slate-400">
+            {weddings.length} wedding{weddings.length !== 1 ? 's' : ''}
+          </p>
+        </div>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : weddings.length === 0 ? (
-        <p className="text-slate-400">No weddings assigned yet.</p>
-      ) : (
-        <Table columns={columns} data={weddings} />
+        {loading ? (
+          <p>Loading...</p>
+        ) : weddings.length === 0 ? (
+          <p className="text-slate-400">No weddings assigned yet.</p>
+        ) : (
+          <Table columns={columns} data={weddings} />
+        )}
+      </Card>
+
+      {expandedWeddingId && (
+        <Card className="mt-4">
+          <WeddingDetailsEditor 
+            weddingId={expandedWeddingId}
+            onUpdate={() => load()}
+            currentUser={currentUser}
+          />
+        </Card>
       )}
-    </Card>
+    </>
   );
 });
 

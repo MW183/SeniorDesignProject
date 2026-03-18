@@ -13,7 +13,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CSV_PATH = path.join(__dirname, 'full planning template for mike.csv');
+const CSV_PATH = path.join(__dirname, 'onboarding+planning+finalization.csv');
 const OUTPUT_PATH = path.join(__dirname, 'weddingPlanningTemplate.js');
 
 // Priority mapping
@@ -50,12 +50,6 @@ function parseTimeAnchor(timeAnchorStr) {
   const value = parseInt(match[1], 10);
   const unit = timeAnchorStr.toLowerCase().includes('week') ? 'week' : 'day';
   return unit === 'week' ? value * 7 : value;
-}
-
-// Helper function to create a composite key for (taskName, parentName) uniqueness
-function createTaskKey(taskName, parentName) {
-  const parent = parentName || 'TOPLEVEL';
-  return `${parent}::${taskName}`;
 }
 
 // Simple CSV parser that handles quoted fields
@@ -101,104 +95,58 @@ function parseCsvTemplate() {
   const fileContent = fs.readFileSync(CSV_PATH, 'utf-8');
   const records = parseCSV(fileContent);
 
-  // Remove the header row and title rows
+  // Extract header row to map columns
+  const headerRow = records[0];
+  const columnMap = {
+    TaskType: headerRow.indexOf('Task Type'),
+    TaskName: headerRow.indexOf('Task Name'),
+    TaskCategory: headerRow.indexOf('Task Category'),
+    Dependencies: headerRow.indexOf('Dependencies'),
+    Priority: headerRow.indexOf('Priority'),
+    TimeAnchor: headerRow.indexOf('Time Anchor (drop down)'),
+  };
+
+  // Parse records, filtering out header and non-task rows
   const tasks = records
-    .slice(3) // Skip title row, column headers, AND the actual "Task Type" header row
+    .slice(1) // Skip header row
     .filter((record) => {
-      if (!record || !record[0] || !record[1]) return false;
-      // Explicitly filter out the header row
-      if (record[0].trim() === 'Task Type' && record[1].trim() === 'Task Name') return false;
-      return true;
+      if (!record || !record[columnMap.TaskType]) return false;
+      const taskType = record[columnMap.TaskType].trim();
+      // Only keep "Task" and "Couple Tasks" rows; skip "Category" and "Phase"
+      return taskType === 'Task' || taskType === 'Couple Tasks';
     })
-    .map((record) => ({
-      Type: record[0]?.trim() || '',
-      TaskName: record[1]?.trim() || '',
-      ParentName: record[2]?.trim() || '',
-      Priority: record[3]?.trim() || '',
-      AssignedTo: record[4]?.trim() || '',
-      Package: record[5]?.trim() || '',
-      PipelinePhase: record[6]?.trim() || '',
-      TaskCategory: record[7]?.trim() || '',
-      TimeAnchor: record[8]?.trim() || '',
-    }));
+    .map((record, index) => {
+      const taskTypeStr = record[columnMap.TaskType]?.trim() || 'Task';
+      const priority = PRIORITY_MAP[record[columnMap.Priority]?.toUpperCase()] || PRIORITY_MAP.NORMAL;
+      const dueOffsetDays = parseTimeAnchor(record[columnMap.TimeAnchor]);
 
-  console.log(`Parsed ${tasks.length} tasks from CSV`);
+      return {
+        taskType: taskTypeStr === 'Couple Tasks' ? 'CoupleTask' : 'Task',
+        name: record[columnMap.TaskName]?.trim() || '',
+        category: record[columnMap.TaskCategory]?.trim() || 'Uncategorized',
+        dependencyMetadata: record[columnMap.Dependencies]?.trim() || null,
+        priority,
+        dueOffsetDays,
+        sortOrder: index,
+        description: null,
+      };
+    });
 
-  // Group tasks by category (using PipelinePhase or TaskCategory)
+  console.log(`Parsed ${tasks.length} tasks from CSV (filtered out Category and Phase rows)`);
+
+  // Group tasks by category
   const categoryMap = new Map();
-  const tasksByName = new Map();
-
-  // First pass: identify categories and create task objects
-  const allTasks = [];
-  for (let i = 0; i < tasks.length; i++) {
-    const record = tasks[i];
-
-    const category = record.PipelinePhase || record.TaskCategory || 'Uncategorized';
-    const priority = PRIORITY_MAP[record.Priority?.toUpperCase()] || PRIORITY_MAP.NORMAL;
-    const dueOffsetDays = parseTimeAnchor(record.TimeAnchor);
-
-    const taskObj = {
-      type: record.Type || 'Task',
-      name: record.TaskName || '',
-      parentName: record.ParentName || null,
-      priority,
-      assignedTo: record.AssignedTo || null,
-      package: record.Package || null,
-      category,
-      taskCategory: record.TaskCategory || null,
-      dueOffsetDays,
-      sortOrder: i,
-      description: null,
-      isParent: false,
-      isMilestone: record.Type === 'Milestone',
-    };
-
-    allTasks.push(taskObj);
-    const taskKey = createTaskKey(taskObj.name, taskObj.parentName);
-    tasksByName.set(taskKey, taskObj);
-
-    // Track categories
-    if (!categoryMap.has(category)) {
-      categoryMap.set(category, []);
+  for (const task of tasks) {
+    if (!categoryMap.has(task.category)) {
+      categoryMap.set(task.category, []);
     }
+    categoryMap.get(task.category).push(task);
   }
 
-  // Second pass: identify parent tasks and build hierarchy
-  for (const task of allTasks) {
-    if (task.parentName) {
-      const parentKey = createTaskKey(task.parentName, null);
-      if (tasksByName.has(parentKey)) {
-        const parentTask = tasksByName.get(parentKey);
-        parentTask.isParent = true;
-        task.dependsOn = task.parentName;
-      }
-    }
-  }
-
-  // Third pass: group tasks by category
+  // Create categories array
   const categoriesArray = [];
-  const categoryOrder = [
-    'Onboarding',
-    'Planning',
-    'Finalization',
-    'Day of',
-    'Uncategorized',
-  ];
-
-  // Sort categories
-  const sortedCategories = Array.from(categoryMap.keys()).sort((a, b) => {
-    const aIndex = categoryOrder.indexOf(a);
-    const bIndex = categoryOrder.indexOf(b);
-    if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
-    if (aIndex === -1) return 1;
-    if (bIndex === -1) return -1;
-    return aIndex - bIndex;
-  });
-
   let sortOrder = 0;
-  for (const categoryName of sortedCategories) {
-    const categoryTasks = allTasks.filter((t) => t.category === categoryName);
-
+  for (const [categoryName, categoryTasks] of categoryMap) {
     if (categoryTasks.length > 0) {
       categoriesArray.push({
         name: categoryName,
@@ -210,9 +158,9 @@ function parseCsvTemplate() {
   }
 
   return {
-    name: 'Full Planning Wedding Day',
+    name: 'Onboarding + Planning + Finalization',
     version: getNextVersionNumber(),
-    description: 'Comprehensive wedding planning template with all major phases and vendor categories',
+    description: 'Comprehensive wedding planning template with onboarding, planning, and finalization phases',
     categories: categoriesArray,
   };
 }
@@ -274,12 +222,11 @@ const WEDDING_PLANNING_TEMPLATE = {
       code += `        {
           name: '${task.name.replace(/'/g, "\\'")}',
           description: ${task.description ? `'${task.description.replace(/'/g, "\\'")}'` : 'null'},
+          taskType: '${task.taskType}',
+          dependencyMetadata: ${task.dependencyMetadata ? `'${task.dependencyMetadata.replace(/'/g, "\\'")}'` : 'null'},
           defaultPriority: PRIORITY.${Object.keys(PRIORITY_MAP).find((k) => PRIORITY_MAP[k] === task.priority) || 'NORMAL'},
           defaultDueOffsetDays: ${task.dueOffsetDays},
           sortOrder: ${task.sortOrder},
-          dependsOn: ${task.dependsOn ? `'${task.dependsOn.replace(/'/g, "\\'")}'` : 'null'},
-          isParent: ${task.isParent},
-          isMilestone: ${task.isMilestone},
         },
 `;
     }

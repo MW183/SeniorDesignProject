@@ -3,7 +3,7 @@ import prisma from '../prismaClient.js';
 import { handlePrismaError, ensureExistsOrRespond } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
-import {validateVendor} from '../validators/vendor.js';
+import {validateVendor} from '../validators/validateVendor.js';
 
 const router = express.Router();
 
