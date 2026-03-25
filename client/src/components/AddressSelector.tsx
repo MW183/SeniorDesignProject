@@ -201,7 +201,10 @@ export default function AddressSelector({
         {!showForm && (
           <button
             type="button"
-            onClick={() => setShowForm(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowForm(true);
+            }}
             className="text-xs text-blue-400 hover:text-blue-300 underline"
           >
             + Manual entry
@@ -225,7 +228,10 @@ export default function AddressSelector({
                 <button
                   key={`${suggestion.id}-${idx}`}
                   type="button"
-                  onClick={() => handleSelectSuggestion(suggestion)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelectSuggestion(suggestion);
+                  }}
                   className="w-full text-left px-3 py-2 hover:bg-slate-700 text-sm border-b border-slate-700 last:border-b-0"
                 >
                   <div className="font-medium text-white">{suggestion.displayName}</div>
@@ -302,7 +308,8 @@ export default function AddressSelector({
             </Button>
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setShowForm(false);
                 setNewAddress({ street: '', city: '', state: '', zip: '', type: 'Venue' });
                 setError(null);

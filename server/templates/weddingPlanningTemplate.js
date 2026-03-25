@@ -35,7 +35,7 @@ function getPriorityValue(priorityStr) {
  */
 const WEDDING_PLANNING_TEMPLATE = {
   name: 'Onboarding + Planning + Finalization',
-  version: 2,
+  version: 3,
   description: 'Comprehensive wedding planning template with onboarding, planning, and finalization phases',
   categories: [
     {

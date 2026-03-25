@@ -1,14 +1,9 @@
 # Fullstack App
 
-## Start Backend
-cd server
-npm install
-npm run dev
-
-## Start Frontend
-cd client
-npm install
-npm run dev
+## Starting the Application
+Dev (hot reloading): From root, "npm run dev"
+Start: static, production: From root, "npm run start"
+	
 
 ## Table of Contents
 

@@ -1,0 +1,129 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { api } from '../lib/api';
+import PlannerTasks from './PlannerTasks';
+import WeddingDetailsEditor from '../components/WeddingDetailsEditor';
+import VendorEditor from '../components/VendorEditor';
+
+export default function PlannerWorkspace({ currentUser }: { currentUser?: any }) {
+  const { weddingId } = useParams<{ weddingId?: string }>();
+  const navigate = useNavigate();
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
+  const [weddingName, setWeddingName] = useState<string>('');
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // Load wedding name for display
+  useEffect(() => {
+    if (weddingId) {
+      const fetchWeddingName = async () => {
+        try {
+          const res = await api(`/weddings/${weddingId}`);
+          if (res.ok) {
+            const wedding = res.body;
+            const spouse1 = wedding.spouse1?.name || '';
+            const spouse2 = wedding.spouse2?.name || '';
+            if (spouse1 && spouse2) {
+              setWeddingName(`${spouse1} & ${spouse2}`);
+            } else if (spouse1) {
+              setWeddingName(spouse1);
+            } else if (spouse2) {
+              setWeddingName(spouse2);
+            }
+          }
+        } catch (err) {
+          console.error('Failed to load wedding name:', err);
+        }
+      };
+      fetchWeddingName();
+    }
+  }, [weddingId]);
+
+  // Handle window resize for responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      // Close sidebars on mobile
+      if (mobile) {
+        setLeftSidebarOpen(false);
+        setRightSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Mobile view - tasks only
+  if (isMobile) {
+    return (
+      <div className="w-full">
+        <PlannerTasks currentUser={currentUser} />
+      </div>
+    );
+  }
+
+  // Desktop view - three column layout with flexible sizing
+  return (
+    <div className="w-full flex bg-slate-900 min-h-[calc(100vh-120px)]">
+      {/* Left Sidebar - Wedding Details */}
+      <div
+        className={`transition-all duration-300 ease-in-out overflow-hidden bg-slate-800 border-r border-slate-700 flex flex-col shrink-0 ${
+          leftSidebarOpen ? 'w-80' : 'w-12'
+        }`}
+      >
+        {leftSidebarOpen && weddingId && (
+          <div className="flex-1 overflow-auto p-4 space-y-4">
+            <h3 className="text-sm font-semibold text-slate-300 sticky top-0">Wedding Details</h3>
+            <WeddingDetailsEditor
+              weddingId={weddingId}
+              currentUser={currentUser}
+            />
+          </div>
+        )}
+      </div>
+        
+      {/* Center - Tasks (Main Content) */}
+      <div className="flex-1 overflow-auto bg-slate-900 min-w-0"> 
+        <div className="max-w-7xl">
+          <PlannerTasks currentUser={currentUser} hideBackButton={true} />
+        </div>
+      </div>
+
+      {/* Right Sidebar - Vendors */}
+      <div
+        className={`transition-all duration-300 ease-in-out overflow-hidden bg-slate-800 border-l border-slate-700 flex flex-col shrink-0 ${
+          rightSidebarOpen ? 'w-80' : 'w-12'
+        }`}
+      >
+        {rightSidebarOpen && weddingId && (
+          <div className="flex-1 overflow-auto p-4 space-y-4">
+            <h3 className="text-sm font-semibold text-slate-300 sticky top-0">Vendors</h3>
+            <VendorEditor weddingId={weddingId} />
+          </div>
+        )}
+      </div>
+
+      {/* Left Toggle Button - Fixed Position */}
+      <button
+        onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
+        className="w-6 h-12 flex items-center justify-center hover:bg-slate-600 transition text-white bg-slate-700 fixed top-1/2 -translate-y-1/2 z-50 rounded-r border border-l-0 border-slate-700"
+        title={leftSidebarOpen ? 'Hide wedding details' : 'Show wedding details'}
+        style={{ left: leftSidebarOpen ? '320px' : '48px' }}
+      >
+        {leftSidebarOpen ? '◄' : '►'}
+      </button>
+
+      {/* Right Toggle Button - Fixed Position */}
+      <button
+        onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
+        className="w-6 h-12 flex items-center justify-center hover:bg-slate-600 transition text-white bg-slate-700 fixed top-1/2 -translate-y-1/2 z-50 rounded-l border border-r-0 border-slate-700"
+        title={rightSidebarOpen ? 'Hide vendors' : 'Show vendors'}
+        style={{ right: rightSidebarOpen ? '320px' : '48px' }}
+      >
+        {rightSidebarOpen ? '►' : '◄'}
+      </button>
+    </div>
+  );
+}

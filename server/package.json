@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "generate-template": "node server/templates/parseTemplateFromCSV.js"
+    "generate-template": "node templates/parseTemplateFromCSV.js && npx prisma migrate dev --name add_wedding_template && node templates/seed-template.js"
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",

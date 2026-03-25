@@ -80,20 +80,6 @@ router.get('/assigned/me', requireAuth, async (req, res) => {
             name: true,
             email: true
           }
-        },
-        dependsOn: {
-          select: {
-            id: true,
-            name: true,
-            currentStatus: true
-          }
-        },
-        dependents: {
-          select: {
-            id: true,
-            name: true,
-            currentStatus: true
-          }
         }
       }
     });
@@ -126,7 +112,7 @@ router.get('/:id', async (req, res) => {
 // POST /tasks — create task (requires auth). Validates category FK and required fields.
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { name, description, priority, dueDate, categoryId, sortOrder, assignedToId, dependsOnId, templateTaskId } = req.body;
+    const { name, description, priority, dueDate, categoryId, sortOrder, assignedToId, templateTaskId } = req.body;
     if (!name || priority === undefined || !dueDate || !categoryId) {
       return res.status(400).json({ error: 'Missing required fields: name, priority, dueDate, categoryId' });
     }
@@ -137,10 +123,6 @@ router.post('/', requireAuth, async (req, res) => {
     // validate optional FKs
     if (assignedToId) {
       const ok = await ensureExistsOrRespond(res, 'user', assignedToId, 'assignedToId');
-      if (!ok) return;
-    }
-    if (dependsOnId) {
-      const ok = await ensureExistsOrRespond(res, 'task', dependsOnId, 'dependsOnId');
       if (!ok) return;
     }
     if (templateTaskId) {
@@ -157,7 +139,6 @@ router.post('/', requireAuth, async (req, res) => {
         categoryId,
         sortOrder: sortOrder !== undefined ? parseInt(sortOrder) : 0,
         assignedToId: assignedToId || null,
-        dependsOnId: dependsOnId || null,
         templateTaskId: templateTaskId || null
       }, 
       select: { 
@@ -178,7 +159,7 @@ router.post('/', requireAuth, async (req, res) => {
 router.put('/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, priority, dueDate, sortOrder, assignedToId, currentStatus, completedOn, completedById, notes, dependsOnId } = req.body;
+    const { name, description, priority, dueDate, sortOrder, assignedToId, currentStatus, completedOn, completedById, notes } = req.body;
     const update = {};
     if (name !== undefined) update.name = name.trim();
     if (description !== undefined) update.description = description?.trim() || null;
@@ -190,7 +171,6 @@ router.put('/:id', requireAuth, async (req, res) => {
     if (completedOn !== undefined) update.completedOn = completedOn ? new Date(completedOn) : null;
     if (completedById !== undefined) update.completedById = completedById;
     if (notes !== undefined) update.notes = notes;
-    if (dependsOnId !== undefined) update.dependsOnId = dependsOnId;
 
     // validate FK references if provided
     if (assignedToId !== undefined && assignedToId !== null) {
@@ -199,10 +179,6 @@ router.put('/:id', requireAuth, async (req, res) => {
     }
     if (completedById !== undefined && completedById !== null) {
       const ok = await ensureExistsOrRespond(res, 'user', completedById, 'completedById');
-      if (!ok) return;
-    }
-    if (dependsOnId !== undefined && dependsOnId !== null) {
-      const ok = await ensureExistsOrRespond(res, 'task', dependsOnId, 'dependsOnId');
       if (!ok) return;
     }
 

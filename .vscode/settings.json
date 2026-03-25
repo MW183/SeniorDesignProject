@@ -1,19 +1,19 @@
 {
-  "tailwindCSS.experimental.classRegex": [
-    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^'\"`]*)(?:'|\"|`)"]
-  ],
-  "tailwindCSS.experimental.configFile": "client/tailwind.config.js",
   "tailwindCSS.classAttributes": [
     "class",
-    "className",
-    "ngClass"
+    "className"
   ],
-  "files.associations": {
-    "*.css": "tailwindcss"
+  "tailwindCSS.hovers": true,
+  "tailwindCSS.codeActions": true,
+  "tailwindCSS.includeLanguages": {
+    "typescript": "className",
+    "typescriptreact": "className"
   },
   "editor.quickSuggestions": {
-    "strings": true,
-    "comments": "on"
+    "strings": true
   },
-  "tailwindCSS.hovers": true
+  "files.associations": {
+    "*.css": "tailwindcss" 
+  }
 }
+

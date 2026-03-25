@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function Header({ currentUser, onLogout }: { currentUser?: any, onLogout?: () => void }) {
   const [open, setOpen] = useState(false);
   const isAdmin = currentUser?.role === 'ADMIN';
+  const isSupport = currentUser?.role === 'SUPPORT';
+  const isPlanner = currentUser?.role === 'PLANNER';
   const navigate = useNavigate();
 
   return (
@@ -28,16 +30,19 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
           <nav className={`${open ? 'flex' : 'hidden'} md:flex items-center gap-4 md:static absolute top-16 right-4 bg-slate-900 md:bg-transparent flex-col md:flex-row p-3 md:p-0 rounded-md min-w-[160px]`}>
             {!currentUser ? (
               <Link to="/login" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Login</Link>
+            ) : isAdmin || isSupport ? (
+              <>
+                <Link to="/planners" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Dashboard</Link>
+                <Link to="/manage-weddings" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Manage Weddings</Link>
+                <Link to="/manage-planners" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Manage Planners</Link>
+                <Link to="/manage-vendors" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Manage Vendors</Link>
+                <button className="logout-btn text-sky-100 px-2 py-1 rounded-md hover:bg-white/5" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
+              </>
             ) : (
               <>
-                <Link to="/planners" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Home</Link>
                 <Link to="/my-weddings" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">My Weddings</Link>
-                {isAdmin && (
-                  <>
-                    <Link to="/account-management" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Account Management</Link>
-                    <Link to="/planner-overview" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Planner Overview</Link>
-                  </>
-                )}
+                <Link to="/my-tasks" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">My Tasks</Link>
+                <Link to="/manage-vendors" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Vendors</Link>
                 <button className="logout-btn text-sky-100 px-2 py-1 rounded-md hover:bg-white/5" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
               </>
             )}

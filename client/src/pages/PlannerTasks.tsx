@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
 import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
+import CollapsibleSection from '../components/ui/CollapsibleSection';
+import TaskEditor from '../components/TaskEditor';
 
 interface TaskDependency {
   id: string;
@@ -40,47 +41,40 @@ interface TasksByCategory {
   };
 }
 
-type SortMode = 'name' | 'dueDate' | 'category' | 'status';
-type SearchField = 'name' | 'dueDate' | 'category' | 'status' | 'notes';
+type SortMode = 'name' | 'Due Date' | 'category' | 'status';
+type SearchField = 'name' | 'Due Date' | 'category' | 'status' | 'notes';
 
-interface EditingTaskState {
-  id: string;
-  name: string;
-  currentStatus: string;
-  priority: number;
-  notes: string;
-  dueDate: string;
-}
-
-export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
+export default function PlannerTasks({ currentUser, hideBackButton = false }: { currentUser?: any; hideBackButton?: boolean }) {
+  // Get wedding ID from URL params; fetch and display tasks for the current user
   const { weddingId } = useParams<{ weddingId?: string }>();
   const navigate = useNavigate();
+  
+  // State for all tasks assigned to the user
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sortMode, setSortMode] = useState<SortMode>('dueDate');
+  
+  // State for sorting, filtering, and display options
+  const [sortMode, setSortMode] = useState<SortMode>('Due Date');
   const [showCompleted, setShowCompleted] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [weddingName, setWeddingName] = useState<string>('');
   
-  // Search and filter state
+  // State for search functionality
   const [searchTerm, setSearchTerm] = useState('');
   const [searchField, setSearchField] = useState<SearchField>('name');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
-  
-  // Editing state - unified per task
-  const [editingTask, setEditingTask] = useState<EditingTaskState | null>(null);
-  const [savingTaskId, setSavingTaskId] = useState<string | null>(null);
 
+  // Load tasks when the component mounts or wedding ID changes
   useEffect(() => {
     loadTasks();
   }, [weddingId]);
 
+  // Fetch tasks assigned to the current user, optionally filtered by wedding
   const loadTasks = async () => {
     setLoading(true);
     setError(null);
     try {
+      // Use wedding ID if available to filter tasks for a specific wedding
       const endpoint = weddingId ? `/tasks/assigned/me?weddingId=${weddingId}` : '/tasks/assigned/me';
       const tasksRes = await api(endpoint);
       console.log('[PlannerTasks] API response:', { ok: tasksRes.ok, status: tasksRes.status, body: tasksRes.body });
@@ -97,7 +91,7 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
       console.log('[PlannerTasks] Loaded tasks:', allTasks.length);
       setTasks(allTasks);
 
-      // If we have a wedding ID, fetch the wedding name
+      // Fetch the wedding name 
       if (weddingId && allTasks.length > 0) {
         try {
           const weddingRes = await api(`/weddings/${weddingId}`);
@@ -126,6 +120,7 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
     }
   };
 
+  //filter tasks (used to exclude completed/cancelled tasks)
   const getFilteredTasks = () => {
     let filtered = showCompleted ? tasks : tasks.filter(t => t.currentStatus !== 'COMPLETED' && t.currentStatus !== 'CANCELLED');
     
@@ -144,7 +139,7 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
           return task.currentStatus.toLowerCase().includes(term);
         case 'notes':
           return (task.notes || '').toLowerCase().includes(term);
-        case 'dueDate':
+        case 'Due Date':
           const taskDate = new Date(task.dueDate).toLocaleDateString('en-US');
           return taskDate.includes(term);
         default:
@@ -153,57 +148,7 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
     });
   };
 
-  const updateTask = async (taskId: string) => {
-    if (!editingTask) return;
-    
-    setSavingTaskId(taskId);
-    try {
-      const res = await api(`/tasks/${taskId}`, {
-        method: 'PUT',
-        body: {
-          name: editingTask.name,
-          currentStatus: editingTask.currentStatus,
-          priority: editingTask.priority,
-          notes: editingTask.notes,
-          dueDate: editingTask.dueDate
-        }
-      });
-      
-      if (res.ok) {
-        setTasks(tasks.map(t => 
-          t.id === taskId 
-            ? { 
-                ...t, 
-                name: editingTask.name,
-                currentStatus: editingTask.currentStatus, 
-                priority: editingTask.priority,
-                notes: editingTask.notes,
-                dueDate: editingTask.dueDate
-              } 
-            : t
-        ));
-        setEditingTask(null);
-      } else {
-        alert(res.body?.error || 'Failed to update task');
-      }
-    } catch (err) {
-      console.error('Error updating task:', err);
-      alert('Error updating task');
-    } finally {
-      setSavingTaskId(null);
-    }
-  };
 
-  const startEditingTask = (task: Task) => {
-    setEditingTask({
-      id: task.id,
-      name: task.name,
-      currentStatus: task.currentStatus,
-      priority: task.priority,
-      notes: task.notes || '',
-      dueDate: task.dueDate
-    });
-  };
 
   const groupTasksByCategory = (taskList: Task[]): TasksByCategory => {
     const grouped: TasksByCategory = {};
@@ -227,7 +172,7 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
       case 'name':
         sorted.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'dueDate':
+      case 'Due Date':
         sorted.sort((a, b) => {
           const dateA = new Date(a.dueDate).getTime();
           const dateB = new Date(b.dueDate).getTime();
@@ -258,41 +203,7 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
     return sorted;
   };
 
-  const getDaysUntil = (dateStr: string) => {
-    const dueDate = new Date(dateStr);
-    dueDate.setHours(0, 0, 0, 0);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const diff = dueDate.getTime() - today.getTime();
-    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-    return days;
-  };
 
-  const getUrgencyColor = (daysUntil: number) => {
-    if (daysUntil < 0) return 'text-red-500 bg-red-950';
-    if (daysUntil === 0) return 'text-red-400 bg-red-900';
-    if (daysUntil <= 7) return 'text-amber-400 bg-amber-950';
-    return 'text-slate-400 bg-slate-800';
-  };
-
-  const getPriorityLabel = (priority: number) => {
-    switch (priority) {
-      case 1:
-        return 'URGENT';
-      case 2:
-        return 'HIGH';
-      default:
-        return 'NORMAL';
-    }
-  };
-
-  const getUnmetDependencies = (task: Task): string | null => {
-    if (!task.dependsOn) return null;
-    if (task.dependsOn.currentStatus !== 'COMPLETED') {
-      return `Cannot start until "${task.dependsOn.name}" is completed`;
-    }
-    return null;
-  };
 
   const toggleCategoryExpanded = (category: string) => {
     const newExpanded = new Set(expandedCategories);
@@ -313,10 +224,10 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
   const activeTasks = filteredTasks.filter(t => t.currentStatus !== 'COMPLETED' && t.currentStatus !== 'CANCELLED');
   const completedTasks = filteredTasks.filter(t => t.currentStatus === 'COMPLETED' || t.currentStatus === 'CANCELLED');
 
-
+  
   return (
     <div className="max-w-7xl mx-auto mt-8">
-      {weddingId && (
+      {weddingId && !hideBackButton && (
         <div className="mb-4">
           <button
             onClick={() => navigate('/my-weddings')}
@@ -346,22 +257,16 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
                 type="text"
                 placeholder={`Search by ${searchField}...`}
                 value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm placeholder-slate-400"
               />
               <select
                 value={searchField}
-                onChange={(e) => {
-                  setSearchField(e.target.value as SearchField);
-                  setCurrentPage(1);
-                }}
+                onChange={(e) => setSearchField(e.target.value as SearchField)}
                 className="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
               >
                 <option value="name">Name</option>
-                <option value="dueDate">Due Date</option>
+                <option value="Due Date">Due Date</option>
                 <option value="category">Category</option>
                 <option value="status">Status</option>
                 <option value="notes">Notes</option>
@@ -370,10 +275,7 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
             
             {searchTerm && (
               <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setCurrentPage(1);
-                }}
+                onClick={() => setSearchTerm('')}
                 className="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-white text-sm"
               >
                 Clear Filter
@@ -391,7 +293,7 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
                 className="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
               >
                 <option value="name">Name</option>
-                <option value="dueDate">Due Date</option>
+                <option value="Due Date">Due Date</option>
                 <option value="category">Category</option>
                 <option value="status">Status</option>
               </select>
@@ -420,235 +322,40 @@ export default function PlannerTasks({ currentUser }: { currentUser?: any }) {
             {categoriesSorted.length === 0 ? (
               <p className="text-slate-400">No tasks match your search</p>
             ) : (
-              categoriesSorted.map(categoryName => {
+              categoriesSorted.map((categoryName, index) => {
                 const categoryData = tasksByCategory[categoryName];
                 const sortedTasks = getSortedTasks(categoryData.tasks);
                 const isExpanded = expandedCategories.has(categoryName);
                 const activeCategoryTasks = sortedTasks.filter(t => t.currentStatus !== 'COMPLETED' && t.currentStatus !== 'CANCELLED');
 
-                // Pagination
-                const tasksToShow = searchTerm ? sortedTasks : sortedTasks;
-                const startIdx = searchTerm ? 0 : (currentPage - 1) * itemsPerPage;
-                const endIdx = searchTerm ? tasksToShow.length : startIdx + itemsPerPage;
-                const paginatedTasks = tasksToShow.slice(startIdx, endIdx);
-                const totalPages = Math.ceil(tasksToShow.length / itemsPerPage);
-
                 return (
-                  <div key={categoryName} className="border border-slate-700 rounded overflow-hidden">
-                    <button
-                      onClick={() => toggleCategoryExpanded(categoryName)}
-                      className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-800 transition bg-slate-800"
+                  <Card key={categoryName}>
+                    <CollapsibleSection
+                      title={categoryName}
+                      isExpanded={isExpanded}
+                      onToggle={() => toggleCategoryExpanded(categoryName)}
+                      firstSection={index === 0}
+                      summary={
+                        <div className="text-sm text-slate-400">
+                          {activeCategoryTasks.length} active task{activeCategoryTasks.length !== 1 ? 's' : ''}
+                        </div>
+                      }
                     >
-                      <div className="flex items-center gap-3 flex-1">
-                        <span className={`${isExpanded ? 'rotate-90' : ''} transition`}>▶</span>
-                        <div className="text-left font-semibold text-slate-100">{categoryName}</div>
-                      </div>
-                      <span className="text-sm text-slate-300">{activeCategoryTasks.length} active</span>
-                    </button>
-
-                    {isExpanded && (
-                      <div className="bg-slate-900 border-t border-slate-700">
-                        {sortedTasks.length === 0 ? (
-                          <div className="px-4 py-3 text-sm text-slate-400">No tasks in this category</div>
-                        ) : (
-                          <>
-                            {paginatedTasks.map(task => {
-                              const daysUntil = getDaysUntil(task.dueDate);
-                              const unmetDep = getUnmetDependencies(task);
-                              const isBlocked = unmetDep !== null || task.currentStatus === 'BLOCKED';
-                              const isEditing = editingTask?.id === task.id;
-
-                              return (
-                                <div key={task.id} className={`px-4 py-3 border-b border-slate-800 last:border-b-0 ${isEditing ? 'bg-slate-800' : 'hover:bg-slate-800'} transition cursor-pointer`}>
-                                  {unmetDep && (
-                                    <div className="mb-2 p-2 bg-red-900 border border-red-700 rounded text-sm text-red-200 flex items-center gap-2">
-                                      <span>⚠</span>
-                                      <span>{unmetDep}</span>
-                                    </div>
-                                  )}
-                                  
-                                  {isEditing ? (
-                                    // EDIT MODE
-                                    <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
-                                      {/* Name */}
-                                      <div>
-                                        <label className="text-xs text-slate-400 block mb-1">Task Name</label>
-                                        <input
-                                          type="text"
-                                          value={editingTask.name}
-                                          onChange={(e) => setEditingTask({ ...editingTask, name: e.target.value })}
-                                          className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm"
-                                        />
-                                      </div>
-
-                                      {/* Status and Priority */}
-                                      <div className="grid grid-cols-2 gap-3">
-                                        <div>
-                                          <label className="text-xs text-slate-400 block mb-1">Status</label>
-                                          <select
-                                            value={editingTask.currentStatus}
-                                            onChange={(e) => setEditingTask({ ...editingTask, currentStatus: e.target.value })}
-                                            className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
-                                          >
-                                            <option value="PENDING">PENDING</option>
-                                            <option value="IN_PROGRESS">IN_PROGRESS</option>
-                                            <option value="BLOCKED">BLOCKED</option>
-                                            <option value="COMPLETED">COMPLETED</option>
-                                            <option value="CANCELLED">CANCELLED</option>
-                                          </select>
-                                        </div>
-                                        <div>
-                                          <label className="text-xs text-slate-400 block mb-1">Priority</label>
-                                          <select
-                                            value={editingTask.priority}
-                                            onChange={(e) => setEditingTask({ ...editingTask, priority: parseInt(e.target.value) })}
-                                            className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
-                                          >
-                                            <option value="0">NORMAL</option>
-                                            <option value="2">HIGH</option>
-                                            <option value="1">URGENT</option>
-                                          </select>
-                                        </div>
-                                      </div>
-
-                                      {/* Due Date */}
-                                      <div>
-                                        <label className="text-xs text-slate-400 block mb-1">Due Date</label>
-                                        <input
-                                          type="date"
-                                          value={editingTask.dueDate.split('T')[0]}
-                                          onChange={(e) => setEditingTask({ ...editingTask, dueDate: e.target.value })}
-                                          className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
-                                        />
-                                      </div>
-
-                                      {/* Notes */}
-                                      <div>
-                                        <label className="text-xs text-slate-400 block mb-1">Notes</label>
-                                        <textarea
-                                          value={editingTask.notes}
-                                          onChange={(e) => setEditingTask({ ...editingTask, notes: e.target.value })}
-                                          placeholder="Add notes..."
-                                          className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs placeholder-slate-400"
-                                          rows={2}
-                                        />
-                                      </div>
-
-                                      {/* Save Button */}
-                                      <div className="flex gap-2 justify-end pt-2">
-                                        <button
-                                          onClick={() => setEditingTask(null)}
-                                          className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white text-xs"
-                                        >
-                                          Cancel
-                                        </button>
-                                        <button
-                                          onClick={() => updateTask(task.id)}
-                                          disabled={savingTaskId === task.id}
-                                          className="px-3 py-1 bg-green-700 hover:bg-green-600 rounded text-white text-xs disabled:opacity-50"
-                                        >
-                                          Save
-                                        </button>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    // VIEW MODE
-                                    <div onClick={() => startEditingTask(task)}>
-                                      <div className="flex items-start justify-between gap-3 mb-2">
-                                        <div className="flex-1">
-                                          <h4 className="font-medium text-white break-words">{task.name}</h4>
-                                          {task.description && (
-                                            <p className="text-xs text-slate-400 mt-1 break-words">{task.description}</p>
-                                          )}
-                                        </div>
-                                      </div>
-
-                                      <div className="flex gap-2 mb-2 flex-wrap">
-                                        <span
-                                          className={`text-xs px-2 py-1 rounded font-semibold ${
-                                            task.priority === 1
-                                              ? 'bg-red-900 text-red-200'
-                                              : task.priority === 2
-                                              ? 'bg-amber-900 text-amber-200'
-                                              : 'bg-slate-700 text-slate-200'
-                                          }`}
-                                        >
-                                          {getPriorityLabel(task.priority)}
-                                        </span>
-                                        <span
-                                          className={`text-xs px-2 py-1 rounded ${
-                                            task.currentStatus === 'IN_PROGRESS'
-                                              ? 'bg-blue-900 text-blue-200'
-                                              : task.currentStatus === 'BLOCKED'
-                                              ? 'bg-red-900 text-red-200'
-                                              : task.currentStatus === 'COMPLETED'
-                                              ? 'bg-green-900 text-green-200'
-                                              : task.currentStatus === 'CANCELLED'
-                                              ? 'bg-slate-700 text-slate-300'
-                                              : 'bg-slate-700 text-slate-200'
-                                          }`}
-                                        >
-                                          {task.currentStatus.replace('_', ' ')}
-                                        </span>
-                                      </div>
-
-                                      {task.notes && (
-                                        <div className="mb-2 text-xs text-slate-300 bg-slate-800 p-2 rounded">
-                                          <span className="font-semibold">Notes:</span> {task.notes}
-                                        </div>
-                                      )}
-
-                                      <div className="text-xs text-slate-400 flex items-center gap-3">
-                                        <span className="py-1 px-2 bg-slate-700 rounded">
-                                          {new Date(task.dueDate).toLocaleDateString('en-US', {
-                                            month: 'short',
-                                            day: 'numeric',
-                                            year: 'numeric'
-                                          })}
-                                        </span>
-                                        <span className={`py-1 px-2 rounded text-xs font-semibold ${getUrgencyColor(daysUntil).split(' ')[0]} ${getUrgencyColor(daysUntil).split(' ')[1]}`}>
-                                          {daysUntil < 0
-                                            ? `${Math.abs(daysUntil)}d ago`
-                                            : daysUntil === 0
-                                            ? 'Today'
-                                            : `${daysUntil}d away`}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
-                            
-                            {/* Pagination */}
-                            {!searchTerm && totalPages > 1 && (
-                              <div className="px-4 py-3 border-t border-slate-700 flex justify-between items-center text-sm text-slate-400">
-                                <div>
-                                  Page {currentPage} of {totalPages}
-                                </div>
-                                <div className="flex gap-2">
-                                  <button
-                                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                                    disabled={currentPage === 1}
-                                    className="px-2 py-1 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 rounded text-white text-xs"
-                                  >
-                                    Previous
-                                  </button>
-                                  <button
-                                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                                    disabled={currentPage === totalPages}
-                                    className="px-2 py-1 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 rounded text-white text-xs"
-                                  >
-                                    Next
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                      <TaskEditor
+                        categoryId={categoryData.tasks[0]?.category.id || ''}
+                        categoryName={categoryName}
+                        tasks={sortedTasks}
+                        weddingId={weddingId || ''}
+                        onTasksChange={(updatedTasks) => {
+                          setTasks(tasks.filter(t =>
+                            !categoryData.tasks.some(ct => ct.id === t.id)
+                          ).concat(updatedTasks));
+                        }}
+                        currentUser={currentUser}
+                        showCompleted={showCompleted}
+                      />
+                    </CollapsibleSection>
+                  </Card>
                 );
               })
             )}

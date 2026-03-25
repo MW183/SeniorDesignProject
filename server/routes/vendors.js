@@ -20,6 +20,7 @@ router.get('/', async (req, res) => {
 
     const vendors = await prisma.vendor.findMany({
       where,
+      include: { tags: { include: { tag: true } } },
       take: limit ? parseInt(limit) : undefined,
       skip: offset ? parseInt(offset) : undefined,
       orderBy: { name: 'asc' }
@@ -32,11 +33,91 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /tags — list all tags (MUST come before /:id route)
+router.get('/tags/list', async (req, res) => {
+  try {
+    const tags = await prisma.tag.findMany({ orderBy: { name: 'asc' } });
+    res.json(tags);
+  } catch (err) {
+    console.error('[GET /vendors/tags/list] Error:', err);
+    handlePrismaError(res, err);
+  }
+});
+
+// POST /tags — create a new tag (MUST come before /:id route)
+router.post('/tags/create', requireAuth, async (req, res) => {
+  try {
+    const { name } = req.body;
+    
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: 'Tag name is required' });
+    }
+
+    // Create or get existing tag (upsert)
+    const tag = await prisma.tag.upsert({
+      where: { name: name.trim() },
+      create: { name: name.trim() },
+      update: {}
+    });
+
+    res.status(201).json(tag);
+  } catch (err) {
+    console.error('[POST /vendors/tags/create] Error:', err);
+    handlePrismaError(res, err);
+  }
+});
+
+// POST /vendors/:id/tags/:tagId — add tag to vendor (MUST come before /:id route)
+router.post('/:id/tags/:tagId', requireAuth, async (req, res) => {
+  try {
+    const { id: vendorId, tagId } = req.params;
+
+    // Verify vendor exists
+    const vendor = await prisma.vendor.findUnique({ where: { id: vendorId } });
+    if (!vendor) return res.status(404).json({ error: 'Vendor not found' });
+
+    // Verify tag exists
+    const tag = await prisma.tag.findUnique({ where: { id: tagId } });
+    if (!tag) return res.status(404).json({ error: 'Tag not found' });
+
+    // Add tag (upsert to handle if already exists)
+    const vendorTag = await prisma.vendorTag.upsert({
+      where: { vendorId_tagId: { vendorId, tagId } },
+      create: { vendorId, tagId },
+      update: {}
+    });
+
+    res.status(201).json(vendorTag);
+  } catch (err) {
+    console.error(`[POST /vendors/${req.params.id}/tags/${req.params.tagId}] Error:`, err);
+    handlePrismaError(res, err);
+  }
+});
+
+// DELETE /vendors/:id/tags/:tagId — remove tag from vendor (MUST come before /:id route)
+router.delete('/:id/tags/:tagId', requireAuth, async (req, res) => {
+  try {
+    const { id: vendorId, tagId } = req.params;
+
+    await prisma.vendorTag.delete({
+      where: { vendorId_tagId: { vendorId, tagId } }
+    });
+
+    res.json({ message: 'Tag removed from vendor' });
+  } catch (err) {
+    console.error(`[DELETE /vendors/${req.params.id}/tags/${req.params.tagId}] Error:`, err);
+    handlePrismaError(res, err);
+  }
+});
+
 // GET /vendors/:id — fetch single vendor by ID
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const vendor = await prisma.vendor.findUnique({ where: { id } });
+    const vendor = await prisma.vendor.findUnique({
+      where: { id },
+      include: { tags: { include: { tag: true } } }
+    });
     if (!vendor) return res.status(404).json({ error: 'Vendor not found' });
     res.json(vendor);
   } catch (err) {

@@ -366,4 +366,153 @@ router.put('/:id/reassign-tasks', requireAuth, requireRole(['ADMIN']), async (re
   } catch (err) { handlePrismaError(res, err); }
 });
 
+// GET /weddings/:id/vendors — get all vendors assigned to a wedding (with ratings/notes)
+router.get('/:id/vendors', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const weddingVendors = await prisma.weddingVendor.findMany({
+      where: { weddingId: id },
+      include: {
+        vendor: {
+          include: {
+            address: true,
+            tags: {
+              include: { tag: true }
+            }
+          }
+        }
+      },
+      orderBy: { assignedAt: 'desc' }
+    });
+
+    res.json(weddingVendors);
+  } catch (err) { handlePrismaError(res, err); }
+});
+
+// POST /weddings/:id/vendors/:vendorId — assign a vendor to a wedding (rating=0, notes=null)
+router.post('/:id/vendors/:vendorId', requireAuth, async (req, res) => {
+  try {
+    const { id, vendorId } = req.params;
+
+    // Verify wedding exists
+    const wedding = await prisma.wedding.findUnique({ where: { id } });
+    if (!wedding) {
+      return res.status(404).json({ error: 'Wedding not found' });
+    }
+
+    // Verify vendor exists
+    const vendor = await prisma.vendor.findUnique({ where: { id: vendorId } });
+    if (!vendor) {
+      return res.status(404).json({ error: 'Vendor not found' });
+    }
+
+    // Check if already assigned
+    const existing = await prisma.weddingVendor.findUnique({
+      where: { weddingId_vendorId: { weddingId: id, vendorId } }
+    });
+    
+    if (existing) {
+      return res.status(409).json({ error: 'Vendor is already assigned to this wedding' });
+    }
+
+    // Assign vendor with rating=0, notes=null
+    const assignment = await prisma.weddingVendor.create({
+      data: {
+        weddingId: id,
+        vendorId: vendorId,
+        rating: 0,
+        notes: null
+      },
+      include: {
+        vendor: {
+          include: {
+            address: true,
+            tags: {
+              include: { tag: true }
+            }
+          }
+        }
+      }
+    });
+
+    console.log(`[Weddings] Assigned vendor ${vendorId} to wedding ${id}`);
+
+    res.status(201).json(assignment);
+  } catch (err) { handlePrismaError(res, err); }
+});
+
+// PUT /weddings/:id/vendors/:vendorId — update vendor rating and notes (rating > 0 requires notes)
+router.put('/:id/vendors/:vendorId', requireAuth, async (req, res) => {
+  try {
+    const { id, vendorId } = req.params;
+    const { rating, notes } = req.body;
+
+    // Verify assignment exists
+    const assignment = await prisma.weddingVendor.findUnique({
+      where: { weddingId_vendorId: { weddingId: id, vendorId } }
+    });
+
+    if (!assignment) {
+      return res.status(404).json({ error: 'Vendor is not assigned to this wedding' });
+    }
+
+    // Validate rating
+    if (rating !== undefined && (rating < 0 || rating > 5 || !Number.isInteger(rating))) {
+      return res.status(400).json({ error: 'Rating must be an integer between 0 and 5' });
+    }
+
+    // Validate: rating > 0 requires notes
+    if (rating !== undefined && rating > 0 && (!notes || notes.trim().length === 0)) {
+      return res.status(400).json({ error: 'Notes are required when rating is greater than 0' });
+    }
+
+    // Update
+    const updated = await prisma.weddingVendor.update({
+      where: { weddingId_vendorId: { weddingId: id, vendorId } },
+      data: {
+        ...(rating !== undefined && { rating }),
+        ...(notes !== undefined && { notes: notes && notes.trim().length > 0 ? notes : null })
+      },
+      include: {
+        vendor: {
+          include: {
+            address: true,
+            tags: {
+              include: { tag: true }
+            }
+          }
+        }
+      }
+    });
+
+    console.log(`[Weddings] Updated vendor ${vendorId} on wedding ${id} - rating: ${updated.rating}, hasNotes: ${!!updated.notes}`);
+
+    res.json(updated);
+  } catch (err) { handlePrismaError(res, err); }
+});
+
+// DELETE /weddings/:id/vendors/:vendorId — remove a vendor from a wedding
+router.delete('/:id/vendors/:vendorId', requireAuth, async (req, res) => {
+  try {
+    const { id, vendorId } = req.params;
+
+    const assignment = await prisma.weddingVendor.findUnique({
+      where: { weddingId_vendorId: { weddingId: id, vendorId } }
+    });
+
+    if (!assignment) {
+      return res.status(404).json({ error: 'Vendor is not assigned to this wedding' });
+    }
+
+    await prisma.weddingVendor.delete({
+      where: { weddingId_vendorId: { weddingId: id, vendorId } }
+    });
+
+    console.log(`[Weddings] Removed vendor ${vendorId} from wedding ${id}`);
+
+    res.json({ message: 'Vendor removed from wedding' });
+  } catch (err) { handlePrismaError(res, err); }
+});
+
 export default router;

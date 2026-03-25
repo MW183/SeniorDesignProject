@@ -3,6 +3,7 @@ import { api } from '../lib/api';
 import Table from '../components/ui/Table';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import CollapsibleSection from './ui/CollapsibleSection';
 import WeddingDetailsEditor from './WeddingDetailsEditor';
 
 type Wedding = {
@@ -27,7 +28,7 @@ type Wedding = {
 const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUser?: any }, ref) {
   const [weddings, setWeddings] = useState<Wedding[]>([]);
   const [loading, setLoading] = useState(false);
-  const [expandedWeddingId, setExpandedWeddingId] = useState<string | null>(null);
+  const [expandedWeddingIds, setExpandedWeddingIds] = useState<Set<string>>(new Set());
 
   async function load() {
     setLoading(true);
@@ -111,19 +112,30 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
       key: 'actions',
       label: 'Actions',
       className: 'text-center pb-2 w-[160px]',
-      render: (wedding: Wedding) => (
-        <div className="flex gap-2 justify-center flex-wrap">
-          <Button 
-            size="sm" 
-            onClick={() => setExpandedWeddingId(expandedWeddingId === wedding.id ? null : wedding.id)}
-          >
-            {expandedWeddingId === wedding.id ? 'Close' : 'Edit'}
-          </Button>
-          <Button variant="danger" size="sm" onClick={() => deleteWedding(wedding.id)}>
-            Remove
-          </Button>
-        </div>
-      )
+      render: (wedding: Wedding) => {
+        const isExpanded = expandedWeddingIds.has(wedding.id);
+        return (
+          <div className="flex gap-2 justify-center flex-wrap">
+            <Button 
+              size="sm" 
+              onClick={() => {
+                const newExpanded = new Set(expandedWeddingIds);
+                if (newExpanded.has(wedding.id)) {
+                  newExpanded.delete(wedding.id);
+                } else {
+                  newExpanded.add(wedding.id);
+                }
+                setExpandedWeddingIds(newExpanded);
+              }}
+            >
+              {isExpanded ? 'Close' : 'Edit'}
+            </Button>
+            <Button variant="danger" size="sm" onClick={() => deleteWedding(wedding.id)}>
+              Remove
+            </Button>
+          </div>
+        );
+      }
     }
   ];
 
@@ -148,15 +160,29 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
         )}
       </Card>
 
-      {expandedWeddingId && (
-        <Card className="mt-4">
-          <WeddingDetailsEditor 
-            weddingId={expandedWeddingId}
-            onUpdate={() => load()}
-            currentUser={currentUser}
-          />
-        </Card>
-      )}
+      {Array.from(expandedWeddingIds).map((weddingId) => {
+        const wedding = weddings.find(w => w.id === weddingId);
+        if (!wedding) return null;
+        return (
+          <Card key={weddingId} className="mt-4">
+            <CollapsibleSection
+              title={`Wedding Details - ${formatDate(wedding.date)}`}
+              isExpanded={true}
+              onToggle={() => {
+                const newExpanded = new Set(expandedWeddingIds);
+                newExpanded.delete(weddingId);
+                setExpandedWeddingIds(newExpanded);
+              }}
+            >
+              <WeddingDetailsEditor 
+                weddingId={weddingId}
+                onUpdate={() => load()}
+                currentUser={currentUser}
+              />
+            </CollapsibleSection>
+          </Card>
+        );
+      })}
     </>
   );
 });

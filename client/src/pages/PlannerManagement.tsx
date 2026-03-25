@@ -12,7 +12,7 @@ type User = {
   role: string;
 };
 
-export default function UserManagement({ currentUser }: { currentUser?: any }) {
+export default function PlannerManagement({ currentUser }: { currentUser?: any }) {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
@@ -71,11 +71,11 @@ export default function UserManagement({ currentUser }: { currentUser?: any }) {
 
   return (
     <div className="max-w-4xl mx-auto mt-8">
-      <h2 className="text-2xl font-semibold mb-4">User Management</h2>
+      <h2 className="text-2xl font-semibold mb-4">Manage Planners</h2>
       
       {/* Add User Form */}
       <Card className="mb-6">
-        <h3 className="text-lg font-semibold mb-3">Add New User</h3>
+        <h3 className="text-lg font-semibold mb-3">Add New Planner</h3>
         <form onSubmit={createUser} className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} required />
           <Input placeholder="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
@@ -87,8 +87,8 @@ export default function UserManagement({ currentUser }: { currentUser?: any }) {
       {/* User List */}
       <Card>
         <div className="flex items-baseline justify-between gap-4 mb-3">
-          <h3 className="text-lg font-semibold m-0">Users</h3>
-          <p className="m-0 text-sm text-slate-400">Manage all users in the system</p>
+          <h3 className="text-lg font-semibold m-0">Planners</h3>
+          <p className="m-0 text-sm text-slate-400">Manage all planners in the system</p>
         </div>
         {loading ? (
           <p>Loading...</p>

@@ -37,9 +37,10 @@ interface WeddingDetailsEditorProps {
   weddingId: string;
   onUpdate?: (wedding: Wedding) => void;
   currentUser?: any;
+  showOnlyLocation?: boolean;
 }
 
-export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser }: WeddingDetailsEditorProps) {
+export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser, showOnlyLocation = false }: WeddingDetailsEditorProps) {
   const [wedding, setWedding] = useState<Wedding | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -80,14 +81,20 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser 
     try {
       const updates: any = {};
       
-      if (selectedSpouse1?.id && selectedSpouse1.id !== wedding.spouse1Id) {
-        updates.spouse1Id = selectedSpouse1.id;
-      }
-      if (selectedSpouse2?.id && selectedSpouse2.id !== wedding.spouse2Id) {
-        updates.spouse2Id = selectedSpouse2.id;
-      }
-      if (selectedLocation?.id && selectedLocation.id !== wedding.locationId) {
-        updates.locationId = selectedLocation.id;
+      if (showOnlyLocation) {
+        if (selectedLocation?.id && selectedLocation.id !== wedding.locationId) {
+          updates.locationId = selectedLocation.id;
+        }
+      } else {
+        if (selectedSpouse1?.id && selectedSpouse1.id !== wedding.spouse1Id) {
+          updates.spouse1Id = selectedSpouse1.id;
+        }
+        if (selectedSpouse2?.id && selectedSpouse2.id !== wedding.spouse2Id) {
+          updates.spouse2Id = selectedSpouse2.id;
+        }
+        if (selectedLocation?.id && selectedLocation.id !== wedding.locationId) {
+          updates.locationId = selectedLocation.id;
+        }
       }
 
       if (Object.keys(updates).length === 0) {
@@ -118,6 +125,9 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser 
 
   const hasChanges = () => {
     if (!wedding) return false;
+    if (showOnlyLocation) {
+      return selectedLocation?.id !== wedding.locationId;
+    }
     return selectedSpouse1?.id !== wedding.spouse1Id ||
            selectedSpouse2?.id !== wedding.spouse2Id ||
            selectedLocation?.id !== wedding.locationId;
@@ -139,60 +149,71 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser 
   });
 
   return (
-    <Card>
-      <h3 className="text-lg font-semibold mb-2">Wedding Details</h3>
-      <p className="text-slate-400 mb-4">Date: {weddingDate}</p>
+    <div>
+      {!showOnlyLocation && <h3 className="text-lg font-semibold mb-2">Wedding Details</h3>}
+      {!showOnlyLocation && <p className="text-slate-400 mb-4">Date: {weddingDate}</p>}
+      {showOnlyLocation && <h4 className="text-sm font-medium text-slate-300 mb-3">Venue</h4>}
 
       <div className="space-y-6">
-        {/* Spouse 1 */}
-        <div>
-          <h4 className="text-sm font-medium text-slate-300 mb-3">Couple Member 1</h4>
-          {selectedSpouse1 ? (
-            <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
-              <p className="font-medium text-white">{selectedSpouse1.name}</p>
-              {selectedSpouse1.email && <p className="text-xs text-slate-400">{selectedSpouse1.email}</p>}
-              {selectedSpouse1.phone && <p className="text-xs text-slate-400">{selectedSpouse1.phone}</p>}
-              <button
-                type="button"
-                onClick={() => setSelectedSpouse1(null)}
-                className="text-xs text-blue-400 hover:text-blue-300 mt-2 underline"
-              >
-                Change
-              </button>
+        {!showOnlyLocation && (
+          <>
+            {/* Spouse 1 */}
+            <div>
+              <h4 className="text-sm font-medium text-slate-300 mb-3">Couple Member 1</h4>
+              {selectedSpouse1 ? (
+                <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
+                  <p className="font-medium text-white">{selectedSpouse1.name}</p>
+                  {selectedSpouse1.email && <p className="text-xs text-slate-400">{selectedSpouse1.email}</p>}
+                  {selectedSpouse1.phone && <p className="text-xs text-slate-400">{selectedSpouse1.phone}</p>}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedSpouse1(null);
+                    }}
+                    className="text-xs text-blue-400 hover:text-blue-300 mt-2 underline"
+                  >
+                    Change
+                  </button>
+                </div>
+              ) : (
+                <ClientSelector 
+                  onClientSelected={setSelectedSpouse1}
+                  label="Add couple member 1"
+                  placeholder="Search for couple member 1..."
+                />
+              )}
             </div>
-          ) : (
-            <ClientSelector 
-              onClientSelected={setSelectedSpouse1}
-              label="Add couple member 1"
-              placeholder="Search for couple member 1..."
-            />
-          )}
-        </div>
 
-        {/* Spouse 2 */}
-        <div>
-          <h4 className="text-sm font-medium text-slate-300 mb-3">Couple Member 2</h4>
-          {selectedSpouse2 ? (
-            <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
-              <p className="font-medium text-white">{selectedSpouse2.name}</p>
-              {selectedSpouse2.email && <p className="text-xs text-slate-400">{selectedSpouse2.email}</p>}
-              {selectedSpouse2.phone && <p className="text-xs text-slate-400">{selectedSpouse2.phone}</p>}
-              <button
-                type="button"
-                onClick={() => setSelectedSpouse2(null)}
-                className="text-xs text-blue-400 hover:text-blue-300 mt-2 underline"
-              >
-                Change
-              </button>
+            {/* Spouse 2 */}
+            <div>
+              <h4 className="text-sm font-medium text-slate-300 mb-3">Couple Member 2</h4>
+              {selectedSpouse2 ? (
+                <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
+                  <p className="font-medium text-white">{selectedSpouse2.name}</p>
+                  {selectedSpouse2.email && <p className="text-xs text-slate-400">{selectedSpouse2.email}</p>}
+                  {selectedSpouse2.phone && <p className="text-xs text-slate-400">{selectedSpouse2.phone}</p>}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedSpouse2(null);
+                    }}
+                    className="text-xs text-blue-400 hover:text-blue-300 mt-2 underline"
+                  >
+                    Change
+                  </button>
+                </div>
+              ) : (
+                <ClientSelector 
+                  onClientSelected={setSelectedSpouse2}
+                  label="Add couple member 2"
+                  placeholder="Search for couple member 2..."
+                />
+              )}
             </div>
-          ) : (
-            <ClientSelector 
-              onClientSelected={setSelectedSpouse2}
-              label="Add couple member 2"
-              placeholder="Search for couple member 2..."
-            />
-          )}
-        </div>
+          </>
+        )}
 
         {/* Location */}
         <div>
@@ -208,7 +229,10 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser 
               <p className="text-xs text-slate-500 mt-1">{selectedLocation.type}</p>
               <button
                 type="button"
-                onClick={() => setSelectedLocation(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedLocation(null);
+                }}
                 className="text-xs text-blue-400 hover:text-blue-300 mt-2 underline"
               >
                 Change
@@ -237,16 +261,22 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser 
         >
           {updating ? 'Saving...' : 'Save Details'}
         </Button>
-        {!hasChanges() && selectedSpouse1 && selectedSpouse2 && selectedLocation && (
-          <span className="text-xs text-slate-400 flex items-center">✓ All details complete</span>
+        {showOnlyLocation ? (
+          !hasChanges() && selectedLocation && (
+            <span className="text-xs text-slate-400 flex items-center">✓ Location set</span>
+          )
+        ) : (
+          !hasChanges() && selectedSpouse1 && selectedSpouse2 && selectedLocation && (
+            <span className="text-xs text-slate-400 flex items-center">✓ All details complete</span>
+          )
         )}
       </div>
 
-      {currentUser?.role === 'ADMIN' && (
+      {!showOnlyLocation && currentUser?.role === 'ADMIN' && (
         <div className="mt-6 pt-6 border-t border-slate-700">
           <PlannerAssignment weddingId={weddingId} onAssignmentChanged={() => onUpdate?.(wedding!)} />
         </div>
       )}
-    </Card>
+    </div>
   );
 }

@@ -98,7 +98,10 @@ export default function ClientSelector({
         {!showForm && (
           <button
             type="button"
-            onClick={() => setShowForm(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowForm(true);
+            }}
             className="text-xs text-blue-400 hover:text-blue-300 underline"
           >
             + Create new
@@ -122,7 +125,8 @@ export default function ClientSelector({
                 <button
                   key={client.id}
                   type="button"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onClientSelected(client);
                     setSearchTerm('');
                     setClients([]);
@@ -182,7 +186,8 @@ export default function ClientSelector({
             </Button>
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setShowForm(false);
                 setNewClient({ name: '', email: '', phone: '' });
                 setError(null);

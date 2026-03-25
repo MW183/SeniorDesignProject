@@ -154,7 +154,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
         <Button onClick={() => navigate('/my-weddings')}>
           View All Weddings
         </Button>
-        <Button onClick={() => navigate('/my-tasks')} variant="secondary">
+        <Button onClick={() => navigate('/my-tasks')} variant="muted">
           View All Tasks
         </Button>
       </div>
@@ -184,7 +184,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
                 >
                   {hasUnmetDependency && (
                     <div className="mb-2 p-2 bg-red-900 border border-red-700 rounded text-sm text-red-200">
-                      ⚠ Blocked: Waiting on "{task.dependsOn.name}"
+                      ⚠ Blocked: Waiting on "{task.dependsOn!.name}"
                     </div>
                   )}
 
@@ -221,7 +221,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
                           })}
                         </div>
                         <span
-                          className={`text-xs px-2 py-1 rounded block font-semibold ${getUrgencyColor(daysUntil)}`}
+                          className={`text-xs px-2 py-1 rounded block font-semibold ${getUrgencyColor(daysUntil).split(' ')[0]} ${getUrgencyColor(daysUntil).split(' ')[1]}`}
                         >
                           {daysUntil < 0
                             ? `${Math.abs(daysUntil)}d ago`

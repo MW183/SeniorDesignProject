@@ -2,18 +2,19 @@
  * CSV Parser to automatically generate the wedding planning template
  * Usage: node server/template/parseTemplateFromCSV.js
  *
- * This script reads the CSV file and generates the weddingPlanningTemplate.js
+ * This script reads a CSV file from the templates directory and generates 
+ * the weddingPlanningTemplate.js. Allows selection of CSV file if multiple exist.
  * No external dependencies required - uses Node's built-in fs module
  */
 
 import fs from 'fs';
 import path from 'path';
+import readline from 'readline';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CSV_PATH = path.join(__dirname, 'onboarding+planning+finalization.csv');
 const OUTPUT_PATH = path.join(__dirname, 'weddingPlanningTemplate.js');
 
 // Priority mapping
@@ -23,6 +24,50 @@ const PRIORITY_MAP = {
   NORMAL: 3,
   '': 3, // Default to NORMAL if empty
 };
+
+// Function to find all CSV files in the templates directory
+function findCsvFiles() {
+  const csvFiles = fs.readdirSync(__dirname)
+    .filter(file => file.endsWith('.csv'))
+    .sort();
+  return csvFiles;
+}
+
+// Function to prompt user for CSV selection
+async function selectCsvFile(csvFiles) {
+  if (csvFiles.length === 0) {
+    throw new Error('No CSV files found in the templates directory');
+  }
+
+  if (csvFiles.length === 1) {
+    console.log(`Found 1 CSV file: ${csvFiles[0]}`);
+    return csvFiles[0];
+  }
+
+  console.log('\nAvailable templates:');
+  csvFiles.forEach((file, index) => {
+    console.log(`[${index + 1}]: ${file}`);
+  });
+
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    rl.question('\nEnter the number associated with the desired template >> ', (answer) => {
+      rl.close();
+      const selectedIndex = parseInt(answer, 10) - 1;
+
+      if (selectedIndex < 0 || selectedIndex >= csvFiles.length || isNaN(selectedIndex)) {
+        console.error('Invalid selection. Please enter a valid number.');
+        process.exit(1);
+      }
+
+      resolve(csvFiles[selectedIndex]);
+    });
+  });
+}
 
 // Helper function to get the next version number by reading the current template file
 function getNextVersionNumber() {
@@ -90,7 +135,9 @@ function parseCSV(content) {
   return records;
 }
 
-function parseCsvTemplate() {
+function parseCsvTemplate(csvFileName) {
+  const CSV_PATH = path.join(__dirname, csvFileName);
+  
   // Read CSV file
   const fileContent = fs.readFileSync(CSV_PATH, 'utf-8');
   const records = parseCSV(fileContent);
@@ -252,16 +299,22 @@ export {
 
 async function main() {
   try {
+    // Find and select CSV file
+    const csvFiles = findCsvFiles();
+    const selectedCsvFile = await selectCsvFile(csvFiles);
+    console.log(`\nUsing template: ${selectedCsvFile}`);
+    
     console.log('Parsing template from CSV...');
 
     // Check if CSV exists
+    const CSV_PATH = path.join(__dirname, selectedCsvFile);
     if (!fs.existsSync(CSV_PATH)) {
       console.error(`CSV file not found: ${CSV_PATH}`);
       process.exit(1);
     }
 
     // Parse the CSV
-    const templateData = parseCsvTemplate();
+    const templateData = parseCsvTemplate(selectedCsvFile);
 
     console.log(`\nTemplate structure:`);
     console.log(`  Name: ${templateData.name}`);

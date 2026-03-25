@@ -148,6 +148,7 @@ model Wedding {
   spouse2Id   String?
 
   planners    PlannerWedding[]
+  vendors     WeddingVendor[]
   categories  TaskCategory[]
 }
 
@@ -234,6 +235,21 @@ model PlannerWedding {
 }
 
 
+model WeddingVendor {
+  wedding   Wedding @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  weddingId String
+
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  vendorId String
+
+  rating    Int      @default(0)  // 0-5 stars
+  notes     String?               // Required when rating > 0
+  assignedAt DateTime @default(now())
+
+  @@id([weddingId, vendorId])
+}
+
+
 model Vendor {
   id        String   @id @default(uuid())
   name      String
@@ -245,6 +261,7 @@ model Vendor {
   address   Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
   addressId String?
 
+  weddings  WeddingVendor[]
   tags      VendorTag[]
 }
 
