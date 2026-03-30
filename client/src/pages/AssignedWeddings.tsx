@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../lib/api';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
+import { Card } from '../components/ui';
+import { Button } from '../components/ui';
+import { Input } from '../components/ui';
 import { useNavigate } from 'react-router-dom';
 
 interface Client {
@@ -28,9 +29,17 @@ interface Wedding {
 
 export default function AssignedWeddings({ currentUser }: { currentUser?: any }) {
   const [weddings, setWeddings] = useState<Wedding[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const filteredWeddings = weddings.filter(wedding => {
+    const searchLower = searchTerm.toLowerCase();
+    const spouse1Name = wedding.spouse1?.name?.toLowerCase() || '';
+    const spouse2Name = wedding.spouse2?.name?.toLowerCase() || '';
+    return spouse1Name.includes(searchLower) || spouse2Name.includes(searchLower);
+  });
 
   useEffect(() => {
     loadWeddings();
@@ -126,9 +135,24 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
         </Card>
       )}
 
+      {/* Search */}
+      <Card className="mb-6">
+        <Input
+          type="text"
+          placeholder="Search weddings by couple name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mb-2"
+        />
+      </Card>
+
       {loading ? (
         <Card>
           <p className="text-slate-400">Loading weddings...</p>
+        </Card>
+      ) : filteredWeddings.length === 0 && weddings.length > 0 ? (
+        <Card>
+          <p className="text-slate-400">No weddings match your search.</p>
         </Card>
       ) : weddings.length === 0 ? (
         <Card>
@@ -136,7 +160,7 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
         </Card>
       ) : (
         <div className="space-y-3">
-          {weddings.map(wedding => {
+          {filteredWeddings.map(wedding => {
             const { remaining, total } = getTaskCounts(wedding);
             const daysUntil = getDaysUntil(wedding.date);
             const urgencyClass = getUrgencyColor(daysUntil);

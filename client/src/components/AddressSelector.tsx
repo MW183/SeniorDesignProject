@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
-import Button from './ui/Button';
-import Input from './ui/Input';
-import FormField from './ui/FormField';
+import {Button} from './ui/Button';
+import {Input} from './ui/Input';
+import FormField from './ui/formField';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { ChevronsUpDown, Plus } from 'lucide-react';
 //interface for form
 interface Address {
   id: string;
@@ -27,13 +30,16 @@ interface AddressSelectorProps {
   onAddressSelected: (address: Address) => void;
   label?: string;
   placeholder?: string;
+  addressType?: string; // Optional: filter by address type (e.g., 'Venue', 'Vendor')
 }
 
 export default function AddressSelector({ 
   onAddressSelected, 
   label = 'Select or Create Location',
-  placeholder = 'Search US addresses (e.g., "1600 Pennsylvania Ave")...'
+  placeholder = 'Search US addresses (e.g., "1600 Pennsylvania Ave")...',
+  addressType
 }: AddressSelectorProps) {
+  const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [isCreating, setIsCreating] = useState(false);
@@ -73,7 +79,8 @@ export default function AddressSelector({
       setLoading(true);
       try {
         // First, try to fetch from our backend for existing addresses
-        const res = await api(`/address?city=${encodeURIComponent(searchTerm)}`);
+        const typeParam = addressType ? `&type=${addressType}` : '';
+        const res = await api(`/address?city=${encodeURIComponent(searchTerm)}${typeParam}`);
         const existingAddresses: AddressSuggestion[] = [];
         
         if (res.ok && Array.isArray(res.body)) {
@@ -205,45 +212,63 @@ export default function AddressSelector({
               e.stopPropagation();
               setShowForm(true);
             }}
-            className="text-xs text-blue-400 hover:text-blue-300 underline"
+            className="text-xs text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
           >
-            + Manual entry
+            <Plus className="h-3 w-3" /> Manual entry
           </button>
         )}
       </div>
 
       {!showForm ? (
-        <div>
-          <Input
-            type="text"
-            placeholder={placeholder}
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="mb-2"
-          />
-          {loading && <p className="text-xs text-slate-400">Searching addresses...</p>}
-          {suggestions.length > 0 && (
-            <div className="border border-slate-600 rounded bg-slate-800 max-h-48 overflow-y-auto">
-              {suggestions.map((suggestion, idx) => (
-                <button
-                  key={`${suggestion.id}-${idx}`}
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSelectSuggestion(suggestion);
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-slate-700 text-sm border-b border-slate-700 last:border-b-0"
-                >
-                  <div className="font-medium text-white">{suggestion.displayName}</div>
-                  {suggestion.isExisting && <div className="text-xs text-slate-500">In your database</div>}
-                </button>
-              ))}
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between"
+            >
+              <span className="truncate text-slate-400">{placeholder}</span>
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full p-0" align="start">
+            <div className="flex flex-col">
+              <Input
+                placeholder={placeholder}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="m-1 mb-0"
+              />
+              <Command>
+              <CommandEmpty>
+                {loading ? 'Searching addresses...' : 'No addresses found'}
+              </CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  {suggestions.map((suggestion, idx) => (
+                    <CommandItem
+                      key={`${suggestion.id}-${idx}`}
+                      value={suggestion.id}
+                      onSelect={() => {
+                        handleSelectSuggestion(suggestion);
+                        setOpen(false);
+                      }}
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium text-white">{suggestion.displayName}</p>
+                        {suggestion.isExisting && (
+                          <p className="text-xs text-slate-500">In your database</p>
+                        )}
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
             </div>
-          )}
-          {searchTerm.trim() && suggestions.length === 0 && !loading && (
-            <p className="text-xs text-slate-400">No addresses found</p>
-          )}
-        </div>
+          </PopoverContent>
+        </Popover>
       ) : (
         <form onSubmit={handleCreateAddress} className="space-y-2 bg-slate-800 p-3 rounded border border-slate-700">
           <FormField label="Street Address" id="addr-street">

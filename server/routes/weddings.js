@@ -3,7 +3,7 @@ import prisma from '../prismaClient.js';
 import { handlePrismaError, ensureExistsOrRespond } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
-import { instantiateWeddingTemplate } from '../utils/instantiateWeddingTemplate.js';
+import { instantiateWeddingTemplate, calculateDueDate, shiftWeekendToFriday } from '../utils/instantiateWeddingTemplate.js';
 
 const router = express.Router();
 
@@ -58,7 +58,14 @@ router.get('/', requireAuth, async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const wedding = await prisma.wedding.findUnique({ where: { id } });
+    const wedding = await prisma.wedding.findUnique({ 
+      where: { id },
+      include: {
+        spouse1: true,
+        spouse2: true,
+        location: true
+      }
+    });
     if (!wedding) return res.status(404).json({ error: 'Wedding not found' });
     res.json(wedding);
   } catch (err) { handlePrismaError(res, err); }
@@ -137,16 +144,41 @@ router.post('/', requireAuth, async (req, res) => {
 });
 
 // PUT /weddings/:id — update wedding fields (requires auth). Validates provided FKs.
+// If date is updated, automatically recalculates all task due dates
 router.put('/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { date, locationId, spouse1Id, spouse2Id, templateId } = req.body;
     const update = {};
-    if (date !== undefined) update.date = new Date(date);
+    
+    // Check if wedding exists and capture old date before update
+    const oldWedding = await prisma.wedding.findUnique({ where: { id } });
+    if (!oldWedding) {
+      return res.status(404).json({ error: 'Wedding not found' });
+    }
+    
+    let dateHasChanged = false;
+    let newDate = null;
+    let dateDiffDays = 0;
+    
+    if (date !== undefined) {
+      newDate = new Date(date);
+      // Check if date is actually different (rounded down in days)
+      const oldTime = oldWedding.date.getTime();
+      const newTime = newDate.getTime();
+      if (oldTime !== newTime) {
+        dateHasChanged = true;
+        // Calculate difference in days, rounded down
+        dateDiffDays = Math.floor((newTime - oldTime) / (1000 * 60 * 60 * 24));
+      }
+      update.date = newDate;
+    }
+    
     if (locationId !== undefined) update.locationId = locationId;
     if (spouse1Id !== undefined) update.spouse1Id = spouse1Id;
     if (spouse2Id !== undefined) update.spouse2Id = spouse2Id;
     if (templateId !== undefined) update.templateId = templateId;
+    
     // validate FKs if provided
     if (locationId !== undefined && locationId !== null) {
       const ok = await ensureExistsOrRespond(res, 'address', locationId, 'locationId');
@@ -163,6 +195,49 @@ router.put('/:id', requireAuth, async (req, res) => {
     if (templateId !== undefined && templateId !== null) {
       const ok = await ensureExistsOrRespond(res, 'weddingTemplate', templateId, 'templateId');
       if (!ok) return;
+    }
+
+    // If date has changed, recalculate all task due dates for this wedding
+    if (dateHasChanged) {
+      try {
+        const tasks = await prisma.task.findMany({
+          where: {
+            category: {
+              weddingId: id
+            }
+          },
+          include: {
+            templateTask: true
+          }
+        });
+        
+        // Recalculate due dates for each task
+        for (const task of tasks) {
+          let newDueDate;
+          
+          if (task.templateTask?.defaultDueOffsetDays !== undefined) {
+            // Recalculate from template offset with new wedding date
+            newDueDate = calculateDueDate(newDate, task.templateTask.defaultDueOffsetDays);
+          } else {
+            // Shift manually created task by the same amount the wedding date moved
+            newDueDate = new Date(task.dueDate);
+            newDueDate.setDate(newDueDate.getDate() + dateDiffDays);
+            // Apply weekend adjustment
+            newDueDate = shiftWeekendToFriday(newDueDate);
+          }
+          
+          await prisma.task.update({
+            where: { id: task.id },
+            data: { dueDate: newDueDate }
+          });
+        }
+        
+        console.log(`[Weddings] Updated ${tasks.length} task due dates for wedding ${id} (date shifted by ${dateDiffDays} days)`);
+      } catch (err) {
+        console.error('Error recalculating task due dates:', err);
+        // Don't fail the wedding update, but log the error
+        return res.status(500).json({ error: 'Wedding updated but task due dates could not be recalculated', details: err.message });
+      }
     }
 
     const wedding = await prisma.wedding.update({ where: { id }, data: update });

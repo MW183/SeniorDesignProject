@@ -47,6 +47,7 @@ interface TaskEditorProps {
   onTasksChange: (updatedTasks: Task[]) => void;
   currentUser?: any;
   showCompleted?: boolean;
+  onSaveComplete?: () => void;
 }
 
 export default function TaskEditor({
@@ -56,7 +57,8 @@ export default function TaskEditor({
   weddingId,
   onTasksChange,
   currentUser,
-  showCompleted = false
+  showCompleted = false,
+  onSaveComplete
 }: TaskEditorProps) {
   const [editingTask, setEditingTask] = useState<EditingTaskState | null>(null);
   const [savingTaskId, setSavingTaskId] = useState<string | null>(null);
@@ -130,6 +132,7 @@ export default function TaskEditor({
         );
         onTasksChange(updatedTasks);
         setEditingTask(null);
+        onSaveComplete?.();
       } else {
         setError(res.body?.error || 'Failed to save task');
       }

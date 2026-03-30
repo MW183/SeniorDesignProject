@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../lib/api';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
+import { Card } from '../components/ui';
+import { Button } from '../components/ui';
+import { Input } from '../components/ui';
 
 export default function Users({ currentUser }: { currentUser?: any }) {
   const [users, setUsers] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const isAdmin = currentUser?.role === 'ADMIN';
+
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   async function load() {
     const res = await api('/users');
@@ -44,8 +50,16 @@ export default function Users({ currentUser }: { currentUser?: any }) {
           </form>
         )}
 
+        <Input
+          type="text"
+          placeholder="Search users by name or email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mb-4"
+        />
+
         <ul className="space-y-2">
-          {users.map(u => (
+          {filteredUsers.map(u => (
             <li key={u.id} className="flex items-center justify-between">
               <div>
                 <div className="font-medium">{u.name}</div>

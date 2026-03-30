@@ -3,11 +3,19 @@
     "class",
     "className"
   ],
+  "tailwindCSS.classFunctions": [
+    "cva", "cn", "clsx", "twMerge"
+  ],
   "tailwindCSS.hovers": true,
   "tailwindCSS.codeActions": true,
+  "tailwindCSS.experimental.classRegex": [
+  ["cva\\(([^;]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"],
+  ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+  ["Variants\\s*=\\s*([^;]*);", "\"(?:'|\"|`)([^\"'`]*)(?:'|\"|`)\""]
+    ],
   "tailwindCSS.includeLanguages": {
-    "typescript": "className",
-    "typescriptreact": "className"
+    "typescript": "javascript",
+    "typescriptreact": "javascriptreact"
   },
   "editor.quickSuggestions": {
     "strings": true

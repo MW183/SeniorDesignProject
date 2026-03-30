@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
-import Button from './ui/Button';
-import Input from './ui/Input';
-import FormField from './ui/FormField';
+import {Button} from './ui/Button';
+import {Input} from './ui/Input';
+import FormField from './ui/formField';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Check, ChevronsUpDown, Plus } from 'lucide-react';
+
 
 interface Client {
   id: string;
@@ -22,6 +26,7 @@ export default function ClientSelector({
   label = 'Select or Create Client',
   placeholder = 'Search by name or email...'
 }: ClientSelectorProps) {
+  const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [clients, setClients] = useState<Client[]>([]);
   const [isCreating, setIsCreating] = useState(false);
@@ -30,7 +35,7 @@ export default function ClientSelector({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Search for clients as user types
+ 
   useEffect(() => {
     if (!searchTerm.trim()) {
       setClients([]);
@@ -81,6 +86,7 @@ export default function ClientSelector({
         setNewClient({ name: '', email: '', phone: '' });
         setShowForm(false);
         setSearchTerm('');
+        setOpen(false);
       } else {
         setError(res.body?.error || res.body?.errors?.[0] || 'Failed to create client');
       }
@@ -102,53 +108,68 @@ export default function ClientSelector({
               e.stopPropagation();
               setShowForm(true);
             }}
-            className="text-xs text-blue-400 hover:text-blue-300 underline"
+            className="text-xs text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
           >
-            + Create new
+            <Plus className="h-3 w-3" /> Create new
           </button>
         )}
       </div>
 
       {!showForm ? (
-        <div>
-          <Input
-            type="text"
-            placeholder={placeholder}
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="mb-2"
-          />
-          {loading && <p className="text-xs text-slate-400">Loading...</p>}
-          {clients.length > 0 && (
-            <div className="border border-slate-600 rounded bg-slate-800 max-h-48 overflow-y-auto">
-              {clients.map(client => (
-                <button
-                  key={client.id}
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClientSelected(client);
-                    setSearchTerm('');
-                    setClients([]);
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-slate-700 text-sm border-b border-slate-700 last:border-b-0"
-                >
-                  <div className="font-medium text-white">{client.name}</div>
-                  {(client.email || client.phone) && (
-                    <div className="text-xs text-slate-400">
-                      {client.email && <span>{client.email}</span>}
-                      {client.email && client.phone && <span> • </span>}
-                      {client.phone && <span>{client.phone}</span>}
-                    </div>
-                  )}
-                </button>
-              ))}
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between"
+            >
+              <span className="truncate text-slate-400">{placeholder}</span>
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full p-0" align="start">
+            <div className="flex flex-col">
+              <Input
+                placeholder={placeholder}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="m-1 mb-0"
+              />
+              <Command>
+              <CommandEmpty>
+                {loading ? 'Searching...' : 'No clients found'}
+              </CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  {clients.map((client) => (
+                    <CommandItem
+                      key={client.id}
+                      value={client.id}
+                      onSelect={() => {
+                        onClientSelected(client);
+                        setOpen(false);
+                        setSearchTerm('');
+                      }}
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium text-white">{client.name}</p>
+                        {(client.email || client.phone) && (
+                          <p className="text-xs text-slate-400">
+                            {client.email && <span>{client.email}</span>}
+                            {client.email && client.phone && <span> • </span>}
+                            {client.phone && <span>{client.phone}</span>}
+                          </p>
+                        )}
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
             </div>
-          )}
-          {searchTerm.trim() && clients.length === 0 && !loading && (
-            <p className="text-xs text-slate-400">No clients found</p>
-          )}
-        </div>
+          </PopoverContent>
+        </Popover>
       ) : (
         <form onSubmit={handleCreateClient} className="space-y-2 bg-slate-800 p-3 rounded border border-slate-700">
           <FormField label="Name" id="client-name">

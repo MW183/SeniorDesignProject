@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
+import { Card } from '../components/ui';
+import { Button } from '../components/ui';
+import {Input} from '../components/ui';
 import { api } from '../lib/api';
 
 interface Task {
@@ -32,8 +33,21 @@ interface WeddingInfo {
 export default function PlanningDashboard({ currentUser }: { currentUser?: any }) {
   const navigate = useNavigate();
   const [upcomingTasks, setUpcomingTasks] = useState<Array<{ task: Task; wedding?: WeddingInfo }>>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const filteredUpcomingTasks = upcomingTasks.filter(({ task, wedding }) => {
+    const searchLower = searchTerm.toLowerCase();
+    const taskName = task.name.toLowerCase();
+    const weddingName = wedding ? 
+      `${wedding.spouse1?.name || ''} ${wedding.spouse2?.name || ''}`.toLowerCase() :
+      '';
+    const category = task.category?.name?.toLowerCase() || '';
+    return taskName.includes(searchLower) ||
+           weddingName.includes(searchLower) ||
+           category.includes(searchLower);
+  });
 
   useEffect(() => {
     loadUpcomingTasks();
@@ -154,7 +168,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
         <Button onClick={() => navigate('/my-weddings')}>
           View All Weddings
         </Button>
-        <Button onClick={() => navigate('/my-tasks')} variant="muted">
+        <Button onClick={() => navigate('/my-tasks')} variant="secondary">
           View All Tasks
         </Button>
       </div>
@@ -166,11 +180,22 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
 
         {loading ? (
           <p className="text-slate-400">Loading tasks...</p>
-        ) : upcomingTasks.length === 0 ? (
-          <p className="text-slate-400">No upcoming tasks at the moment - great work!</p>
         ) : (
-          <div className="space-y-2">
-            {upcomingTasks.map(({ task, wedding }) => {
+          <>
+            <Input
+              type="text"
+              placeholder="Search tasks by name, wedding, or category..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="mb-4"
+            />
+            {filteredUpcomingTasks.length === 0 && upcomingTasks.length > 0 ? (
+              <p className="text-slate-400 mt-4">No tasks match your search.</p>
+            ) : upcomingTasks.length === 0 ? (
+              <p className="text-slate-400 mt-4">No upcoming tasks at the moment - great work!</p>
+            ) : (
+              <div className="space-y-2 mt-4">
+              {filteredUpcomingTasks.map(({ task, wedding }) => {
               const daysUntil = getDaysUntil(task.dueDate);
               const hasUnmetDependency = task.dependsOn && task.dependsOn.currentStatus !== 'COMPLETED';
 
@@ -190,7 +215,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
 
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
-                      <h4 className="font-medium text-white break-words">{task.name}</h4>
+                      <h4 className="font-medium text-white wrap-break-word">{task.name}</h4>
                       <div className="text-xs text-slate-400 mt-1">
                         <div className="font-semibold">{getWeddingName(wedding)}</div>
                         <div className="flex gap-2 mt-1">
@@ -201,7 +226,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
                       </div>
                     </div>
 
-                    <div className="flex gap-2 items-start flex-shrink-0">
+                    <div className="flex gap-2 items-start shrink-0">
                       <span
                         className={`text-xs px-2 py-1 rounded font-semibold ${
                           task.priority === 1
@@ -234,8 +259,10 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
                   </div>
                 </div>
               );
-            })}
-          </div>
+              })}
+            </div>
+            )}
+          </>
         )}
       </Card>
     </div>

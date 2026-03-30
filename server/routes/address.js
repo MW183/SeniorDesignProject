@@ -11,12 +11,13 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const q = req.parsedQuery || req.query || {};
-    const { city, state, zip, limit, offset } = q;
+    const { city, state, zip, type, limit, offset } = q;
 
     const where = {};
     if (city) where.city = { contains: city, mode: 'insensitive' };
     if (state) where.state = { equals: state, mode: 'insensitive' };
     if (zip) where.zip = { equals: zip };
+    if (type) where.type = type;
 
     const addresses = await prisma.address.findMany({
       where,

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../lib/api';
-import Table from '../components/ui/Table';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import Card from '../components/ui/Card';
+import Table from '../components/ui/table';
+import { Button } from '../components/ui';
+import { Input } from '../components/ui';
+import { Card } from '../components/ui';
 
 type User = {
   id: number;
@@ -14,7 +14,13 @@ type User = {
 
 export default function PlannerManagement({ currentUser }: { currentUser?: any }) {
   const [users, setUsers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -61,7 +67,7 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
       className: 'text-left pb-2 w-[80px]',
       render: (user: User) => (
         <div className="text-center">
-          <Button variant="danger" size="sm" onClick={() => deleteUser(user)}>
+          <Button variant="destructive" size="sm" onClick={() => deleteUser(user)}>
             Delete
           </Button>
         </div>
@@ -72,6 +78,16 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
   return (
     <div className="max-w-4xl mx-auto mt-8">
       <h2 className="text-2xl font-semibold mb-4">Manage Planners</h2>
+      
+      {/* Search */}
+      <Card className="mb-6">
+        <Input
+          type="text"
+          placeholder="Search planners by name or email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </Card>
       
       {/* Add User Form */}
       <Card className="mb-6">
@@ -92,8 +108,12 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
         </div>
         {loading ? (
           <p>Loading...</p>
+        ) : filteredUsers.length === 0 && users.length > 0 ? (
+          <p className="text-slate-400">No planners match your search.</p>
+        ) : users.length === 0 ? (
+          <p className="text-slate-400">No planners found.</p>
         ) : (
-          <Table columns={columns} data={users} />
+          <Table columns={columns} data={filteredUsers} />
         )}
       </Card>
     </div>

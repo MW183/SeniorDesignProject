@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
-import Button from './ui/Button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Button } from './ui/Button';
+import { Input } from './ui/Input';
+import { ChevronsUpDown, Plus } from 'lucide-react';
 
 interface Tag {
   id: string;
@@ -35,24 +39,40 @@ interface WeddingVendor {
 interface VendorEditorProps {
   weddingId: string;
   onUpdate?: (vendors: WeddingVendor[]) => void;
+  onSaveComplete?: () => void;
 }
 
-export default function VendorEditor({ weddingId, onUpdate }: VendorEditorProps) {
+export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: VendorEditorProps) {
   const [weddingVendors, setWeddingVendors] = useState<WeddingVendor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAddVendor, setShowAddVendor] = useState(false);
   const [vendorSearch, setVendorSearch] = useState('');
   const [availableVendors, setAvailableVendors] = useState<Vendor[]>([]);
+  const [assignedVendorSearch, setAssignedVendorSearch] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
   const [editingVendorId, setEditingVendorId] = useState<string | null>(null);
   const [editRating, setEditRating] = useState(0);
   const [editNotes, setEditNotes] = useState('');
   const [editError, setEditError] = useState<string | null>(null);
+  const [openAssignedSearch, setOpenAssignedSearch] = useState(false);
+  const [openAddVendorSearch, setOpenAddVendorSearch] = useState(false);
+  const [showCreateVendorForm, setShowCreateVendorForm] = useState(false);
+  const [newVendorName, setNewVendorName] = useState('');
+  const [newVendorEmail, setNewVendorEmail] = useState('');
+  const [newVendorPhone, setNewVendorPhone] = useState('');
+  const [creatingVendor, setCreatingVendor] = useState(false);
 
   useEffect(() => {
     fetchWeddingVendors();
   }, [weddingId]);
+
+  useEffect(() => {
+    // Load all available vendors when "Add Vendor" modal opens
+    if (showAddVendor && availableVendors.length === 0 && vendorSearch === '') {
+      loadAllVendors();
+    }
+  }, [showAddVendor]);
 
   const fetchWeddingVendors = async () => {
     try {
@@ -70,15 +90,10 @@ export default function VendorEditor({ weddingId, onUpdate }: VendorEditorProps)
     }
   };
 
-  const searchVendors = async () => {
-    if (vendorSearch.trim().length === 0) {
-      setAvailableVendors([]);
-      return;
-    }
-
+  const loadAllVendors = async () => {
     setSearchLoading(true);
     try {
-      const res = await api(`/vendors?search=${encodeURIComponent(vendorSearch)}`);
+      const res = await api(`/vendors`);
       if (res.ok) {
         // Filter out already-assigned vendors
         const assignedVendorIds = weddingVendors.map(wv => wv.vendorId);
@@ -94,6 +109,30 @@ export default function VendorEditor({ weddingId, onUpdate }: VendorEditorProps)
     }
   };
 
+  // Filter vendors based on search term
+  const filterVendors = (vendors: Vendor[], searchTerm: string): Vendor[] => {
+    if (!searchTerm.trim()) return vendors;
+    const term = searchTerm.toLowerCase();
+    return vendors.filter(v => 
+      v.name.toLowerCase().includes(term) ||
+      (v.email && v.email.toLowerCase().includes(term)) ||
+      (v.phone && v.phone.includes(term)) ||
+      (v.tags && v.tags.some(vt => vt.tag.name.toLowerCase().includes(term)))
+    );
+  };
+
+  // Filter assigned vendors
+  const filterAssignedVendors = (vendorList: WeddingVendor[], searchTerm: string): WeddingVendor[] => {
+    if (!searchTerm.trim()) return vendorList;
+    const term = searchTerm.toLowerCase();
+    return vendorList.filter(wv =>
+      wv.vendor.name.toLowerCase().includes(term) ||
+      (wv.vendor.email && wv.vendor.email.toLowerCase().includes(term)) ||
+      (wv.vendor.phone && wv.vendor.phone.includes(term)) ||
+      (wv.vendor.tags && wv.vendor.tags.some(vt => vt.tag.name.toLowerCase().includes(term)))
+    );
+  };
+
   const handleAssignVendor = async (vendor: Vendor) => {
     try {
       setError(null);
@@ -107,6 +146,7 @@ export default function VendorEditor({ weddingId, onUpdate }: VendorEditorProps)
         setAvailableVendors([]);
         setShowAddVendor(false);
         onUpdate?.([...weddingVendors, res.body]);
+        onSaveComplete?.();
       } else {
         setError(res.body?.error || 'Failed to assign vendor');
       }
@@ -133,6 +173,8 @@ export default function VendorEditor({ weddingId, onUpdate }: VendorEditorProps)
 
     try {
       setEditError(null);
+      console.log('[VendorEditor] Saving rating:', { editRating, editNotes, editingVendorId });
+      
       const res = await api(`/weddings/${weddingId}/vendors/${editingVendorId}`, {
         method: 'PUT',
         body: {
@@ -141,17 +183,22 @@ export default function VendorEditor({ weddingId, onUpdate }: VendorEditorProps)
         }
       });
 
+      console.log('[VendorEditor] Save response:', { ok: res.ok, body: res.body });
+
       if (res.ok) {
+        console.log('[VendorEditor] Response rating:', res.body?.rating);
         const updatedVendors = weddingVendors.map(wv =>
           wv.vendorId === editingVendorId ? res.body : wv
         );
         setWeddingVendors(updatedVendors);
         onUpdate?.(updatedVendors);
         setEditingVendorId(null);
+        onSaveComplete?.();
       } else {
         setEditError(res.body?.error || 'Failed to save rating');
       }
     } catch (err) {
+      console.error('[VendorEditor] Error saving rating:', err);
       setEditError('An error occurred while saving');
     }
   };
@@ -169,6 +216,7 @@ export default function VendorEditor({ weddingId, onUpdate }: VendorEditorProps)
         const updatedVendors = weddingVendors.filter(wv => wv.vendorId !== vendorId);
         setWeddingVendors(updatedVendors);
         onUpdate?.(updatedVendors);
+        onSaveComplete?.();
       } else {
         setError(res.body?.error || 'Failed to remove vendor');
       }
@@ -177,18 +225,122 @@ export default function VendorEditor({ weddingId, onUpdate }: VendorEditorProps)
     }
   };
 
+  const handleCreateVendor = async () => {
+    if (!newVendorName.trim()) {
+      setError('Vendor name is required');
+      return;
+    }
+
+    setCreatingVendor(true);
+    setError(null);
+
+    try {
+      // Create vendor
+      const vendorRes = await api('/vendors', {
+        method: 'POST',
+        body: {
+          name: newVendorName.trim(),
+          email: newVendorEmail.trim() || null,
+          phone: newVendorPhone.trim() || null
+        }
+      });
+
+      if (!vendorRes.ok) {
+        setError(vendorRes.body?.errors?.[0] || vendorRes.body?.error || 'Failed to create vendor');
+        setCreatingVendor(false);
+        return;
+      }
+
+      // Assign vendor to wedding
+      const vendor = vendorRes.body;
+      const assignRes = await api(`/weddings/${weddingId}/vendors/${vendor.id}`, {
+        method: 'POST'
+      });
+
+      if (assignRes.ok) {
+        setWeddingVendors([...weddingVendors, assignRes.body]);
+        setNewVendorName('');
+        setNewVendorEmail('');
+        setNewVendorPhone('');
+        setShowCreateVendorForm(false);
+        setShowAddVendor(false);
+        onUpdate?.([...weddingVendors, assignRes.body]);
+        onSaveComplete?.();
+      } else {
+        setError(assignRes.body?.error || 'Failed to assign vendor');
+      }
+    } catch (err) {
+      setError('An error occurred while creating vendor');
+    } finally {
+      setCreatingVendor(false);
+    }
+  };
+
   if (loading) {
     return <p className="text-slate-400">Loading vendors...</p>;
   }
 
   const editingVendor = weddingVendors.find(wv => wv.vendorId === editingVendorId);
+  const filteredWeddingVendors = filterAssignedVendors(weddingVendors, assignedVendorSearch);
+  const filteredAvailableVendors = filterVendors(availableVendors, vendorSearch);
 
   return (
     <div className="space-y-4">
       {/* Display assigned vendors */}
       {weddingVendors.length > 0 ? (
         <div className="space-y-3">
-          {weddingVendors.map(wv => (
+          {/* Search assigned vendors */}
+          <Popover open={openAssignedSearch} onOpenChange={setOpenAssignedSearch}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openAssignedSearch}
+                className="w-full justify-between"
+              >
+                <span className="truncate text-slate-400">Search assigned vendors...</span>
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0" align="start">
+            <div className="flex flex-col">
+              <Input
+                placeholder="Search vendors by name, email, phone, or tag..."
+                value={assignedVendorSearch}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAssignedVendorSearch(e.target.value)}
+                className="m-1 mb-0"
+              />
+              <Command>
+                <CommandEmpty>No assigned vendors found</CommandEmpty>
+                <CommandList>
+                  <CommandGroup>
+                    {filteredWeddingVendors.map((wv) => (
+                      <CommandItem
+                        key={wv.vendorId}
+                        value={wv.vendorId}
+                        onSelect={() => {
+                          setOpenAssignedSearch(false);
+                        }}
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium text-white">{wv.vendor.name}</p>
+                          {(wv.vendor.email || wv.vendor.phone) && (
+                            <p className="text-xs text-slate-400">
+                              {wv.vendor.email && <span>{wv.vendor.email}</span>}
+                              {wv.vendor.email && wv.vendor.phone && <span> • </span>}
+                              {wv.vendor.phone && <span>{wv.vendor.phone}</span>}
+                            </p>
+                          )}
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </div>
+            </PopoverContent>
+          </Popover>
+          {filteredWeddingVendors.map(wv => (
             <div key={wv.vendorId} className="bg-slate-800 border border-slate-700 rounded p-3">
               {editingVendorId === wv.vendorId ? (
                 // Edit mode
@@ -350,83 +502,136 @@ export default function VendorEditor({ weddingId, onUpdate }: VendorEditorProps)
         </button>
       ) : (
         <div className="bg-slate-800 border border-slate-700 rounded p-3 space-y-3">
-          <h4 className="text-sm font-medium text-slate-300">Search Vendors</h4>
+          <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2">
+            <Plus className="h-4 w-4" /> Search & Add Vendors
+          </h4>
 
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={vendorSearch}
-              onChange={(e) => {
-                e.stopPropagation();
-                setVendorSearch(e.target.value);
-              }}
-              onClick={(e) => e.stopPropagation()}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  searchVendors();
-                }
-              }}
-              placeholder="Search vendors..."
-              className="flex-1 bg-slate-900 border border-slate-600 rounded px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 outline-none"
-            />
+          {/* Search available vendors */}
+          <Popover open={openAddVendorSearch} onOpenChange={setOpenAddVendorSearch}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openAddVendorSearch}
+                className="w-full justify-between"
+              >
+                <span className="truncate text-slate-400">Search vendors by name, email, phone, or tag...</span>
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0" align="start">
+            <div className="flex flex-col">
+              <Input
+                placeholder="Search vendors..."
+                value={vendorSearch}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVendorSearch(e.target.value)}
+                className="m-1 mb-0"
+              />
+              <Command>
+                <CommandEmpty>
+                  {searchLoading ? 'Loading vendors...' : 'No vendors found'}
+                </CommandEmpty>
+                <CommandList>
+                  <CommandGroup>
+                    {filteredAvailableVendors.map((vendor) => (
+                      <CommandItem
+                        key={vendor.id}
+                        value={vendor.id}
+                        onSelect={() => {
+                          handleAssignVendor(vendor);
+                          setOpenAddVendorSearch(false);
+                          setVendorSearch('');
+                        }}
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium text-white">{vendor.name}</p>
+                          {(vendor.email || vendor.phone) && (
+                            <p className="text-xs text-slate-400">
+                              {vendor.email && <span>{vendor.email}</span>}
+                              {vendor.email && vendor.phone && <span> • </span>}
+                              {vendor.phone && <span>{vendor.phone}</span>}
+                            </p>
+                          )}
+                          {vendor.tags && vendor.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {vendor.tags.map(vt => (
+                                <span key={vt.tag.id} className="text-xs bg-slate-700 text-slate-200 px-1.5 py-0.5 rounded">
+                                  {vt.tag.name}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </div>
+            </PopoverContent>
+          </Popover>
+
+          {/* Create new vendor form */}
+          {!showCreateVendorForm ? (
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                searchVendors();
+                setShowCreateVendorForm(true);
               }}
-              disabled={searchLoading}
-              className="px-3 py-2 bg-blue-700 hover:bg-blue-600 disabled:bg-slate-600 text-white text-sm rounded"
+              className="w-full px-3 py-2 bg-green-900 hover:bg-green-800 text-white text-sm rounded"
             >
-              {searchLoading ? 'Searching...' : 'Search'}
+              + Create New Vendor
             </button>
-          </div>
-
-          {/* Search results */}
-          {availableVendors.length > 0 && (
-            <div className="space-y-2 max-h-64 overflow-y-auto">
-              {availableVendors.map(vendor => (
-                <div
-                  key={vendor.id}
-                  className="bg-slate-900 border border-slate-600 rounded p-2 flex justify-between items-start"
+          ) : (
+            <div className="bg-slate-700 border border-slate-600 rounded p-3 space-y-2">
+              <h4 className="text-sm font-medium text-slate-200">New Vendor</h4>
+              <Input
+                placeholder="Vendor name *"
+                value={newVendorName}
+                onChange={(e) => setNewVendorName(e.target.value)}
+                className="text-sm"
+              />
+              <Input
+                placeholder="Email"
+                type="email"
+                value={newVendorEmail}
+                onChange={(e) => setNewVendorEmail(e.target.value)}
+                className="text-sm"
+              />
+              <Input
+                placeholder="Phone"
+                value={newVendorPhone}
+                onChange={(e) => setNewVendorPhone(e.target.value)}
+                className="text-sm"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCreateVendor();
+                  }}
+                  disabled={creatingVendor}
+                  className="flex-1 px-2 py-1 bg-green-700 hover:bg-green-600 disabled:bg-slate-600 text-white text-sm rounded"
                 >
-                  <div>
-                    <p className="text-sm font-medium text-white">{vendor.name}</p>
-                    {vendor.email && <p className="text-xs text-slate-400">{vendor.email}</p>}
-                    {vendor.phone && <p className="text-xs text-slate-400">{vendor.phone}</p>}
-                    {vendor.tags && vendor.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {vendor.tags.map(vt => (
-                          <span key={vt.tag.id} className="text-xs bg-slate-700 text-slate-200 px-1.5 py-0.5 rounded">
-                            {vt.tag.name}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAssignVendor(vendor);
-                    }}
-                    className="text-xs px-2 py-1 bg-green-700 hover:bg-green-600 text-white rounded whitespace-nowrap"
-                  >
-                    Assign
-                  </button>
-                </div>
-              ))}
+                  {creatingVendor ? 'Creating...' : 'Create'}
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowCreateVendorForm(false);
+                    setNewVendorName('');
+                    setNewVendorEmail('');
+                    setNewVendorPhone('');
+                  }}
+                  className="flex-1 px-2 py-1 bg-slate-600 hover:bg-slate-500 text-white text-sm rounded"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-          )}
-
-          {vendorSearch && searchLoading && (
-            <p className="text-sm text-slate-400">Searching...</p>
-          )}
-
-          {vendorSearch && !searchLoading && availableVendors.length === 0 && (
-            <p className="text-sm text-slate-500">(All matching vendors are already assigned)</p>
           )}
 
           {error && <div className="text-sm text-red-400">{error}</div>}

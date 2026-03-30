@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import Table from '../components/ui/Table';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui';
+import { Button } from '../components/ui';
+import { Input } from '../components/ui';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '../components/ui/command';
+import Table from '../components/ui/table';
 import { api } from '../lib/api';
+
 
 type PlannerStats = {
   planner: {
@@ -19,11 +23,37 @@ type PlannerStats = {
   cancelled: number;
 };
 
+type WeddingStats = {
+  wedding: {
+    id: string;
+    spouse1Name: string;
+    spouse2Name: string;
+    date: string;
+  };
+  planner: {
+    id: string;
+    name: string;
+  } | null;
+  totalTasks: number;
+  pending: number;
+  inProgress: number;
+  completed: number;
+  blocked: number;
+  cancelled: number;
+};
 export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
   const navigate = useNavigate();
   const [stats, setStats] = useState<PlannerStats[]>([]);
+  const [weddingStats, setWeddingStats] = useState<WeddingStats[]>([]);
+  const [SearchTerm, setSearchTerm] = useState('');
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const filteredStats = stats.filter(stat =>
+    stat.planner.name.toLowerCase().includes(SearchTerm.toLowerCase()) ||
+    stat.planner.email.toLowerCase().includes(SearchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     loadStats();
@@ -40,6 +70,10 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       // Fetch all users (planners)
       const usersRes = await api('/users');
       const users = usersRes.ok && Array.isArray(usersRes.body) ? usersRes.body : [];
+
+      // Fetch all weddings
+      const weddingsRes = await api('/weddings?limit=1000');
+      const weddings = weddingsRes.ok && Array.isArray(weddingsRes.body) ? weddingsRes.body : [];
 
       // Group tasks by planner and count statuses
       const plannerMap = new Map<string, PlannerStats>();
@@ -83,9 +117,66 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
         }
       });
 
+      // Log tasks for debugging
+      console.log('Total tasks:', tasks.length);
+      console.log('Tasks with weddingId:', tasks.filter((t: any) => t.category?.weddingId).length);
+      console.log('Completed tasks:', tasks.filter((t: any) => t.currentStatus === 'COMPLETED'));
+
+      // Group tasks by wedding and count statuses
+      const weddingMap = new Map<string, WeddingStats>();
+
+      weddings.forEach((wedding: any) => {
+        const primaryPlanner = wedding.planners?.[1];
+        console.log('Wedding:', wedding.spouse1?.name, '- Planners:', wedding.planners);
+        weddingMap.set(wedding.id, {
+          wedding: {
+            id: wedding.id,
+            spouse1Name: wedding.spouse1?.name || 'Unknown',
+            spouse2Name: wedding.spouse2?.name || 'Unknown',
+            date: wedding.date
+          },
+          planner: primaryPlanner ? { id: primaryPlanner.planner.id, name: primaryPlanner.planner.name } : null,
+          totalTasks: 0,
+          pending: 0,
+          inProgress: 0,
+          completed: 0,
+          blocked: 0,
+          cancelled: 0,
+        });
+      });
+
+      tasks.forEach((task: any) => {
+        const weddingId = task.category?.weddingId;
+        if (weddingId && weddingMap.has(weddingId)) {
+          const weddingStats = weddingMap.get(weddingId)!;
+          weddingStats.totalTasks++;
+          
+          switch (task.currentStatus) {
+            case 'PENDING':
+              weddingStats.pending++;
+              break;
+            case 'IN PROGRESS':
+              weddingStats.inProgress++;
+              break;
+            case 'COMPLETED':
+              weddingStats.completed++;
+              break;
+            case 'BLOCKED':
+              weddingStats.blocked++;
+              break;
+            case 'CANCELLED':
+              weddingStats.cancelled++;
+              break;
+          }
+        }
+      });
+
       setStats(Array.from(plannerMap.values()));
+      setWeddingStats(Array.from(weddingMap.values()).sort((a, b) => 
+        new Date(b.wedding.date).getTime() - new Date(a.wedding.date).getTime()
+      ));
     } catch (err) {
-      setError('Failed to load planner statistics');
+      setError('Failed to load statistics');
       console.error('Error loading stats:', err);
     } finally {
       setLoading(false);
@@ -151,44 +242,126 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
     },
   ];
 
+  const weddingColumns = [
+    { 
+      key: 'wedding', 
+      label: 'Wedding', 
+      className: 'text-left pb-2 w-1/3',
+      render: (stat: WeddingStats) => (
+        <div>
+          <div className="font-medium">{stat.wedding.spouse1Name} & {stat.wedding.spouse2Name}</div>
+          <div className="text-sm text-slate-400">{new Date(stat.wedding.date).toLocaleDateString()}</div>
+        </div>
+      )
+    },
+    { 
+      key: 'planner', 
+      label: 'Planner', 
+      className: 'text-left pb-2 w-1/4',
+      render: (stat: WeddingStats) => (
+        <div className="font-medium">{stat.planner?.name || 'Unassigned'}</div>
+      )
+    },
+    { 
+      key: 'pending', 
+      label: 'Pending', 
+      className: 'text-center pb-2 w-[80px]',
+      render: (stat: WeddingStats) => (
+        <span className="text-yellow-400">{stat.pending}</span>
+      )
+    },
+    { 
+      key: 'inProgress', 
+      label: 'In Progress', 
+      className: 'text-center pb-2 w-[100px]',
+      render: (stat: WeddingStats) => (
+        <span className="text-blue-400">{stat.inProgress}</span>
+      )
+    },
+    { 
+      key: 'completed', 
+      label: 'Completed', 
+      className: 'text-center pb-2 w-[100px]',
+      render: (stat: WeddingStats) => (
+        <span className="text-green-400">{stat.completed}</span>
+      )
+    },
+    { 
+      key: 'blocked', 
+      label: 'Blocked', 
+      className: 'text-center pb-2 w-[80px]',
+      render: (stat: WeddingStats) => (
+        <span className="text-red-400">{stat.blocked}</span>
+      )
+    },
+    { 
+      key: 'cancelled', 
+      label: 'Cancelled', 
+      className: 'text-center pb-2 w-[100px]',
+      render: (stat: WeddingStats) => (
+        <span className="text-gray-400">{stat.cancelled}</span>
+      )
+    },
+  ];
+
   return (
     <div className="max-w-6xl mx-auto mt-8">
       <Card className="mb-6">
-        <h2 className="text-2xl font-semibold mb-2">Admin Dashboard</h2>
-        <p className="text-slate-400">Welcome, {currentUser?.name}!</p>
+        <CardHeader>
+          <CardTitle className="text-2xl">Admin Dashboard</CardTitle>
+          <CardDescription>Welcome, {currentUser?.name}!</CardDescription>
+        </CardHeader>
       </Card>
 
-      {error && <Card className="mb-6 border border-red-700 bg-red-950"><p className="text-red-300">{error}</p></Card>}
+      {error && (
+        <Card className="mb-6 border-red-700 bg-red-950">
+          <CardContent className="pt-6">
+            <p className="text-red-300">{error}</p>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Management Actions */}
       <Card className="mb-6">
-        <h3 className="text-lg font-semibold mb-4">Management</h3>
-        <div className="flex flex-wrap gap-3">
-          <Button onClick={() => navigate('/manage-weddings')} variant="primary">
-            Manage Weddings
-          </Button>
-          <Button onClick={() => navigate('/manage-planners')} variant="muted">
-            Manage Planners
-          </Button>
-          <Button onClick={() => navigate('/create-wedding')} variant="muted">
-            Create New Wedding
-          </Button>
-        </div>
+        <CardHeader>
+          <CardTitle>Management</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-3">
+            <Button onClick={() => navigate('/manage-weddings')} variant="outline">
+              Manage Weddings
+            </Button>
+            <Button onClick={() => navigate('/manage-planners')} variant="outline">
+              Manage Planners
+            </Button>
+            <Button onClick={() => navigate('/create-wedding')} variant="outline">
+              Create New Wedding
+            </Button>
+          </div>
+        </CardContent>
       </Card>
 
-      {/* Planner Stats */}
-      <Card>
-        <div className="flex items-baseline justify-between gap-4 mb-4">
-          <h3 className="text-lg font-semibold m-0">Planner Progress</h3>
-          <p className="m-0 text-sm text-slate-400">Task distribution across planners</p>
-        </div>
-        {loading ? (
-          <p className="text-slate-400">Loading...</p>
-        ) : stats.length === 0 ? (
-          <p className="text-slate-400">No planners found.</p>
-        ) : (
-          <Table columns={columns} data={stats} />
-        )}
+      {/* Wedding Stats */}
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="text-lg">Wedding Stats</CardTitle>
+          <CardDescription>Task breakdown per wedding</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <p className="text-slate-400">Loading...</p>
+          ) : weddingStats.length === 0 ? (
+            <p className="text-slate-400">No weddings found.</p>
+          ) : (
+            <Table 
+              columns={weddingColumns} 
+              data={weddingStats.map(stat => ({
+                ...stat,
+                id: stat.wedding.id
+              }))}
+            />
+          )}
+        </CardContent>
       </Card>
     </div>
   );

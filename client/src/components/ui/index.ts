@@ -1,5 +1,6 @@
-export { default as Button } from './Button';
-export { default as Card } from './Card';
-export { default as Input } from './Input';
-export { default as FormField } from './FormField';
-export { default as Table } from './Table';
+export * from './Button';
+export * from './card';
+export * from './Input';
+export { default as FormField } from './formField';
+export * from './collapsible';
+export * from './table';

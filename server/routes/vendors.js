@@ -11,11 +11,29 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const q = req.parsedQuery || req.query || {};
-    const { search, limit, offset } = q;
+    const { search, searchBy = 'name', limit, offset } = q;
     const where = {};
 
     if (search) {
-      where.name = { contains: search, mode: 'insensitive' };
+      if (searchBy === 'tag') {
+        // Search by tag name
+        where.tags = {
+          some: {
+            tag: {
+              name: { contains: search, mode: 'insensitive' }
+            }
+          }
+        };
+      } else if (searchBy === 'email') {
+        // Search by email
+        where.email = { contains: search, mode: 'insensitive' };
+      } else if (searchBy === 'phone') {
+        // Search by phone
+        where.phone = { contains: search, mode: 'insensitive' };
+      } else {
+        // Default: search by vendor name
+        where.name = { contains: search, mode: 'insensitive' };
+      }
     }
 
     const vendors = await prisma.vendor.findMany({

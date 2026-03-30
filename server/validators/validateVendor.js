@@ -22,11 +22,12 @@ const vendorSchema = {
     validate: v => true
   },
   rating: {
-  required: false,
-  normalize: v => { 
-    if (v === undefined || v === null) return 0; 
-    return 0; // Don't process decimals or invalid values
-  },
+    required: false,
+    normalize: v => { 
+      if (v === undefined || v === null) return 0;
+      // Return the value as-is for validation
+      return v;
+    },
   validate: (normalized, payload) => {
     const original = payload.rating;
     if (original === undefined || original === null) return true;

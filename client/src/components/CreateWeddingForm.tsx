@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import FormField from '../components/ui/FormField';
+import {Card} from './ui/card';
+import {Button} from './ui/Button';
+import {Input} from './ui/Input';
+import FormField from './ui/formField';
 
 interface WeddingTemplate {
   id: string;

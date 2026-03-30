@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
-import Button from './ui/Button';
+import { Button } from './ui/Button';
 import AddressSelector from './AddressSelector';
 
 interface Address {
@@ -20,9 +20,10 @@ interface Wedding {
 interface VenueEditorProps {
   weddingId: string;
   onUpdate?: (wedding: Wedding) => void;
+  onSaveComplete?: () => void;
 }
 
-export default function VenueEditor({ weddingId, onUpdate }: VenueEditorProps) {
+export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: VenueEditorProps) {
   const [wedding, setWedding] = useState<Wedding | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -79,6 +80,7 @@ export default function VenueEditor({ weddingId, onUpdate }: VenueEditorProps) {
         setWedding(updatedWedding);
         onUpdate?.(updatedWedding);
         setError(null);
+        onSaveComplete?.();
       } else {
         setError(res.body?.error || 'Failed to save venue');
       }

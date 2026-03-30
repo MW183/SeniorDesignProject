@@ -1,9 +1,9 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { api } from '../lib/api';
-import Table from '../components/ui/Table';
-import Button from '../components/ui/Button';
-import Card from '../components/ui/Card';
-import CollapsibleSection from './ui/CollapsibleSection';
+import Table from './ui/table';
+import {Button} from './ui/Button';
+import {Card} from './ui/card';
+import {Collapsible, CollapsibleContent, CollapsibleTrigger} from './ui/collapsible';
 import WeddingDetailsEditor from './WeddingDetailsEditor';
 
 type Wedding = {
@@ -130,7 +130,7 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
             >
               {isExpanded ? 'Close' : 'Edit'}
             </Button>
-            <Button variant="danger" size="sm" onClick={() => deleteWedding(wedding.id)}>
+            <Button variant="default" color='red' size="sm" onClick={() => deleteWedding(wedding.id)}>
               Remove
             </Button>
           </div>
@@ -160,29 +160,40 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
         )}
       </Card>
 
-      {Array.from(expandedWeddingIds).map((weddingId) => {
-        const wedding = weddings.find(w => w.id === weddingId);
-        if (!wedding) return null;
-        return (
-          <Card key={weddingId} className="mt-4">
-            <CollapsibleSection
-              title={`Wedding Details - ${formatDate(wedding.date)}`}
-              isExpanded={true}
-              onToggle={() => {
-                const newExpanded = new Set(expandedWeddingIds);
-                newExpanded.delete(weddingId);
-                setExpandedWeddingIds(newExpanded);
-              }}
-            >
-              <WeddingDetailsEditor 
-                weddingId={weddingId}
-                onUpdate={() => load()}
-                currentUser={currentUser}
-              />
-            </CollapsibleSection>
-          </Card>
-        );
-      })}
+{Array.from(expandedWeddingIds).map((weddingId) => {
+  const wedding = weddings.find(w => w.id === weddingId);
+  if (!wedding) return null;
+  return (
+    <Card key={weddingId} className="mt-4">
+      <Collapsible 
+        open={true}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            const newExpanded = new Set(expandedWeddingIds);
+            newExpanded.delete(weddingId);
+            setExpandedWeddingIds(newExpanded);
+          }
+        }}
+      >
+        <CollapsibleTrigger className="w-full text-left font-semibold hover:text-muted-foreground">
+          Wedding Details - {formatDate(wedding.date)}
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-4">
+          <WeddingDetailsEditor 
+            weddingId={weddingId}
+            onUpdate={() => load()}
+            currentUser={currentUser}
+            onSaveComplete={() => {
+              const newExpanded = new Set(expandedWeddingIds);
+              newExpanded.delete(weddingId);
+              setExpandedWeddingIds(newExpanded);
+            }}
+          />
+        </CollapsibleContent>
+      </Collapsible>
+    </Card>
+  );
+})}
     </>
   );
 });

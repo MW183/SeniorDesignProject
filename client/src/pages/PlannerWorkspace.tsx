@@ -10,40 +10,31 @@ export default function PlannerWorkspace({ currentUser }: { currentUser?: any })
   const navigate = useNavigate();
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
-  const [weddingName, setWeddingName] = useState<string>('');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isNarrowScreen, setIsNarrowScreen] = useState(window.innerWidth < 1200);
 
-  // Load wedding name for display
-  useEffect(() => {
-    if (weddingId) {
-      const fetchWeddingName = async () => {
-        try {
-          const res = await api(`/weddings/${weddingId}`);
-          if (res.ok) {
-            const wedding = res.body;
-            const spouse1 = wedding.spouse1?.name || '';
-            const spouse2 = wedding.spouse2?.name || '';
-            if (spouse1 && spouse2) {
-              setWeddingName(`${spouse1} & ${spouse2}`);
-            } else if (spouse1) {
-              setWeddingName(spouse1);
-            } else if (spouse2) {
-              setWeddingName(spouse2);
-            }
-          }
-        } catch (err) {
-          console.error('Failed to load wedding name:', err);
-        }
-      };
-      fetchWeddingName();
+  // Handle sidebar opening on narrow screens (only one open at a time)
+  const handleLeftSidebarToggle = () => {
+    if (isNarrowScreen && rightSidebarOpen) {
+      setRightSidebarOpen(false);
     }
-  }, [weddingId]);
+    setLeftSidebarOpen(!leftSidebarOpen);
+  };
+
+  const handleRightSidebarToggle = () => {
+    if (isNarrowScreen && leftSidebarOpen) {
+      setLeftSidebarOpen(false);
+    }
+    setRightSidebarOpen(!rightSidebarOpen);
+  };
 
   // Handle window resize for responsive behavior
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
+      const narrow = window.innerWidth < 1200;
       setIsMobile(mobile);
+      setIsNarrowScreen(narrow);
       // Close sidebars on mobile
       if (mobile) {
         setLeftSidebarOpen(false);
@@ -75,18 +66,18 @@ export default function PlannerWorkspace({ currentUser }: { currentUser?: any })
       >
         {leftSidebarOpen && weddingId && (
           <div className="flex-1 overflow-auto p-4 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-300 sticky top-0">Wedding Details</h3>
             <WeddingDetailsEditor
               weddingId={weddingId}
               currentUser={currentUser}
+              showTitle={true}
             />
           </div>
         )}
       </div>
         
       {/* Center - Tasks (Main Content) */}
-      <div className="flex-1 overflow-auto bg-slate-900 min-w-0"> 
-        <div className="max-w-7xl">
+      <div className="flex-1 overflow-auto bg-slate-900 min-w-0 w-full"> 
+        <div className="max-w-7xl mx-auto w-full px-4 py-6 md:px-6 md:py-8">
           <PlannerTasks currentUser={currentUser} hideBackButton={true} />
         </div>
       </div>
@@ -107,7 +98,7 @@ export default function PlannerWorkspace({ currentUser }: { currentUser?: any })
 
       {/* Left Toggle Button - Fixed Position */}
       <button
-        onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
+        onClick={handleLeftSidebarToggle}
         className="w-6 h-12 flex items-center justify-center hover:bg-slate-600 transition text-white bg-slate-700 fixed top-1/2 -translate-y-1/2 z-50 rounded-r border border-l-0 border-slate-700"
         title={leftSidebarOpen ? 'Hide wedding details' : 'Show wedding details'}
         style={{ left: leftSidebarOpen ? '320px' : '48px' }}
@@ -117,7 +108,7 @@ export default function PlannerWorkspace({ currentUser }: { currentUser?: any })
 
       {/* Right Toggle Button - Fixed Position */}
       <button
-        onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
+        onClick={handleRightSidebarToggle}
         className="w-6 h-12 flex items-center justify-center hover:bg-slate-600 transition text-white bg-slate-700 fixed top-1/2 -translate-y-1/2 z-50 rounded-l border border-r-0 border-slate-700"
         title={rightSidebarOpen ? 'Hide vendors' : 'Show vendors'}
         style={{ right: rightSidebarOpen ? '320px' : '48px' }}

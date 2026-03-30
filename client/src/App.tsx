@@ -19,6 +19,31 @@ function App() {
   const [currentUser, setCurrentUser] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // Apply dark mode based on system preference
+  useEffect(() => {
+    const html = document.documentElement;
+    
+    // Check system preference
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
+    
+    // Listen for changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        html.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+      }
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
   async function loadMe() {
     try {
       const res = await api('/auth/me');
@@ -43,6 +68,11 @@ function App() {
   useEffect(() => { loadMe(); }, []);
 
   if (loading) return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+
+  // Debug log
+  if (currentUser) {
+    console.log('[App] currentUser:', { role: currentUser.role, id: currentUser.id, email: currentUser.email });
+  }
 
   return (
     <BrowserRouter>
@@ -104,16 +134,7 @@ function App() {
                   : <Navigate to="/login" replace />
               } 
             />
-            
-            {/* All Tasks (DEPRECATED - keeping for backward compatibility) */}
-            <Route 
-              path="/my-tasks" 
-              element={
-                currentUser 
-                  ? <PlannerTasks currentUser={currentUser} /> 
-                  : <Navigate to="/login" replace />
-              } 
-            />
+          
             
             {/* Admin: Manage Weddings */}
             <Route 
@@ -149,26 +170,8 @@ function App() {
             <Route 
               path="/manage-vendors" 
               element={
-                currentUser?.role === 'ADMIN' || currentUser?.role === 'PLANNER'
+                currentUser?.role === 'ADMIN' || currentUser?.role === 'USER'
                   ? <Vendors currentUser={currentUser} /> 
-                  : <Navigate to={currentUser ? "/my-weddings" : "/login"} replace />
-              } 
-            />
-            
-            {/* Legacy Routes (backward compatibility) */}
-            <Route 
-              path="/account-management" 
-              element={
-                currentUser?.role === 'ADMIN' 
-                  ? <PlannerManagement currentUser={currentUser} /> 
-                  : <Navigate to={currentUser ? "/my-weddings" : "/login"} replace />
-              } 
-            />
-            <Route 
-              path="/planner-overview" 
-              element={
-                currentUser?.role === 'ADMIN' 
-                  ? <PlannerOverview currentUser={currentUser} /> 
                   : <Navigate to={currentUser ? "/my-weddings" : "/login"} replace />
               } 
             />

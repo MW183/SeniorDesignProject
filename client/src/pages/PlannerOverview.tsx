@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../lib/api';
-import Card from '../components/ui/Card';
-import Table from '../components/ui/Table';
+import { Card } from '../components/ui';
+import { Input } from '../components/ui';
+import Table from '../components/ui/table';
 
 type PlannerStats = {
   planner: {
@@ -19,7 +20,13 @@ type PlannerStats = {
 
 export default function PlannerOverview({ currentUser }: { currentUser?: any }) {
   const [stats, setStats] = useState<PlannerStats[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const filteredStats = stats.filter(stat =>
+    stat.planner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    stat.planner.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   async function load() {
     setLoading(true);
@@ -150,12 +157,23 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
           <h2 className="text-2xl font-semibold m-0">Planner Overview</h2>
           <p className="m-0 text-sm text-slate-400">Task distribution across planners</p>
         </div>
+        <Input
+          type="text"
+          placeholder="Search planners by name or email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mb-4"
+        />
         {loading ? (
           <p>Loading...</p>
+        ) : filteredStats.length === 0 && stats.length > 0 ? (
+          <p className="text-slate-400 mt-4">No planners match your search.</p>
         ) : stats.length === 0 ? (
-          <p className="text-slate-400">No planners found.</p>
+          <p className="text-slate-400 mt-4">No planners found.</p>
         ) : (
-          <Table columns={columns} data={stats} />
+          <div className="mt-4">
+            <Table columns={columns} data={filteredStats} />
+          </div>
         )}
       </Card>
     </div>

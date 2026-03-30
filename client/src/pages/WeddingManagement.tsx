@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../lib/api';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
+import { Card } from '../components/ui';
+import { Input } from '../components/ui';
 import PlannerAssignment from '../components/PlannerAssignment';
 import CouplemembersEditor from '../components/CouplemembersEditor';
 import VenueEditor from '../components/VenueEditor';
 import VendorEditor from '../components/VendorEditor';
-import CollapsibleSection from '../components/ui/CollapsibleSection';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../components/ui';
+
 
 interface Wedding {
   id: string;
@@ -19,8 +20,16 @@ interface Wedding {
 
 export default function WeddingManagement({ currentUser }: { currentUser?: any }) {
   const [weddings, setWeddings] = useState<Wedding[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const filteredWeddings = weddings.filter(wedding => {
+    const searchLower = searchTerm.toLowerCase();
+    const spouse1 = wedding.spouse1?.name?.toLowerCase() || '';
+    const spouse2 = wedding.spouse2?.name?.toLowerCase() || '';
+    return spouse1.includes(searchLower) || spouse2.includes(searchLower);
+  });
   const [expandedWeddingId, setExpandedWeddingId] = useState<string | null>(null);
   const [expandedPlannersWeddingId, setExpandedPlannersWeddingId] = useState<string | null>(null);
   const [editingCouplemembersWeddingId, setEditingCouplemembersWeddingId] = useState<string | null>(null);
@@ -89,13 +98,25 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
 
       {error && <Card className="mb-6 border border-red-700 bg-red-950"><p className="text-red-300">{error}</p></Card>}
 
+      {/* Search */}
+      <Card className="mb-6">
+        <Input
+          type="text"
+          placeholder="Search weddings by couple name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </Card>
+
       {loading ? (
         <Card><p className="text-slate-400">Loading weddings...</p></Card>
+      ) : filteredWeddings.length === 0 && weddings.length > 0 ? (
+        <Card><p className="text-slate-400">No weddings match your search.</p></Card>
       ) : weddings.length === 0 ? (
         <Card><p className="text-slate-400">No weddings found.</p></Card>
       ) : (
         <div className="space-y-3">
-          {weddings.map((wedding) => {
+          {filteredWeddings.map((wedding) => {
             const daysUntil = getDaysUntil(wedding.date);
             const isExpanded = expandedWeddingId === wedding.id;
 
@@ -135,120 +156,122 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                 {isExpanded && (
                   <div className="mt-4 pt-4 border-t border-slate-700 space-y-0">
                     {/* Couple Members Section */}
-                    <CollapsibleSection
-                      title="Couple Members"
-                      isExpanded={editingCouplemembersWeddingId === wedding.id}
-                      onToggle={() =>
-                        setEditingCouplemembersWeddingId(
-                          editingCouplemembersWeddingId === wedding.id ? null : wedding.id
-                        )
-                      }
-                      firstSection={true}
-                      summary={
-                        <div className="bg-slate-800 border border-slate-700 rounded p-3 text-sm space-y-1">
-                          <div>
-                            <span className="text-slate-400">Member 1: </span>
-                            <span className="font-medium text-white">
-                              {wedding.spouse1?.name || 'Not set'}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Member 2: </span>
-                            <span className="font-medium text-white">
-                              {wedding.spouse2?.name || 'Not set'}
-                            </span>
-                          </div>
-                        </div>
+                    <Collapsible
+                      open={editingCouplemembersWeddingId === wedding.id}
+                      onOpenChange={(isOpen) =>
+                        setEditingCouplemembersWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <CouplemembersEditor
-                        weddingId={wedding.id}
-                        onUpdate={() => {
-                          loadWeddings();
-                        }}
-                      />
-                    </CollapsibleSection>
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+                        Couple Members
+                      </CollapsibleTrigger>
+                      <div className="bg-slate-800 border border-slate-700 rounded p-3 text-sm space-y-1 mb-2">
+                        <div>
+                          <span className="text-slate-400">Member 1: </span>
+                          <span className="font-medium text-white">
+                            {wedding.spouse1?.name || 'Not set'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400">Member 2: </span>
+                          <span className="font-medium text-white">
+                            {wedding.spouse2?.name || 'Not set'}
+                          </span>
+                        </div>
+                      </div>
+                      <CollapsibleContent>
+                        <CouplemembersEditor
+                          weddingId={wedding.id}
+                          onUpdate={() => {
+                            loadWeddings();
+                          }}
+                          onSaveComplete={() => setEditingCouplemembersWeddingId(null)}
+                        />
+                      </CollapsibleContent>
+                    </Collapsible>
 
                     {/* Venue Section */}
-                    <CollapsibleSection
-                      title="Venue"
-                      isExpanded={editingVenueWeddingId === wedding.id}
-                      onToggle={() =>
-                        setEditingVenueWeddingId(
-                          editingVenueWeddingId === wedding.id ? null : wedding.id
-                        )
-                      }
-                      summary={
-                        wedding.location ? (
-                          <div className="bg-slate-800 border border-slate-700 rounded p-3 text-sm space-y-1">
-                            <p className="font-medium text-white">{wedding.location.street}</p>
-                            <p className="text-slate-400">
-                              {wedding.location.city}, {wedding.location.state} {wedding.location.zip}
-                            </p>
-                          </div>
-                        ) : (
-                          <div className="text-sm text-slate-500">No venue set</div>
-                        )
+                    <Collapsible
+                      open={editingVenueWeddingId === wedding.id}
+                      onOpenChange={(isOpen) =>
+                        setEditingVenueWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <VenueEditor
-                        weddingId={wedding.id}
-                        onUpdate={() => {
-                          loadWeddings();
-                        }}
-                      />
-                    </CollapsibleSection>
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+                        Venue
+                      </CollapsibleTrigger>
+                      {wedding.location ? (
+                        <div className="bg-slate-800 border border-slate-700 rounded p-3 text-sm space-y-1 mb-2">
+                          <p className="font-medium text-white">{wedding.location.street}</p>
+                          <p className="text-slate-400">
+                            {wedding.location.city}, {wedding.location.state} {wedding.location.zip}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="text-sm text-slate-500 mb-2">No venue set</div>
+                      )}
+                      <CollapsibleContent>
+                        <VenueEditor
+                          weddingId={wedding.id}
+                          onUpdate={() => {
+                            loadWeddings();
+                          }}
+                          onSaveComplete={() => setEditingVenueWeddingId(null)}
+                        />
+                      </CollapsibleContent>
+                    </Collapsible>
 
                     {/* Vendors Section */}
-                    <CollapsibleSection
-                      title="Vendors"
-                      isExpanded={editingVendorsWeddingId === wedding.id}
-                      onToggle={() =>
-                        setEditingVendorsWeddingId(
-                          editingVendorsWeddingId === wedding.id ? null : wedding.id
-                        )
-                      }
-                      summary={
-                        <div className="text-sm text-slate-500">Manage vendors for this wedding</div>
+                    <Collapsible
+                      open={editingVendorsWeddingId === wedding.id}
+                      onOpenChange={(isOpen) =>
+                        setEditingVendorsWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <VendorEditor
-                        weddingId={wedding.id}
-                        onUpdate={() => {
-                          loadWeddings();
-                        }}
-                      />
-                    </CollapsibleSection>
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+                        Vendors
+                      </CollapsibleTrigger>
+                      <div className="text-sm text-slate-500 mb-2">Manage vendors for this wedding</div>
+                      <CollapsibleContent>
+                        <VendorEditor
+                          weddingId={wedding.id}
+                          onUpdate={() => {
+                            loadWeddings();
+                          }}
+                          onSaveComplete={() => setEditingVendorsWeddingId(null)}
+                        />
+                      </CollapsibleContent>
+                    </Collapsible>
 
                     {/* Planner Assignment Section */}
-                    <CollapsibleSection
-                      title="Assign Planners"
-                      isExpanded={expandedPlannersWeddingId === wedding.id}
-                      onToggle={() =>
-                        setExpandedPlannersWeddingId(
-                          expandedPlannersWeddingId === wedding.id ? null : wedding.id
-                        )
-                      }
-                      summary={
-                        wedding.planners && wedding.planners.length > 0 ? (
-                          <div className="bg-slate-800 border border-slate-700 rounded p-3 text-sm space-y-1">
-                            {wedding.planners.map((p) => (
-                              <div key={p.planner.id} className="flex items-center justify-between">
-                                <span className="text-white font-medium">{p.planner.name}</span>
-                                <span className="text-xs text-slate-400">{p.planner.email}</span>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-sm text-slate-500">No planners assigned</div>
-                        )
+                    <Collapsible
+                      open={expandedPlannersWeddingId === wedding.id}
+                      onOpenChange={(isOpen) =>
+                        setExpandedPlannersWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <PlannerAssignment
-                        weddingId={wedding.id}
-                        onAssignmentChanged={loadWeddings}
-                      />
-                    </CollapsibleSection>
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+                        Assign Planners
+                      </CollapsibleTrigger>
+                      {wedding.planners && wedding.planners.length > 0 ? (
+                        <div className="bg-slate-800 border border-slate-700 rounded p-3 text-sm space-y-1 mb-2">
+                          {wedding.planners.map((p) => (
+                            <div key={p.planner.id} className="flex items-center justify-between">
+                              <span className="text-white font-medium">{p.planner.name}</span>
+                              <span className="text-xs text-slate-400">{p.planner.email}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-sm text-slate-500 mb-2">No planners assigned</div>
+                      )}
+                      <CollapsibleContent>
+                        <PlannerAssignment
+                          weddingId={wedding.id}
+                          onAssignmentChanged={loadWeddings}
+                        />
+                      </CollapsibleContent>
+                    </Collapsible>
                   </div>
                 )}
               </Card>

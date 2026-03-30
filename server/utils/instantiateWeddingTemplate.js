@@ -217,4 +217,5 @@ export {
   instantiateWeddingTemplate,
   createWeddingWithTemplate,
   calculateDueDate,
+  shiftWeekendToFriday,
 };

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../lib/api';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import CollapsibleSection from '../components/ui/CollapsibleSection';
+import { Card } from '../components/ui';
+import { Button } from '../components/ui';
+import { Input } from '../components/ui';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../components/ui';
 
 interface Vendor {
   id: string;
@@ -27,6 +27,13 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
+
+  const filteredVendors = vendors.filter(vendor =>
+    vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (vendor.email && vendor.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (vendor.phone && vendor.phone.includes(searchTerm)) ||
+    (vendor.tags && vendor.tags.some(vt => vt.tag.name.toLowerCase().includes(searchTerm.toLowerCase())))
+  );
   
   // Create form state
   const [createName, setCreateName] = useState('');
@@ -150,7 +157,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
           name: editName,
           email: editEmail || undefined,
           phone: editPhone || undefined,
-          rating: parseInt(editRating as any) || 0,
+          rating: editRating,
           notes: editNotes || undefined
         }
       });
@@ -209,12 +216,6 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
     }
   };
 
-  const filteredVendors = vendors.filter(v =>
-    v.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    v.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    v.phone?.includes(searchTerm)
-  );
-
   const avgRating = vendors.length > 0 ? (vendors.reduce((sum, v) => sum + v.rating, 0) / vendors.length).toFixed(1) : 0;
   const ratedVendors = vendors.filter(v => v.rating > 0).length;
 
@@ -233,117 +234,110 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
       {/* Create Form */}
       {canEdit && (
         <Card className="mb-6">
-          <CollapsibleSection
-            title="Add New Vendor"
-            isExpanded={showCreateForm}
-            onToggle={() => setShowCreateForm(!showCreateForm)}
+          <Collapsible
+            open={showCreateForm}
+            onOpenChange={setShowCreateForm}
           >
-            <form onSubmit={createVendor} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-slate-400 block mb-2">Name *</label>
-                  <Input
-                    value={createName}
-                    onChange={(e) => setCreateName(e.target.value)}
-                  />
+            <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+              Add New Vendor
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4">
+              <form onSubmit={createVendor} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-slate-400 block mb-2">Name *</label>
+                    <Input
+                      value={createName}
+                      onChange={(e) => setCreateName(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-slate-400 block mb-2">Email</label>
+                    <Input
+                      type="email"
+                      value={createEmail}
+                      onChange={(e) => setCreateEmail(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm text-slate-400 block mb-2">Email</label>
-                  <Input
-                    type="email"
-                    value={createEmail}
-                    onChange={(e) => setCreateEmail(e.target.value)}
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-slate-400 block mb-2">Phone</label>
+                    <Input
+                      value={createPhone}
+                      onChange={(e) => setCreatePhone(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-slate-400 block mb-2">Rating (0-5)</label>
+                    <select
+                      value={createRating}
+                      onChange={(e) => setCreateRating(parseInt(e.target.value))}
+                      className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white"
+                    >
+                      <option value="0">0 - Not Rated</option>
+                      <option value="1">1 Star</option>
+                      <option value="2">2 Stars</option>
+                      <option value="3">3 Stars</option>
+                      <option value="4">4 Stars</option>
+                      <option value="5">5 Stars</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div>
-                  <label className="text-sm text-slate-400 block mb-2">Phone</label>
-                  <Input
-                    value={createPhone}
-                    onChange={(e) => setCreatePhone(e.target.value)}
+                  <label className="text-sm text-slate-400 block mb-2">Notes</label>
+                  <textarea
+                    value={createNotes}
+                    onChange={(e) => setCreateNotes(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
+                    rows={3}
                   />
                 </div>
-                <div>
-                  <label className="text-sm text-slate-400 block mb-2">Rating (0-5)</label>
-                  <select
-                    value={createRating}
-                    onChange={(e) => setCreateRating(parseInt(e.target.value))}
-                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white"
+
+                <div className="flex gap-2 justify-end pt-2">
+                  <Button
+                    onClick={() => setShowCreateForm(false)}
+                    className="bg-slate-700 hover:bg-slate-600"
                   >
-                    <option value="0">0 - Not Rated</option>
-                    <option value="1">1 Star</option>
-                    <option value="2">2 Stars</option>
-                    <option value="3">3 Stars</option>
-                    <option value="4">4 Stars</option>
-                    <option value="5">5 Stars</option>
-                  </select>
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={savingId === 'create'}
+                    className="bg-green-700 hover:bg-green-600 disabled:opacity-50"
+                  >
+                    {savingId === 'create' ? 'Creating...' : 'Create Vendor'}
+                  </Button>
                 </div>
-              </div>
-
-              <div>
-                <label className="text-sm text-slate-400 block mb-2">Notes</label>
-                <textarea
-                  value={createNotes}
-                  onChange={(e) => setCreateNotes(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
-                  rows={3}
-                />
-              </div>
-
-              <div className="flex gap-2 justify-end pt-2">
-                <Button
-                  onClick={() => setShowCreateForm(false)}
-                  className="bg-slate-700 hover:bg-slate-600"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={savingId === 'create'}
-                  className="bg-green-700 hover:bg-green-600 disabled:opacity-50"
-                >
-                  {savingId === 'create' ? 'Creating...' : 'Create Vendor'}
-                </Button>
-              </div>
-            </form>
-          </CollapsibleSection>
+              </form>
+            </CollapsibleContent>
+          </Collapsible>
         </Card>
       )}
 
       {/* Search */}
       <Card className="mb-6">
-        <div className="flex gap-2 items-center">
-          <Input
-            placeholder="Search vendors by name, email, or phone..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1"
-          />
-          {searchTerm && (
-            <Button
-              onClick={() => setSearchTerm('')}
-              size="sm"
-              className="bg-slate-700 hover:bg-slate-600"
-            >
-              Clear
-            </Button>
-          )}
-        </div>
+        <Input
+          type="text"
+          placeholder="Search vendors by name, email, phone, or tag..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </Card>
 
       {/* Vendor List */}
       <Card>
         {loading ? (
           <p className="text-slate-400">Loading vendors...</p>
-        ) : filteredVendors.length === 0 ? (
-          <p className="text-slate-400">
-            {searchTerm ? 'No vendors match your search.' : 'No vendors found.'}
-          </p>
+        ) : filteredVendors.length === 0 && vendors.length > 0 ? (
+          <p className="text-slate-400">No vendors match your search.</p>
+        ) : vendors.length === 0 ? (
+          <p className="text-slate-400">No vendors found.</p>
         ) : (
           <div className="space-y-3">
-            {filteredVendors.map((vendor) => {
+            {filteredVendors.map(vendor => {
               const isEditing = editingVendorId === vendor.id;
               const isSaving = savingId === vendor.id;
 
@@ -537,7 +531,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                       </div>
 
                       {canEdit && (
-                        <div className="flex gap-2 flex-shrink-0">
+                        <div className="flex gap-2 shrink-0">
                           <Button
                             onClick={() => startEditVendor(vendor)}
                             size="sm"

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { api } from '../lib/api';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import FormField from '../components/ui/FormField';
+import { Card } from '../components/ui';
+import { Button } from '../components/ui';
+import { Input } from '../components/ui';
+import { FormField } from '../components/ui';
 
 export default function Login({ onLogin }: { onLogin: () => void }) {
   const [email, setEmail] = useState('');

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
-import Button from './ui/Button';
+import {Button} from './ui/Button';
 import ClientSelector from './ClientSelector';
 
 interface Client {
@@ -21,9 +21,10 @@ interface Wedding {
 interface CouplemembersEditorProps {
   weddingId: string;
   onUpdate?: (wedding: Wedding) => void;
+  onSaveComplete?: () => void;
 }
 
-export default function CouplemembersEditor({ weddingId, onUpdate }: CouplemembersEditorProps) {
+export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplete }: CouplemembersEditorProps) {
   const [wedding, setWedding] = useState<Wedding | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -90,6 +91,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate }: Couplemembe
         setWedding(updatedWedding);
         onUpdate?.(updatedWedding);
         setError(null);
+        onSaveComplete?.();
       } else {
         setError(res.body?.error || 'Failed to save wedding details');
       }

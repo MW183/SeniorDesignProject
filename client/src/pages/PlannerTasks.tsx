@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
-import Card from '../components/ui/Card';
-import CollapsibleSection from '../components/ui/CollapsibleSection';
+import { Card } from '../components/ui';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../components/ui';
+import { Input } from '../components/ui';
+
 import TaskEditor from '../components/TaskEditor';
 
 interface TaskDependency {
@@ -42,7 +44,7 @@ interface TasksByCategory {
 }
 
 type SortMode = 'name' | 'Due Date' | 'category' | 'status';
-type SearchField = 'name' | 'Due Date' | 'category' | 'status' | 'notes';
+type SearchableField = 'name' | 'Due Date' | 'category' | 'status' | 'notes';
 
 export default function PlannerTasks({ currentUser, hideBackButton = false }: { currentUser?: any; hideBackButton?: boolean }) {
   // Get wedding ID from URL params; fetch and display tasks for the current user
@@ -51,6 +53,7 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
   
   // State for all tasks assigned to the user
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -59,10 +62,13 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
   const [showCompleted, setShowCompleted] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [weddingName, setWeddingName] = useState<string>('');
-  
-  // State for search functionality
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchField, setSearchField] = useState<SearchField>('name');
+
+  // Filter tasks by search term
+  const filteredTasks = tasks.filter(task => {
+    const searchLower = searchTerm.toLowerCase();
+    return task.name.toLowerCase().includes(searchLower) ||
+           (task.description && task.description.toLowerCase().includes(searchLower));
+  });
 
   // Load tasks when the component mounts or wedding ID changes
   useEffect(() => {
@@ -120,36 +126,10 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
     }
   };
 
-  //filter tasks (used to exclude completed/cancelled tasks)
-  const getFilteredTasks = () => {
-    let filtered = showCompleted ? tasks : tasks.filter(t => t.currentStatus !== 'COMPLETED' && t.currentStatus !== 'CANCELLED');
-    
-    if (!searchTerm.trim()) {
-      return filtered;
-    }
-
-    const term = searchTerm.toLowerCase();
-    return filtered.filter(task => {
-      switch (searchField) {
-        case 'name':
-          return task.name.toLowerCase().includes(term);
-        case 'category':
-          return task.category.name.toLowerCase().includes(term);
-        case 'status':
-          return task.currentStatus.toLowerCase().includes(term);
-        case 'notes':
-          return (task.notes || '').toLowerCase().includes(term);
-        case 'Due Date':
-          const taskDate = new Date(task.dueDate).toLocaleDateString('en-US');
-          return taskDate.includes(term);
-        default:
-          return true;
-      }
-    });
-  };
-
-
-
+  // Apply completed/cancelled filter to filtered tasks
+  const getDisplayTasks = () => {
+    return showCompleted ? filteredTasks : filteredTasks.filter(t => t.currentStatus !== 'COMPLETED' && t.currentStatus !== 'CANCELLED');
+  }
   const groupTasksByCategory = (taskList: Task[]): TasksByCategory => {
     const grouped: TasksByCategory = {};
     taskList.forEach(task => {
@@ -205,24 +185,30 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
 
 
 
-  const toggleCategoryExpanded = (category: string) => {
+  const toggleCategoryExpanded = (category: string, isOpen?: boolean) => {
     const newExpanded = new Set(expandedCategories);
-    if (newExpanded.has(category)) {
-      newExpanded.delete(category);
-    } else {
+    if (isOpen === undefined) {
+      if (newExpanded.has(category)) {
+        newExpanded.delete(category);
+      } else {
+        newExpanded.add(category);
+      }
+    } else if (isOpen) {
       newExpanded.add(category);
+    } else {
+      newExpanded.delete(category);
     }
     setExpandedCategories(newExpanded);
   };
 
-  const filteredTasks = getFilteredTasks();
-  const tasksByCategory = groupTasksByCategory(filteredTasks);
+  const displayTasks = getDisplayTasks();
+  const tasksByCategory = groupTasksByCategory(displayTasks);
   const categoriesSorted = Object.keys(tasksByCategory).sort(
     (a, b) => tasksByCategory[a].sortOrder - tasksByCategory[b].sortOrder
   );
 
-  const activeTasks = filteredTasks.filter(t => t.currentStatus !== 'COMPLETED' && t.currentStatus !== 'CANCELLED');
-  const completedTasks = filteredTasks.filter(t => t.currentStatus === 'COMPLETED' || t.currentStatus === 'CANCELLED');
+  const activeTasks = tasks.filter(t => t.currentStatus !== 'COMPLETED' && t.currentStatus !== 'CANCELLED');
+  const completedTasks = tasks.filter(t => t.currentStatus === 'COMPLETED' || t.currentStatus === 'CANCELLED');
 
   
   return (
@@ -249,67 +235,43 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
       </Card>
 
       <Card className="mb-6">
-        {/* Search and Filter Bar */}
-        <div className="flex flex-col gap-4 mb-6">
-          <div className="flex gap-2 flex-wrap items-end">
-            <div className="flex gap-2 flex-1 min-w-64">
-              <input
-                type="text"
-                placeholder={`Search by ${searchField}...`}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm placeholder-slate-400"
-              />
-              <select
-                value={searchField}
-                onChange={(e) => setSearchField(e.target.value as SearchField)}
-                className="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
-              >
-                <option value="name">Name</option>
-                <option value="Due Date">Due Date</option>
-                <option value="category">Category</option>
-                <option value="status">Status</option>
-                <option value="notes">Notes</option>
-              </select>
-            </div>
-            
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm('')}
-                className="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-white text-sm"
-              >
-                Clear Filter
-              </button>
-            )}
-          </div>
+        {/* Search Bar */}
+        <Input
+          type="text"
+          placeholder="Search tasks..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mb-4"
+        />
+        
 
-          {/* Sort and Display Options */}
-          <div className="flex justify-between items-center flex-wrap gap-4">
-            <div className="flex gap-2 items-center">
-              <label className="text-sm text-slate-300">Sort by:</label>
-              <select
-                value={sortMode}
-                onChange={(e) => setSortMode(e.target.value as SortMode)}
-                className="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
-              >
-                <option value="name">Name</option>
-                <option value="Due Date">Due Date</option>
-                <option value="category">Category</option>
-                <option value="status">Status</option>
-              </select>
-            </div>
-            
-            <label className="flex items-center gap-2 text-sm text-slate-300">
-              <input
-                type="checkbox"
-                checked={showCompleted}
-                onChange={(e) => setShowCompleted(e.target.checked)}
-                className="w-4 h-4"
-              />
-              Show completed tasks
-            </label>
+        {/* Sort and Display Options */}
+        <div className="flex justify-between items-center flex-wrap gap-4 mt-4">
+          <div className="flex gap-2 items-center">
+            <label className="text-sm text-slate-300">Sort by:</label>
+            <select
+              value={sortMode}
+              onChange={(e) => setSortMode(e.target.value as SortMode)}
+              className="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
+            >
+              <option value="name">Name</option>
+              <option value="Due Date">Due Date</option>
+              <option value="category">Category</option>
+              <option value="status">Status</option>
+            </select>
           </div>
+          
+          <label className="flex items-center gap-2 text-sm text-slate-300">
+            <input
+              type="checkbox"
+              checked={showCompleted}
+              onChange={(e) => setShowCompleted(e.target.checked)}
+              className="w-4 h-4"
+            />
+            Show completed tasks
+          </label>
         </div>
+      </Card>
 
         {error && <div className="text-sm text-red-400 mb-4">{error}</div>}
 
@@ -330,38 +292,39 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
 
                 return (
                   <Card key={categoryName}>
-                    <CollapsibleSection
-                      title={categoryName}
-                      isExpanded={isExpanded}
-                      onToggle={() => toggleCategoryExpanded(categoryName)}
-                      firstSection={index === 0}
-                      summary={
-                        <div className="text-sm text-slate-400">
-                          {activeCategoryTasks.length} active task{activeCategoryTasks.length !== 1 ? 's' : ''}
-                        </div>
-                      }
+                    <Collapsible
+                      open={isExpanded}
+                      onOpenChange={() => toggleCategoryExpanded(categoryName)}
                     >
-                      <TaskEditor
-                        categoryId={categoryData.tasks[0]?.category.id || ''}
-                        categoryName={categoryName}
-                        tasks={sortedTasks}
-                        weddingId={weddingId || ''}
-                        onTasksChange={(updatedTasks) => {
-                          setTasks(tasks.filter(t =>
-                            !categoryData.tasks.some(ct => ct.id === t.id)
-                          ).concat(updatedTasks));
-                        }}
-                        currentUser={currentUser}
-                        showCompleted={showCompleted}
-                      />
-                    </CollapsibleSection>
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+                        {categoryName}
+                      </CollapsibleTrigger>
+                      <div className="text-sm text-slate-400 mb-2">
+                        {activeCategoryTasks.length} active task{activeCategoryTasks.length !== 1 ? 's' : ''}
+                      </div>
+                      <CollapsibleContent>
+                        <TaskEditor
+                          categoryId={categoryData.tasks[0]?.category.id || ''}
+                          categoryName={categoryName}
+                          tasks={sortedTasks}
+                          weddingId={weddingId || ''}
+                          onTasksChange={(updatedTasks) => {
+                            setTasks(tasks.filter(t =>
+                              !categoryData.tasks.some(ct => ct.id === t.id)
+                            ).concat(updatedTasks));
+                          }}
+                          currentUser={currentUser}
+                          showCompleted={showCompleted}
+                          onSaveComplete={() => toggleCategoryExpanded(categoryName, false)}
+                        />
+                      </CollapsibleContent>
+                    </Collapsible>
                   </Card>
                 );
               })
             )}
           </div>
         )}
-      </Card>
-    </div>
+      </div>
   );
 }
