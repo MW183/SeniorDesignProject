@@ -20,6 +20,7 @@
   "editor.quickSuggestions": {
     "strings": true
   },
+  "tailwindCSS.experimental.configFile": "client/tailwind.config.js",
   "files.associations": {
     "*.css": "tailwindcss" 
   }

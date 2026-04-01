@@ -25,7 +25,7 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
   return (
     <div className="max-w-md mx-auto mt-12">
       <Card>
-        <h2 className="text-2xl font-semibold mb-4">Login</h2>
+        <h2 className="flex content-center text-2xl font-semibold mb-4">Login</h2>
         <form onSubmit={submit} className="space-y-4">
           <FormField label="Email" id="email">
             <Input
@@ -43,25 +43,16 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
               onChange={e => setPassword(e.target.value)}
             />
           </FormField>
-          <div>
-            <Button type="submit">Login</Button>
-          </div>
-        </form>
-        {error && <div className="mt-3 text-sm text-red-400">{error}</div>}
-
-        <div className="mt-6 pt-6 border-t border-slate-700 space-y-3">
           <p className="text-sm text-slate-400 text-center">
             <Link to="/reset-password" className="text-blue-400 hover:text-blue-300">
               Forgot your password?
             </Link>
           </p>
-          <p className="text-sm text-slate-400 text-center">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-blue-400 hover:text-blue-300">
-              Sign up
-            </Link>
-          </p>
-        </div>
+          <div className="flex justify-center pt-4">
+            <Button type="submit" variant="default" size="lg">Login</Button>
+          </div>
+        </form>
+        {error && <div className="mt-3 text-sm text-red-400">{error}</div>}
       </Card>
     </div>
   );
