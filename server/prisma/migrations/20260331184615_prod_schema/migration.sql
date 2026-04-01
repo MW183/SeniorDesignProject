@@ -2,7 +2,7 @@
 CREATE TYPE "AddressType" AS ENUM ('Venue', 'Vendor', 'Client');
 
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER', 'SUPPORT');
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER', 'SUPPORT', 'CLIENT');
 
 -- CreateEnum
 CREATE TYPE "Status" AS ENUM ('PENDING', 'IN_PROGRESS', 'BLOCKED', 'COMPLETED', 'CANCELLED');
@@ -19,6 +19,11 @@ CREATE TABLE "User" (
     "password" TEXT NOT NULL,
     "role" "Role" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+    "emailVerificationToken" TEXT,
+    "emailVerificationExpires" TIMESTAMP(3),
+    "passwordResetToken" TEXT,
+    "passwordResetExpires" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -116,6 +121,7 @@ CREATE TABLE "Task" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "currentStatus" "Status" NOT NULL DEFAULT 'PENDING',
     "assignedToId" TEXT,
+    "assignToCouple" BOOLEAN NOT NULL DEFAULT false,
     "completedOn" TIMESTAMP(3),
     "completedById" TEXT,
     "notes" TEXT,
@@ -143,6 +149,17 @@ CREATE TABLE "PlannerWedding" (
     "assignedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "PlannerWedding_pkey" PRIMARY KEY ("plannerId","weddingId")
+);
+
+-- CreateTable
+CREATE TABLE "WeddingVendor" (
+    "weddingId" TEXT NOT NULL,
+    "vendorId" TEXT NOT NULL,
+    "rating" INTEGER NOT NULL DEFAULT 0,
+    "notes" TEXT,
+    "assignedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "WeddingVendor_pkey" PRIMARY KEY ("weddingId","vendorId")
 );
 
 -- CreateTable
@@ -186,8 +203,25 @@ CREATE TABLE "Address" (
     CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "CoupleTask" (
+    "id" TEXT NOT NULL,
+    "taskId" TEXT NOT NULL,
+    "assignedToId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "CoupleTask_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_emailVerificationToken_key" ON "User"("emailVerificationToken");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_passwordResetToken_key" ON "User"("passwordResetToken");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "WeddingTemplate_name_version_key" ON "WeddingTemplate"("name", "version");
@@ -218,6 +252,15 @@ CREATE UNIQUE INDEX "TaskDependency_taskId_dependsOnTaskId_dependsOnCategoryId_k
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Tag_name_key" ON "Tag"("name");
+
+-- CreateIndex
+CREATE INDEX "CoupleTask_taskId_idx" ON "CoupleTask"("taskId");
+
+-- CreateIndex
+CREATE INDEX "CoupleTask_assignedToId_idx" ON "CoupleTask"("assignedToId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "CoupleTask_taskId_assignedToId_key" ON "CoupleTask"("taskId", "assignedToId");
 
 -- AddForeignKey
 ALTER TABLE "TemplateCategory" ADD CONSTRAINT "TemplateCategory_templateId_fkey" FOREIGN KEY ("templateId") REFERENCES "WeddingTemplate"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -277,6 +320,12 @@ ALTER TABLE "PlannerWedding" ADD CONSTRAINT "PlannerWedding_plannerId_fkey" FORE
 ALTER TABLE "PlannerWedding" ADD CONSTRAINT "PlannerWedding_weddingId_fkey" FOREIGN KEY ("weddingId") REFERENCES "Wedding"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "WeddingVendor" ADD CONSTRAINT "WeddingVendor_weddingId_fkey" FOREIGN KEY ("weddingId") REFERENCES "Wedding"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "WeddingVendor" ADD CONSTRAINT "WeddingVendor_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "Vendor"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Vendor" ADD CONSTRAINT "Vendor_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -284,3 +333,9 @@ ALTER TABLE "VendorTag" ADD CONSTRAINT "VendorTag_vendorId_fkey" FOREIGN KEY ("v
 
 -- AddForeignKey
 ALTER TABLE "VendorTag" ADD CONSTRAINT "VendorTag_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "Tag"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CoupleTask" ADD CONSTRAINT "CoupleTask_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CoupleTask" ADD CONSTRAINT "CoupleTask_assignedToId_fkey" FOREIGN KEY ("assignedToId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

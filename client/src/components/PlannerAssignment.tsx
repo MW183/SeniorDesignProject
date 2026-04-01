@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
 import {Card} from './ui/card';
-import {Button} from './ui/Button';
+import {Button} from './ui/button';
 import FormField from './ui/formField';
-import {Input} from './ui/Input';
+import {Input} from './ui/input';
 
 interface User {
   id: string;

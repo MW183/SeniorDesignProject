@@ -1,6 +1,6 @@
 /**
  * Seed script to populate the database with the wedding planning template
- * Run with: node server/seed-template.js
+ * Run with: node templates/seed-template.js
  */
 
 import { PrismaClient } from '@prisma/client';

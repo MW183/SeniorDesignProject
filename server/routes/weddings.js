@@ -4,8 +4,70 @@ import { handlePrismaError, ensureExistsOrRespond } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
 import { instantiateWeddingTemplate, calculateDueDate, shiftWeekendToFriday } from '../utils/instantiateWeddingTemplate.js';
+import bcrypt from 'bcryptjs';
+import sgMail from '@sendgrid/mail';
 
 const router = express.Router();
+
+// Set up SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+/**
+ * Create a CLIENT user account and send welcome email if needed
+ * @param {string} email - Client email
+ * @param {string} name - Client name  
+ * @returns {Promise<string>} - User ID
+ */
+async function createOrGetClientUser(email, name) {
+  // Check if CLIENT user already exists
+  let clientUser = await prisma.user.findUnique({
+    where: { email }
+  });
+  
+  if (clientUser) {
+    return clientUser.id;
+  }
+  
+  // Create new CLIENT user with temporary password
+  const tempPassword = Math.random().toString(36).slice(2, 14);
+  const hashedPassword = await bcrypt.hash(tempPassword, 10);
+  
+  clientUser = await prisma.user.create({
+    data: {
+      name,
+      email,
+      password: hashedPassword,
+      role: 'CLIENT',
+      emailVerified: false
+    }
+  });
+  
+  // Send welcome email with temporary password
+  try {
+    await sgMail.send({
+      to: email,
+      from: 'noreply@weddingplanner.com',
+      subject: 'Welcome to Wedding Planner - Your Account is Ready',
+      html: `
+        <h2>Welcome to Wedding Planner!</h2>
+        <p>Hi ${name},</p>
+        <p>Your wedding planning account has been created. Here are your login details:</p>
+        <div style="background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Temporary Password:</strong> <code style="font-family: monospace; background: white; padding: 5px; border-radius: 3px;">${tempPassword}</code></p>
+        </div>
+        <p><strong><a href="${process.env.APP_URL || 'http://localhost:3000'}/login">Log in here</a></strong></p>
+        <p style="margin-top: 20px; color: #666;">After logging in, we recommend changing your password for security.</p>
+        <p>Happy planning!</p>
+      `
+    });
+    console.log(`[Weddings] Welcome email sent to ${email}`);
+  } catch (emailErr) {
+    console.error(`[Weddings] Failed to send welcome email to ${email}:`, emailErr);
+  }
+  
+  return clientUser.id;
+}
 
 // GET /weddings — filter by date range and return weddings for current planner (or all if admin)
 router.get('/', requireAuth, async (req, res) => {
@@ -72,22 +134,53 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /weddings — create wedding and assign to current planner (requires auth)
+// Can accept spouse1/spouse2 by ID or by inline data { name, email, phone }
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { date, locationId, spouse1Id, spouse2Id, templateId } = req.body;
+    const { date, locationId, spouse1Id, spouse2Id, spouse1, spouse2, templateId } = req.body;
     if (!date) return res.status(400).json({ error: 'date is required' });
+    
     if (locationId) {
       const ok = await ensureExistsOrRespond(res, 'address', locationId, 'locationId');
       if (!ok) return;
     }
+    
+    // Handle spouse1: either existing ID or create new client
+    let finalSpouse1Id = null;
     if (spouse1Id) {
       const ok = await ensureExistsOrRespond(res, 'client', spouse1Id, 'spouse1Id');
       if (!ok) return;
+      finalSpouse1Id = spouse1Id;
+    } else if (spouse1 && spouse1.name) {
+      // Create new client from inline data
+      const newClient = await prisma.client.create({
+        data: {
+          name: spouse1.name,
+          email: spouse1.email || null,
+          phone: spouse1.phone || null
+        }
+      });
+      finalSpouse1Id = newClient.id;
     }
+    
+    // Handle spouse2: either existing ID or create new client
+    let finalSpouse2Id = null;
     if (spouse2Id) {
       const ok = await ensureExistsOrRespond(res, 'client', spouse2Id, 'spouse2Id');
       if (!ok) return;
+      finalSpouse2Id = spouse2Id;
+    } else if (spouse2 && spouse2.name) {
+      // Create new client from inline data
+      const newClient = await prisma.client.create({
+        data: {
+          name: spouse2.name,
+          email: spouse2.email || null,
+          phone: spouse2.phone || null
+        }
+      });
+      finalSpouse2Id = newClient.id;
     }
+    
     if (templateId) {
       const ok = await ensureExistsOrRespond(res, 'weddingTemplate', templateId, 'templateId');
       if (!ok) return;
@@ -98,8 +191,8 @@ router.post('/', requireAuth, async (req, res) => {
       data: { 
         date: new Date(date), 
         locationId: locationId || null, 
-        spouse1Id: spouse1Id || null, 
-        spouse2Id: spouse2Id || null,
+        spouse1Id: finalSpouse1Id,
+        spouse2Id: finalSpouse2Id,
         templateId: templateId || null,
         planners: {
           create: {
@@ -112,7 +205,9 @@ router.post('/', requireAuth, async (req, res) => {
           include: { tasks: true },
           orderBy: { sortOrder: 'asc' }
         },
-        template: true
+        template: true,
+        spouse1: true,
+        spouse2: true
       }
     });
 
@@ -128,7 +223,9 @@ router.post('/', requireAuth, async (req, res) => {
               include: { tasks: true },
               orderBy: { sortOrder: 'asc' }
             },
-            template: true
+            template: true,
+            spouse1: true,
+            spouse2: true
           }
         });
         res.status(201).json(updatedWedding);
@@ -145,10 +242,11 @@ router.post('/', requireAuth, async (req, res) => {
 
 // PUT /weddings/:id — update wedding fields (requires auth). Validates provided FKs.
 // If date is updated, automatically recalculates all task due dates
+// Can accept spouse1/spouse2 by ID or by inline data { name, email, phone }
 router.put('/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { date, locationId, spouse1Id, spouse2Id, templateId } = req.body;
+    const { date, locationId, spouse1Id, spouse2Id, spouse1, spouse2, templateId } = req.body;
     const update = {};
     
     // Check if wedding exists and capture old date before update
@@ -175,8 +273,6 @@ router.put('/:id', requireAuth, async (req, res) => {
     }
     
     if (locationId !== undefined) update.locationId = locationId;
-    if (spouse1Id !== undefined) update.spouse1Id = spouse1Id;
-    if (spouse2Id !== undefined) update.spouse2Id = spouse2Id;
     if (templateId !== undefined) update.templateId = templateId;
     
     // validate FKs if provided
@@ -184,14 +280,115 @@ router.put('/:id', requireAuth, async (req, res) => {
       const ok = await ensureExistsOrRespond(res, 'address', locationId, 'locationId');
       if (!ok) return;
     }
-    if (spouse1Id !== undefined && spouse1Id !== null) {
-      const ok = await ensureExistsOrRespond(res, 'client', spouse1Id, 'spouse1Id');
-      if (!ok) return;
+    
+    // Handle spouse1: either existing ID, inline data, or clear it
+    if (spouse1Id !== undefined || spouse1 !== undefined) {
+      if (spouse1Id) {
+        const ok = await ensureExistsOrRespond(res, 'client', spouse1Id, 'spouse1Id');
+        if (!ok) return;
+        update.spouse1Id = spouse1Id;
+      } else if (spouse1 && spouse1.name) {
+        // Create or update client from inline data
+        let clientId = null;
+        if (spouse1.email) {
+          // Try to find existing client by email
+          const existingClient = await prisma.client.findFirst({
+            where: { email: spouse1.email }
+          });
+          if (existingClient) {
+            clientId = existingClient.id;
+            // Update existing client with new data
+            await prisma.client.update({
+              where: { id: clientId },
+              data: {
+                name: spouse1.name,
+                phone: spouse1.phone || undefined
+              }
+            });
+          } else {
+            // Create new client
+            const newClient = await prisma.client.create({
+              data: {
+                name: spouse1.name,
+                email: spouse1.email,
+                phone: spouse1.phone || null
+              }
+            });
+            clientId = newClient.id;
+          }
+          
+          // Create CLIENT user account if it doesn't exist
+          await createOrGetClientUser(spouse1.email, spouse1.name);
+        } else {
+          // Create new client without email
+          const newClient = await prisma.client.create({
+            data: {
+              name: spouse1.name,
+              phone: spouse1.phone || null
+            }
+          });
+          clientId = newClient.id;
+        }
+        update.spouse1Id = clientId;
+      } else if (spouse1Id === null) {
+        update.spouse1Id = null;
+      }
     }
-    if (spouse2Id !== undefined && spouse2Id !== null) {
-      const ok = await ensureExistsOrRespond(res, 'client', spouse2Id, 'spouse2Id');
-      if (!ok) return;
+    
+    // Handle spouse2: either existing ID, inline data, or clear it
+    if (spouse2Id !== undefined || spouse2 !== undefined) {
+      if (spouse2Id) {
+        const ok = await ensureExistsOrRespond(res, 'client', spouse2Id, 'spouse2Id');
+        if (!ok) return;
+        update.spouse2Id = spouse2Id;
+      } else if (spouse2 && spouse2.name) {
+        // Create or update client from inline data
+        let clientId = null;
+        if (spouse2.email) {
+          // Try to find existing client by email
+          const existingClient = await prisma.client.findFirst({
+            where: { email: spouse2.email }
+          });
+          if (existingClient) {
+            clientId = existingClient.id;
+            // Update existing client with new data
+            await prisma.client.update({
+              where: { id: clientId },
+              data: {
+                name: spouse2.name,
+                phone: spouse2.phone || undefined
+              }
+            });
+          } else {
+            // Create new client
+            const newClient = await prisma.client.create({
+              data: {
+                name: spouse2.name,
+                email: spouse2.email,
+                phone: spouse2.phone || null
+              }
+            });
+            clientId = newClient.id;
+          }
+          
+          // Create CLIENT user account if it doesn't exist
+          await createOrGetClientUser(spouse2.email, spouse2.name);
+        } else {
+          // Create new client without email
+          const newClient = await prisma.client.create({
+            data: {
+              name: spouse2.name,
+              phone: spouse2.phone || null
+            }
+          });
+          clientId = newClient.id;
+        }
+        update.spouse2Id = clientId;
+      } else if (spouse2Id === null) {
+        update.spouse2Id = null;
+      }
     }
+    
     if (templateId !== undefined && templateId !== null) {
       const ok = await ensureExistsOrRespond(res, 'weddingTemplate', templateId, 'templateId');
       if (!ok) return;

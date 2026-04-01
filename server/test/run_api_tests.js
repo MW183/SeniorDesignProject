@@ -1,3 +1,4 @@
+/** tests for api endpoints */
 import http from 'http';
 import app from '../server.js';
 import { signJwt } from '../utils.js';

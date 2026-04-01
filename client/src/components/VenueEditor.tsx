@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
-import { Button } from './ui/Button';
+import { Button } from './ui/button';
 import AddressSelector from './AddressSelector';
 
 interface Address {

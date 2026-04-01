@@ -1,3 +1,5 @@
+/** tests for a variety of edge cases for vendor CRUD */
+
 import http from 'http';
 import app from '../server.js';
 import { signJwt } from '../utils.js';

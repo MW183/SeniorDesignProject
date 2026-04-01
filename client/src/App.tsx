@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
 import Login from './pages/Login'
+import Register from './pages/Register'
+import VerifyEmail from './pages/VerifyEmail'
+import ResetPassword from './pages/ResetPassword'
+import ClientDashboard from './pages/ClientDashboard'
 import PlannerManagement from './pages/PlannerManagement'
 import WeddingManagement from './pages/WeddingManagement'
 import CreateWedding from './pages/CreateWedding'
@@ -79,13 +83,15 @@ function App() {
       <div className="min-h-screen w-full">
         <Layout currentUser={currentUser} onLogout={serverLogout}>
           <Routes>
-            {/* Home redirect - admins go to /planners, others go to /my-weddings */}
+            {/* Home redirect - admins go to /planners, clients go to /couple, others go to /my-weddings */}
             <Route 
               path="/" 
               element={
                 currentUser 
                   ? currentUser.role === 'ADMIN'
                     ? <Navigate to="/planners" replace />
+                    : currentUser.role === 'CLIENT'
+                    ? <Navigate to="/couple" replace />
                     : <Navigate to="/my-weddings" replace />
                   : <Navigate to="/login" replace />
               } 
@@ -99,8 +105,48 @@ function App() {
                   ? <Login onLogin={onLogin} /> 
                   : currentUser.role === 'ADMIN'
                     ? <Navigate to="/planners" replace />
+                    : currentUser.role === 'CLIENT'
+                    ? <Navigate to="/couple" replace />
                     : <Navigate to="/my-weddings" replace />
               } 
+            />
+
+            {/* Register */}
+            <Route 
+              path="/register" 
+              element={
+                !currentUser 
+                  ? <Register /> 
+                  : currentUser.role === 'ADMIN'
+                    ? <Navigate to="/planners" replace />
+                    : currentUser.role === 'CLIENT'
+                    ? <Navigate to="/couple" replace />
+                    : <Navigate to="/my-weddings" replace />
+              } 
+            />
+
+            {/* Verify Email */}
+            <Route 
+              path="/verify-email" 
+              element={<VerifyEmail />}
+            />
+
+            {/* Reset Password */}
+            <Route 
+              path="/reset-password" 
+              element={<ResetPassword />}
+            />
+            
+            {/* CLIENT Dashboard - for couple members */}
+            <Route 
+              path="/couple" 
+              element={
+                currentUser?.role === 'CLIENT'
+                  ? <ClientDashboard currentUser={currentUser} />
+                  : currentUser
+                  ? <Navigate to={currentUser.role === 'ADMIN' ? "/planners" : "/my-weddings"} replace />
+                  : <Navigate to="/login" replace />
+              }
             />
             
             {/* Admin Dashboard */}

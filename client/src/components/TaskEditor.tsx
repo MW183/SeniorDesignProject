@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { api } from '../lib/api';
+import CoupleTaskEditor from './CoupleTaskEditor';
 
 interface TaskDependency {
   id: string;
@@ -15,6 +16,7 @@ interface Task {
   priority: number;
   currentStatus: string;
   notes?: string | null;
+  assignToCouple?: boolean;
   category: {
     id: string;
     name: string;
@@ -37,6 +39,7 @@ interface EditingTaskState {
   priority: number;
   notes: string;
   dueDate: string;
+  assignToCouple: boolean;
 }
 
 interface TaskEditorProps {
@@ -63,6 +66,7 @@ export default function TaskEditor({
   const [editingTask, setEditingTask] = useState<EditingTaskState | null>(null);
   const [savingTaskId, setSavingTaskId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [expandedCoupleEditor, setExpandedCoupleEditor] = useState<string | null>(null);
 
   const getDaysUntil = (dateStr: string) => {
     const dueDate = new Date(dateStr);
@@ -120,7 +124,8 @@ export default function TaskEditor({
           currentStatus: editingTask.currentStatus,
           priority: editingTask.priority,
           dueDate: editingTask.dueDate,
-          notes: editingTask.notes
+          notes: editingTask.notes,
+          assignToCouple: editingTask.assignToCouple
         }
       });
 
@@ -171,7 +176,8 @@ export default function TaskEditor({
       currentStatus: task.currentStatus,
       priority: task.priority,
       notes: task.notes || '',
-      dueDate: task.dueDate
+      dueDate: task.dueDate,
+      assignToCouple: task.assignToCouple || false
     });
   };
 
@@ -259,6 +265,30 @@ export default function TaskEditor({
                     className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs placeholder-slate-400"
                     rows={2}
                   />
+                </div>
+
+                {/* Couple Task Assignment */}
+                <div className="border-t border-slate-700 pt-3 mt-3">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedCoupleEditor(expandedCoupleEditor === task.id ? null : task.id);
+                    }}
+                    className="text-xs text-slate-300 hover:text-white mb-2 underline"
+                  >
+                    {expandedCoupleEditor === task.id ? '▼ Hide' : '▶ Show'} Couple Assignment
+                  </button>
+
+                  {expandedCoupleEditor === task.id && (
+                    <div className="bg-slate-800 p-3 rounded border border-slate-700 mt-2" onClick={(e) => e.stopPropagation()}>
+                      <CoupleTaskEditor
+                        taskId={task.id}
+                        assignToCouple={editingTask.assignToCouple}
+                        onAssignToCoupleChange={(value) => setEditingTask({ ...editingTask, assignToCouple: value })}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Save/Cancel Buttons */}

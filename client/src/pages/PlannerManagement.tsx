@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import Table from '../components/ui/table';
-import { Button } from '../components/ui';
-import { Input } from '../components/ui';
-import { Card } from '../components/ui';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Card } from '../components/ui/card';
 
 type User = {
   id: number;

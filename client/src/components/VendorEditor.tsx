@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { Button } from './ui/Button';
-import { Input } from './ui/Input';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 import { ChevronsUpDown, Plus } from 'lucide-react';
 
 interface Tag {

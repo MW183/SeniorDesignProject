@@ -3,8 +3,21 @@
  */
 
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+import sgMail from '@sendgrid/mail';
 
 const prisma = new PrismaClient();
+
+// Set up SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+/**
+ * Generate a random temporary password
+ * @returns {string} - Random password (12 characters)
+ */
+function generateTemporaryPassword() {
+  return Math.random().toString(36).slice(2, 14);
+}
 
 /**
  * Shift a date to Friday if it falls on a weekend (Saturday or Sunday)
@@ -46,6 +59,7 @@ const PRIORITY_ENUM = {
 /**
  * Instantiate a wedding planning template for a specific wedding
  * Creates all categories and tasks with calculated due dates
+ * Auto-assigns "Client Task -" categories to couple and creates CLIENT user accounts
  *
  * @param {string} weddingId - The ID of the wedding to create tasks for
  * @param {string} templateId - The ID of the template to use
@@ -56,6 +70,7 @@ async function instantiateWeddingTemplate(weddingId, templateId) {
     // Fetch the wedding and template
     const wedding = await prisma.wedding.findUnique({
       where: { id: weddingId },
+      include: { spouse1: true, spouse2: true }
     });
 
     if (!wedding) {
@@ -80,6 +95,102 @@ async function instantiateWeddingTemplate(weddingId, templateId) {
       throw new Error(`Template with ID ${templateId} not found`);
     }
 
+    // Create CLIENT user accounts for spouses if they don't already exist and have email
+    const coupleUsers = [];
+    if (wedding.spouse1 && wedding.spouse1.email) {
+      let clientUser = await prisma.user.findUnique({
+        where: { email: wedding.spouse1.email }
+      });
+      
+      if (!clientUser) {
+        const tempPassword = generateTemporaryPassword();
+        const hashedPassword = await bcrypt.hash(tempPassword, 10);
+        
+        clientUser = await prisma.user.create({
+          data: {
+            name: wedding.spouse1.name,
+            email: wedding.spouse1.email,
+            password: hashedPassword,
+            role: 'CLIENT',
+            emailVerified: false
+          }
+        });
+        console.log(`[Template] Created CLIENT user for spouse1: ${wedding.spouse1.email}`);
+        
+        // Send welcome email with temporary password
+        try {
+          await sgMail.send({
+            to: wedding.spouse1.email,
+            from: 'noreply@weddingplanner.com',
+            subject: 'Welcome to Wedding Planner - Your Account is Ready',
+            html: `
+              <h2>Welcome to Wedding Planner!</h2>
+              <p>Hi ${wedding.spouse1.name},</p>
+              <p>Your wedding planning account has been created. Here are your login details:</p>
+              <div style="background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                <p><strong>Email:</strong> ${wedding.spouse1.email}</p>
+                <p><strong>Temporary Password:</strong> <code style="font-family: monospace; background: white; padding: 5px; border-radius: 3px;">${tempPassword}</code></p>
+              </div>
+              <p><strong><a href="${process.env.APP_URL || 'http://localhost:3000'}/login">Log in here</a></strong></p>
+              <p style="margin-top: 20px; color: #666;">After logging in, we recommend changing your password for security.</p>
+              <p>Happy planning!</p>
+            `
+          });
+          console.log(`[Template] Welcome email sent to ${wedding.spouse1.email}`);
+        } catch (emailErr) {
+          console.error(`[Template] Failed to send welcome email to ${wedding.spouse1.email}:`, emailErr);
+        }
+      }
+      coupleUsers.push(clientUser);
+    }
+
+    if (wedding.spouse2 && wedding.spouse2.email) {
+      let clientUser = await prisma.user.findUnique({
+        where: { email: wedding.spouse2.email }
+      });
+      
+      if (!clientUser) {
+        const tempPassword = generateTemporaryPassword();
+        const hashedPassword = await bcrypt.hash(tempPassword, 10);
+        
+        clientUser = await prisma.user.create({
+          data: {
+            name: wedding.spouse2.name,
+            email: wedding.spouse2.email,
+            password: hashedPassword,
+            role: 'CLIENT',
+            emailVerified: false
+          }
+        });
+        console.log(`[Template] Created CLIENT user for spouse2: ${wedding.spouse2.email}`);
+        
+        // Send welcome email with temporary password
+        try {
+          await sgMail.send({
+            to: wedding.spouse2.email,
+            from: 'noreply@weddingplanner.com',
+            subject: 'Welcome to Wedding Planner - Your Account is Ready',
+            html: `
+              <h2>Welcome to Wedding Planner!</h2>
+              <p>Hi ${wedding.spouse2.name},</p>
+              <p>Your wedding planning account has been created. Here are your login details:</p>
+              <div style="background-color: #f3f4f6; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                <p><strong>Email:</strong> ${wedding.spouse2.email}</p>
+                <p><strong>Temporary Password:</strong> <code style="font-family: monospace; background: white; padding: 5px; border-radius: 3px;">${tempPassword}</code></p>
+              </div>
+              <p><strong><a href="${process.env.APP_URL || 'http://localhost:3000'}/login">Log in here</a></strong></p>
+              <p style="margin-top: 20px; color: #666;">After logging in, we recommend changing your password for security.</p>
+              <p>Happy planning!</p>
+            `
+          });
+          console.log(`[Template] Welcome email sent to ${wedding.spouse2.email}`);
+        } catch (emailErr) {
+          console.error(`[Template] Failed to send welcome email to ${wedding.spouse2.email}:`, emailErr);
+        }
+      }
+      coupleUsers.push(clientUser);
+    }
+
     // Link the template to the wedding
     await prisma.wedding.update({
       where: { id: weddingId },
@@ -92,6 +203,9 @@ async function instantiateWeddingTemplate(weddingId, templateId) {
 
     // Create all categories and tasks
     for (const category of template.categories) {
+      // Determine if this is a couple task category
+      const isClientTaskCategory = category.name.startsWith('Client Task -');
+
       // Create the task category
       const createdCategory = await prisma.taskCategory.create({
         data: {
@@ -116,12 +230,31 @@ async function instantiateWeddingTemplate(weddingId, templateId) {
             sortOrder: templateTask.sortOrder,
             categoryId: createdCategory.id,
             templateTaskId: templateTask.id,
+            assignToCouple: isClientTaskCategory,
             // Dependencies will be handled in second pass
           },
         });
 
         createdTasks.push(createdTask);
         taskMap.set(templateTask.name, createdTask.id);
+
+        // If this is a client task and we have couple users, assign it to them
+        if (isClientTaskCategory && coupleUsers.length > 0) {
+          for (const coupleUser of coupleUsers) {
+            await prisma.coupleTask.create({
+              data: {
+                taskId: createdTask.id,
+                assignedToId: coupleUser.id
+              }
+            }).catch(err => {
+              // Ignore duplicate unique constraint errors
+              if (!err.message.includes('Unique constraint failed')) {
+                throw err;
+              }
+            });
+          }
+          console.log(`[Template] Assigned task "${createdTask.name}" to ${coupleUsers.length} couple members`);
+        }
       }
     }
 
@@ -163,7 +296,8 @@ async function instantiateWeddingTemplate(weddingId, templateId) {
       success: true,
       weddingId,
       templateId,
-      message: `Successfully instantiated template for wedding. Created ${createdCategories.length} categories and ${createdTasks.length} tasks.`,
+      coupleUsersCreated: coupleUsers.length,
+      message: `Successfully instantiated template for wedding. Created ${createdCategories.length} categories, ${createdTasks.length} tasks, and ${coupleUsers.length} couple users.`,
       categoriesCreated: createdCategories.length,
       tasksCreated: createdTasks.length,
     };

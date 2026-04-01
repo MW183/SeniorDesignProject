@@ -17,6 +17,7 @@ enum Role {
   ADMIN
   USER
   SUPPORT
+  CLIENT
 }
 
 enum Status {
@@ -41,10 +42,20 @@ model User {
   password  String
   role      Role
   createdAt DateTime @default(now())
+  
+  // Email verification
+  emailVerified         Boolean   @default(false)
+  emailVerificationToken String?   @unique
+  emailVerificationExpires DateTime?
+  
+  // Password reset
+  passwordResetToken     String?   @unique
+  passwordResetExpires   DateTime?
 
   tasksAssigned   Task[] @relation("TasksAssigned")
   tasksCompleted  Task[] @relation("TasksCompleted")
   planningWeddings PlannerWedding[]
+  coupleTasksAssigned CoupleTask[] @relation("TasksAssignedToCouple")
 }
 
 
@@ -177,6 +188,10 @@ model Task {
 
   assignedTo   User?   @relation("TasksAssigned", fields: [assignedToId], references: [id])
   assignedToId String?
+  
+  // Flag to indicate if this task should be assigned to the couple
+  assignToCouple Boolean @default(false)
+  coupleTasks    CoupleTask[]
 
   completedOn  DateTime?
   completedBy  User?   @relation("TasksCompleted", fields: [completedById], references: [id])
@@ -291,4 +306,20 @@ model Address {
 
   weddings Wedding[]
   vendors  Vendor[]
+}
+
+model CoupleTask {
+  id        String   @id @default(uuid())
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId    String
+  
+  assignedTo User   @relation("TasksAssignedToCouple", fields: [assignedToId], references: [id], onDelete: Cascade)
+  assignedToId String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([taskId, assignedToId])
+  @@index([taskId])
+  @@index([assignedToId])
 }

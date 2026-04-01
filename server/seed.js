@@ -2,11 +2,13 @@ import 'dotenv/config';
 import prisma from './prismaClient.js';
 import { hashPassword } from './utils.js';
 
-async function createAdminUser() {
+const input = process.argv[2];
+
+async function createAdminUser(input) {
   try {
     // Check if admin already exists
     const existingAdmin = await prisma.user.findUnique({
-      where: { email: 'admin@example.com' }
+      where: { email: input }
     });
 
     if (existingAdmin) {
@@ -21,7 +23,7 @@ async function createAdminUser() {
     const admin = await prisma.user.create({
       data: {
         name: 'Admin User',
-        email: 'admin@example.com',
+        email: input,
         password: hashedPassword,
         role: 'ADMIN',
         phone: null
@@ -40,4 +42,4 @@ async function createAdminUser() {
   }
 }
 
-createAdminUser();
+createAdminUser(input);

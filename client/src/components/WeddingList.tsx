@@ -1,7 +1,7 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { api } from '../lib/api';
 import Table from './ui/table';
-import {Button} from './ui/Button';
+import {Button} from './ui/button';
 import {Card} from './ui/card';
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from './ui/collapsible';
 import WeddingDetailsEditor from './WeddingDetailsEditor';
