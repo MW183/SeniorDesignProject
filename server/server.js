@@ -17,10 +17,42 @@ import taskCategoriesRouter from "./routes/taskCategories.js";
 const app = express();
 
 // CORS configuration to allow credentials from frontend
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
-}));
+const corsOptions = {
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+if (process.env.NODE_ENV === 'production') {
+  // Production: Strict whitelist only
+  const allowedOrigins = [
+    process.env.CORS_ORIGIN,
+    process.env.APP_URL
+  ].filter(Boolean);
+
+  corsOptions.origin = allowedOrigins;
+  console.log('CORS (production):', allowedOrigins);
+} else {
+  // Development: Allow local + curl/Postman requests
+  corsOptions.origin = function (origin, callback) {
+    const devOrigins = [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://localhost:3001',
+      process.env.CORS_ORIGIN
+    ].filter(Boolean);
+
+    if (!origin || devOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn('CORS blocked:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  };
+  console.log('CORS (development): permissive mode');
+}
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -107,7 +139,7 @@ app.use('/template-categories', templateCategoriesRouter);
 app.use('/template-tasks', templateTasksRouter);
 app.use('/task-categories', taskCategoriesRouter);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 let serverInstance = null;
 
