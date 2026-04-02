@@ -1,5 +1,5 @@
 export async function api(path: string, options: any = {}) {
-  const base = import.meta.env.VITE_API_URL || 'http://localhost:5000'; // default to local dev API
+  const base = import.meta.env.VITE_API_URL || 'http://localhost:3000'; // default to local dev API
   const headers = options.headers || {};
   if (options.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
   

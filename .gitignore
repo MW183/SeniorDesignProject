@@ -8,9 +8,10 @@ client/node_modules/
 npm-debug.log*
 
 # Environment variables
-.env
+*.env
 server/.env
 client/.env
+.env
 
 # Prisma
 server/generated/
