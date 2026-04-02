@@ -8,7 +8,7 @@
     "strict": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
     "paths": {
       "@/*": ["./src/*"]
     }
