@@ -216,7 +216,7 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
                               year: 'numeric'
                             })}
                           </span>
-                        </div>
+                        </>
                       </div>
 
                       {/* Status Update */}
