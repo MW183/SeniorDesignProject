@@ -18,7 +18,7 @@ const userSchema = {
   },
   role: {
     required: false,
-    validate: v => !v || ['ADMIN','USER','SUPPORT'].includes(v) || 'role must be ADMIN, USER, or SUPPORT'
+    validate: v => !v || ['ADMIN','USER','SUPPORT','CLIENT'].includes(v) || 'role must be ADMIN, USER, SUPPORT, or CLIENT'
   },
   phone: {
     required: false,
