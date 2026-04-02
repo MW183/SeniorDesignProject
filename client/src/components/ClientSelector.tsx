@@ -45,12 +45,12 @@ export default function ClientSelector({
     const debounceTimer = setTimeout(async () => {
       setLoading(true);
       try {
-        const res = await api(`/clients?search=${encodeURIComponent(searchTerm)}`);
+        const res = await api(`/users?search=${encodeURIComponent(searchTerm)}&role=CLIENT`);
         if (res.ok && Array.isArray(res.body)) {
           setClients(res.body);
         }
       } catch (err) {
-        console.error('Failed to search clients:', err);
+        console.error('Failed to search users:', err);
       } finally {
         setLoading(false);
       }
@@ -71,13 +71,14 @@ export default function ClientSelector({
     }
 
     try {
-      const res = await api('/clients', {
+      const res = await api('/users', {
         method: 'POST',
         body: {
           name: newClient.name.trim(),
           email: newClient.email.trim() || null,
+          password: 'TempPassword123!',
           phone: newClient.phone.trim() || null,
-          notes: null
+          role: 'CLIENT'
         }
       });
 

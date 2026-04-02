@@ -406,7 +406,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
 
                       <div>
                         <label className="text-xs text-slate-400 block mb-2">Tags</label>
-                        <div className="flex flex-wrap gap-2 mb-2 p-2 bg-slate-700 rounded min-h-[2.5rem] items-start">
+                        <div className="flex flex-wrap gap-2 mb-2 p-2 bg-slate-700 rounded min-h-10 items-start">
                           {editTags.size === 0 ? (
                             <span className="text-xs text-slate-500 self-center">No tags selected</span>
                           ) : (

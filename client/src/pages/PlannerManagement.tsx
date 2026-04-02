@@ -18,7 +18,6 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
   const [loading, setLoading] = useState(false);
 
   const filteredUsers = users
-    .filter(user => user.role === 'USER') // Only show planners (can remove to show all for debug)
     .filter(user =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -30,7 +29,7 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
 
   async function load() {
     setLoading(true);
-    const res = await api('/users');
+    const res = await api('/users?role=USER');
     if (res.ok) setUsers(Array.isArray(res.body) ? res.body : []);
     else setUsers([]);
     setLoading(false);
