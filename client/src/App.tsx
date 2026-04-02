@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
+import "./index.css"
 import Login from './pages/Login'
 import Register from './pages/Register'
 import VerifyEmail from './pages/VerifyEmail'
+import ResendVerification from './pages/ResendVerification'
+import SetPassword from './pages/SetPassword'
 import ResetPassword from './pages/ResetPassword'
 import ClientDashboard from './pages/ClientDashboard'
 import PlannerManagement from './pages/PlannerManagement'
@@ -9,15 +12,14 @@ import WeddingManagement from './pages/WeddingManagement'
 import CreateWedding from './pages/CreateWedding'
 import AdminDashboard from './pages/AdminDashboard'
 import PlanningDashboard from './pages/PlanningDashboard'
-import PlannerOverview from './pages/PlannerOverview'
-import PlannerTasks from './pages/PlannerTasks'
 import PlannerWorkspace from './pages/PlannerWorkspace'
 import AssignedWeddings from './pages/AssignedWeddings'
 import Vendors from './pages/Vendors'
 import { setToken } from './lib/api'
 import { api } from './lib/api'
 import Layout from './components/Layout'
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+
 
 function App() {
   const [currentUser, setCurrentUser] = useState<any | null>(null)
@@ -131,10 +133,22 @@ function App() {
               element={<VerifyEmail />}
             />
 
+            {/* Resend Verification Email */}
+            <Route 
+              path="/resend-verification" 
+              element={<ResendVerification />}
+            />
+
             {/* Reset Password */}
             <Route 
               path="/reset-password" 
               element={<ResetPassword />}
+            />
+
+            {/* Set Password (for couple members after email verification) */}
+            <Route 
+              path="/set-password" 
+              element={<SetPassword />}
             />
             
             {/* CLIENT Dashboard - for couple members */}

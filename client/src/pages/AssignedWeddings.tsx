@@ -123,10 +123,22 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
   return (
     <div className="max-w-6xl mx-auto mt-8">
       <Card className="mb-6">
-        <h2 className="text-2xl font-semibold mb-2">Your Weddings</h2>
-        <p className="text-slate-400">
-          {currentUser?.name} • {weddings.length} assigned wedding{weddings.length !== 1 ? 's' : ''}
-        </p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="text-2xl font-semibold mb-2">Your Weddings</h2>
+            <p className="text-slate-400">
+              {currentUser?.name} • {weddings.length} assigned wedding{weddings.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+          <Button 
+            onClick={() => loadWeddings()} 
+            variant="outline" 
+            size="sm"
+            disabled={loading}
+          >
+            {loading ? 'Refreshing...' : 'Refresh'}
+          </Button>
+        </div>
       </Card>
 
       {error && (

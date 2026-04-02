@@ -29,18 +29,6 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "Client" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "email" TEXT,
-    "phone" TEXT,
-    "notes" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Client_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "WeddingTemplate" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -284,10 +272,10 @@ ALTER TABLE "Wedding" ADD CONSTRAINT "Wedding_templateId_fkey" FOREIGN KEY ("tem
 ALTER TABLE "Wedding" ADD CONSTRAINT "Wedding_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Wedding" ADD CONSTRAINT "Wedding_spouse1Id_fkey" FOREIGN KEY ("spouse1Id") REFERENCES "Client"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Wedding" ADD CONSTRAINT "Wedding_spouse1Id_fkey" FOREIGN KEY ("spouse1Id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Wedding" ADD CONSTRAINT "Wedding_spouse2Id_fkey" FOREIGN KEY ("spouse2Id") REFERENCES "Client"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Wedding" ADD CONSTRAINT "Wedding_spouse2Id_fkey" FOREIGN KEY ("spouse2Id") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TaskCategory" ADD CONSTRAINT "TaskCategory_weddingId_fkey" FOREIGN KEY ("weddingId") REFERENCES "Wedding"("id") ON DELETE CASCADE ON UPDATE CASCADE;

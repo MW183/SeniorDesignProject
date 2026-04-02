@@ -10,7 +10,7 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900 text-white h-16 shadow-sm">
-      <div className="max-w-[1100px] mx-auto px-4">
+      <div className="max-w-275 mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="">
             <Link to="/" className="text-white font-bold text-lg tracking-wide">PlannerApp</Link>
@@ -22,12 +22,12 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
             aria-label="Toggle navigation"
             onClick={() => setOpen(v => !v)}
           >
-            <span className="block w-5 h-0.5 bg-white my-[3px]" />
-            <span className="block w-5 h-0.5 bg-white my-[3px]" />
-            <span className="block w-5 h-0.5 bg-white my-[3px]" />
+            <span className="block w-5 h-0.5 bg-white my-0.75" />
+            <span className="block w-5 h-0.5 bg-white my-0.75" />
+            <span className="block w-5 h-0.5 bg-white my-0.75" />
           </button>
 
-          <nav className={`${open ? 'flex' : 'hidden'} md:flex items-center gap-4 md:static absolute top-16 right-4 bg-slate-900 md:bg-transparent flex-col md:flex-row p-3 md:p-0 rounded-md min-w-[160px]`}>
+          <nav className={`${open ? 'flex' : 'hidden'} md:flex items-center gap-4 md:static absolute top-16 right-4 bg-slate-900 md:bg-transparent flex-col md:flex-row p-3 md:p-0 rounded-md min-w-40`}>
             {!currentUser ? (
               <Link to="/login" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Login</Link>
             ) : isAdmin || isSupport ? (
@@ -41,7 +41,6 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
             ) : (
               <>
                 <Link to="/my-weddings" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">My Weddings</Link>
-                <Link to="/my-tasks" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">My Tasks</Link>
                 <Link to="/manage-vendors" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Vendors</Link>
                 <button className="logout-btn text-sky-100 px-2 py-1 rounded-md hover:bg-white/5" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
               </>

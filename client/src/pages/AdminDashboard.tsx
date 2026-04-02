@@ -337,6 +337,9 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
             <Button onClick={() => navigate('/create-wedding')} variant="outline">
               Create New Wedding
             </Button>
+            <Button onClick={() => loadStats()} variant="secondary" disabled={loading}>
+              {loading ? 'Refreshing...' : 'Refresh Data'}
+            </Button>
           </div>
         </CardContent>
       </Card>

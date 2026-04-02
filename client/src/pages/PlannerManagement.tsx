@@ -17,10 +17,12 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = users
+    .filter(user => user.role === 'USER') // Only show planners (can remove to show all for debug)
+    .filter(user =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -77,7 +79,17 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
 
   return (
     <div className="max-w-4xl mx-auto mt-8">
-      <h2 className="text-2xl font-semibold mb-4">Manage Planners</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-semibold">Manage Planners</h2>
+        <Button 
+          onClick={() => load()} 
+          variant="outline" 
+          size="sm"
+          disabled={loading}
+        >
+          {loading ? 'Refreshing...' : 'Refresh'}
+        </Button>
+      </div>
       
       {/* Search */}
       <Card className="mb-6">

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { api } from '../lib/api';
-import CoupleTaskEditor from './CoupleTaskEditor';
 
 interface TaskDependency {
   id: string;
@@ -66,7 +65,6 @@ export default function TaskEditor({
   const [editingTask, setEditingTask] = useState<EditingTaskState | null>(null);
   const [savingTaskId, setSavingTaskId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [expandedCoupleEditor, setExpandedCoupleEditor] = useState<string | null>(null);
 
   const getDaysUntil = (dateStr: string) => {
     const dueDate = new Date(dateStr);
@@ -117,6 +115,7 @@ export default function TaskEditor({
     setSavingTaskId(taskId);
     setError(null);
     try {
+      // First, update the task itself
       const res = await api(`/tasks/${taskId}`, {
         method: 'PUT',
         body: {
@@ -129,18 +128,62 @@ export default function TaskEditor({
         }
       });
 
-      if (res.ok) {
-        const updatedTasks = tasks.map(t =>
-          t.id === taskId
-            ? { ...t, ...editingTask, dueDate: editingTask.dueDate }
-            : t
-        );
-        onTasksChange(updatedTasks);
-        setEditingTask(null);
-        onSaveComplete?.();
-      } else {
+      if (!res.ok) {
         setError(res.body?.error || 'Failed to save task');
+        setSavingTaskId(null);
+        return;
       }
+
+      // Get the original task to check if assignToCouple changed
+      const originalTask = tasks.find(t => t.id === taskId);
+      const coupleAssignmentChanged = originalTask?.assignToCouple !== editingTask.assignToCouple;
+
+      // If assignToCouple changed, sync with couple members
+      if (coupleAssignmentChanged) {
+        try {
+          // Fetch the wedding to get couple members (User records)
+          const weddingRes = await api(`/weddings/${weddingId}`);
+          if (weddingRes.ok) {
+            const wedding = weddingRes.body;
+            const coupleUserIds = [];
+            if (wedding.spouse1?.id) coupleUserIds.push(wedding.spouse1.id);
+            if (wedding.spouse2?.id) coupleUserIds.push(wedding.spouse2.id);
+
+            if (coupleUserIds.length === 0) {
+              console.warn('No couple members with user accounts found for wedding', weddingId);
+            }
+
+            if (editingTask.assignToCouple) {
+              // Assign to all couple members who have user accounts
+              for (const userId of coupleUserIds) {
+                await api(`/tasks/${taskId}/couple`, {
+                  method: 'POST',
+                  body: { assignedToId: userId }
+                });
+              }
+            } else {
+              // Unassign from all couple members who have user accounts
+              for (const userId of coupleUserIds) {
+                await api(`/tasks/${taskId}/couple/${userId}`, {
+                  method: 'DELETE'
+                });
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Error syncing couple assignments:', err);
+          // Don't fail the whole operation if couple sync fails
+        }
+      }
+
+      const updatedTasks = tasks.map(t =>
+        t.id === taskId
+          ? { ...t, ...editingTask, dueDate: editingTask.dueDate }
+          : t
+      );
+      onTasksChange(updatedTasks);
+      setEditingTask(null);
+      onSaveComplete?.();
     } catch (err) {
       setError('An error occurred while saving');
     } finally {
@@ -244,15 +287,29 @@ export default function TaskEditor({
                   </div>
                 </div>
 
-                {/* Due Date */}
-                <div>
-                  <label className="text-xs text-slate-400 block mb-1">Due Date</label>
-                  <input
-                    type="date"
-                    value={editingTask.dueDate.split('T')[0]}
-                    onChange={(e) => setEditingTask({ ...editingTask, dueDate: e.target.value })}
-                    className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
-                  />
+                {/* Due Date and Couple Assignment */}
+                <div className="flex items-end gap-4">
+                  <div className="flex-1">
+                    <label className="text-xs text-slate-400 block mb-1">Due Date</label>
+                    <input
+                      type="date"
+                      value={editingTask.dueDate.split('T')[0]}
+                      onChange={(e) => setEditingTask({ ...editingTask, dueDate: e.target.value })}
+                      className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 pb-1">
+                    <input
+                      type="checkbox"
+                      id={`couple-${editingTask.id}`}
+                      checked={editingTask.assignToCouple}
+                      onChange={(e) => setEditingTask({ ...editingTask, assignToCouple: e.target.checked })}
+                      className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500 cursor-pointer"
+                    />
+                    <label htmlFor={`couple-${editingTask.id}`} className="text-xs text-slate-300 cursor-pointer">
+                      Assign to couple
+                    </label>
+                  </div>
                 </div>
 
                 {/* Notes */}
@@ -265,30 +322,6 @@ export default function TaskEditor({
                     className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs placeholder-slate-400"
                     rows={2}
                   />
-                </div>
-
-                {/* Couple Task Assignment */}
-                <div className="border-t border-slate-700 pt-3 mt-3">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setExpandedCoupleEditor(expandedCoupleEditor === task.id ? null : task.id);
-                    }}
-                    className="text-xs text-slate-300 hover:text-white mb-2 underline"
-                  >
-                    {expandedCoupleEditor === task.id ? '▼ Hide' : '▶ Show'} Couple Assignment
-                  </button>
-
-                  {expandedCoupleEditor === task.id && (
-                    <div className="bg-slate-800 p-3 rounded border border-slate-700 mt-2" onClick={(e) => e.stopPropagation()}>
-                      <CoupleTaskEditor
-                        taskId={task.id}
-                        assignToCouple={editingTask.assignToCouple}
-                        onAssignToCoupleChange={(value) => setEditingTask({ ...editingTask, assignToCouple: value })}
-                      />
-                    </div>
-                  )}
                 </div>
 
                 {/* Save/Cancel Buttons */}

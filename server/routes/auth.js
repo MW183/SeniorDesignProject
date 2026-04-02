@@ -11,6 +11,9 @@ const router = express.Router();
 // Set up SendGrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+// Get sender email from environment, fallback to constructed address
+const SENDER_EMAIL = process.env.SENDGRID_FROM_EMAIL || process.env.SENDER_EMAIL || 'mikeweinstein183@gmail.com';
+
 // Utility function to generate verification token
 function generateVerificationToken() {
   return signJwt({ type: 'email_verify' }, process.env.EMAIL_VERIFY_EXPIRES || '24h');
@@ -18,7 +21,12 @@ function generateVerificationToken() {
 
 // Utility function to generate verification link
 function getVerificationLink(token) {
-  return `${process.env.APP_URL || 'http://localhost:3000'}/verify-email?token=${token}`;
+  return `${process.env.APP_URL || 'http://localhost:5173'}/verify-email?token=${token}`;
+}
+
+// Utility function to generate set password link
+function getSetPasswordLink(token) {
+  return `${process.env.APP_URL || 'http://localhost:5173'}/set-password?token=${token}`;
 }
 
 // POST /auth/register — create a new user (email unverified)
@@ -64,7 +72,7 @@ router.post('/register', validateBody(registerSchema), async (req, res) => {
     try {
       await sgMail.send({
         to: user.email,
-        from: 'noreply@weddingplanner.com',
+        from: SENDER_EMAIL,
         subject: 'Verify Your Email Address',
         html: `
           <h2>Welcome to Wedding Planner!</h2>
@@ -177,7 +185,7 @@ router.post('/resend-verification', validateBody(resendVerificationSchema), asyn
     try {
       await sgMail.send({
         to: user.email,
-        from: 'noreply@weddingplanner.com',
+        from: SENDER_EMAIL,
         subject: 'Verify Your Email Address',
         html: `
           <h2>Email Verification</h2>
@@ -196,6 +204,62 @@ router.post('/resend-verification', validateBody(resendVerificationSchema), asyn
     }
 
     res.json({ message: 'Verification email sent', verificationLink });
+  } catch (err) {
+    handlePrismaError(res, err);
+  }
+});
+
+// POST /auth/set-password — set password with verification token (unauthenticated)
+const setPasswordSchema = z.object({
+  token: z.string(),
+  password: z.string().min(6)
+});
+
+router.post('/set-password', validateBody(setPasswordSchema), async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    let payload;
+    try {
+      payload = verifyJwt(token);
+    } catch (err) {
+      return res.status(400).json({ error: 'Invalid or expired token' });
+    }
+
+    if (payload.type !== 'email_verify') {
+      return res.status(400).json({ error: 'Invalid token type' });
+    }
+
+    // Find user by verification token
+    const user = await prisma.user.findUnique({
+      where: { emailVerificationToken: token }
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid verification token' });
+    }
+
+    // Check if token is expired
+    if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
+      return res.status(400).json({ error: 'Verification token expired' });
+    }
+
+    // Hash the new password
+    const hashedPassword = await hashPassword(password);
+
+    // Update user: set password, mark email as verified, clear verification token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        emailVerified: true,
+        emailVerificationToken: null,
+        emailVerificationExpires: null
+      }
+    });
+
+    console.log(`[Auth] Password set and email verified for user ${user.email}`);
+    res.json({ message: 'Password set successfully. You can now log in.' });
   } catch (err) {
     handlePrismaError(res, err);
   }
@@ -297,7 +361,7 @@ router.post('/request-reset', validateBody(requestResetSchema), async (req, res)
     try {
       await sgMail.send({
         to: user.email,
-        from: 'noreply@weddingplanner.com',
+        from: SENDER_EMAIL,
         subject: 'Password Reset Request',
         html: `
           <h2>Password Reset</h2>

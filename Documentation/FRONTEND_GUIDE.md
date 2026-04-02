@@ -373,6 +373,10 @@ Use controlled components or form libraries like React Hook Form for complex for
 
 ---
 
+## Known Issues:
+- tsconfig.json: "Option 'baseUrl' is deprecated and will stop functioning in TypeScript 7.0. Specify compilerOption '"ignoreDeprecations": "6.0"' to silence this error.
+  Visit https://aka.ms/ts6 for migration information."
+
 ## Further Documentation
 
 - [TECH_STACK.md](TECH_STACK.md) — Full tech stack details

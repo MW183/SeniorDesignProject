@@ -1,28 +1,26 @@
 {
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "[typescriptreact]": {
+    "editor.quickSuggestions": {
+      "strings": "on"
+    }
+  },
+  "tailwindCSS.hovers": true,
+  "tailwindCSS.codeActions": true,
   "tailwindCSS.classAttributes": [
-    "class",
     "className"
   ],
   "tailwindCSS.classFunctions": [
     "cva", "cn", "clsx", "twMerge"
   ],
-  "tailwindCSS.hovers": true,
-  "tailwindCSS.codeActions": true,
-  "tailwindCSS.experimental.classRegex": [
-  ["cva\\(([^;]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"],
-  ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
-  ["Variants\\s*=\\s*([^;]*);", "\"(?:'|\"|`)([^\"'`]*)(?:'|\"|`)\""]
-    ],
-  "tailwindCSS.includeLanguages": {
-    "typescript": "javascript",
-    "typescriptreact": "javascriptreact"
-  },
-  "editor.quickSuggestions": {
-    "strings": true
-  },
-  "tailwindCSS.experimental.configFile": "client/tailwind.config.js",
   "files.associations": {
-    "*.css": "tailwindcss" 
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.experimental.configFile": "client/src/index.css",
+  "tailwindCSS.includeLanguages": {
+    "typscript": "html",
+    "typscriptreact": "html"
   }
 }
-

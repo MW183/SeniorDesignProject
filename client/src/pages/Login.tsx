@@ -22,6 +22,8 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
     }
   }
 
+  const isEmailNotVerifiedError = error && error.includes('Email not verified');
+
   return (
     <div className="max-w-md mx-auto mt-12">
       <Card>
@@ -52,7 +54,29 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
             <Button type="submit" variant="default" size="lg">Login</Button>
           </div>
         </form>
-        {error && <div className="mt-3 text-sm text-red-400">{error}</div>}
+        {error && (
+          <div className="mt-4 space-y-3">
+            <div className={`text-sm p-3 rounded border ${
+              isEmailNotVerifiedError 
+                ? 'bg-yellow-900/20 border-yellow-600 text-yellow-400' 
+                : 'bg-red-900/20 border-red-600 text-red-400'
+            }`}>
+              {error}
+            </div>
+            {isEmailNotVerifiedError && (
+              <Link to={`/resend-verification?email=${encodeURIComponent(email)}`}>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  className="w-full"
+                >
+                  Resend Verification Email
+                </Button>
+              </Link>
+            )}
+          </div>
+        )}
       </Card>
     </div>
   );

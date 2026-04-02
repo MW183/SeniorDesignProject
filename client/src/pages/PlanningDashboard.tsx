@@ -168,7 +168,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
         <Button onClick={() => navigate('/my-weddings')}>
           View All Weddings
         </Button>
-        <Button onClick={() => navigate('/my-tasks')} variant="secondary">
+        <Button onClick={() => navigate('/')} variant="secondary">
           View All Tasks
         </Button>
       </div>

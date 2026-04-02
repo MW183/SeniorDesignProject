@@ -4,7 +4,6 @@ import cors from "cors";
 import cookieParser from 'cookie-parser';
 
 import usersRouter from "./routes/users.js";
-import clientsRouter from "./routes/clients.js";
 import vendorsRouter from "./routes/vendors.js";
 import addressRouter from "./routes/address.js";
 import tasksRouter from "./routes/tasks.js";
@@ -34,7 +33,6 @@ app.get('/', (req, res) => {
     message: 'Wedding planner API',
     endpoints: {
       users: '/users',
-      clients: '/clients',
       vendors: '/vendors',
       addresses: '/address',
       tasks: '/tasks',
@@ -62,7 +60,6 @@ app.get('/', (req, res) => {
         <h2>Endpoints</h2>
         <ul>
           <li><a href="/users">/users</a> — Users collection</li>
-          <li><a href="/clients">/clients</a> — Clients collection</li>
           <li><a href="/vendors">/vendors</a> — Vendors collection</li>
           <li><a href="/address">/address</a> — Addresses collection</li>
           <li><a href="/tasks">/tasks</a> — Tasks collection</li>
@@ -100,7 +97,6 @@ app.get('/healthz', (req, res) => {
 
 // Mount routers
 app.use('/users', usersRouter);
-app.use('/clients', clientsRouter);
 app.use('/vendors', vendorsRouter);
 app.use('/address', addressRouter);
 app.use('/tasks', tasksRouter);
