@@ -292,11 +292,11 @@ router.post('/login', validateBody(loginSchema), async (req, res) => {
       process.env.JWT_EXPIRES || '1h'
     );
     
-    //set httpOnly cookie
+    //set httpOnly cookie for cross-origin requests
     res.cookie('token', token, { 
       httpOnly: true, 
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax' 
+      secure: true,
+      sameSite: 'none' 
     });
 
 
