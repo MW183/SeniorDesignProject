@@ -76,7 +76,7 @@ export default function ClientSelector({
         body: {
           name: newClient.name.trim(),
           email: newClient.email.trim() || null,
-          password: 'TempPassword123!',
+          password: 'password',
           phone: newClient.phone.trim() || null,
           role: 'CLIENT'
         }

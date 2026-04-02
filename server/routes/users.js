@@ -72,13 +72,17 @@ router.post('/', async (req, res) => {
     const hashed = await hashPassword(data.password);
     data.password = hashed;
 
+    // Auto-validate CLIENT and USER roles on creation
+    const shouldAutoValidate = ['CLIENT', 'USER'].includes(data.role);
+
     // create user in DB
     const user = await prisma.user.create({
       data: {
         ...data,
         name: data.name.trim(),
         email: data.email.toLowerCase().trim(),
-        phone: data.phone?.trim() || null
+        phone: data.phone?.trim() || null,
+        emailVerified: shouldAutoValidate
       },
       select: { id: true, name: true, email: true, phone: true, role: true, createdAt: true }
     });
