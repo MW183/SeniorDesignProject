@@ -57,9 +57,9 @@ async function seedTemplate() {
 
     console.log(`Created wedding template: ${template.name} (v${template.version})`);
 
-    // Create categories and tasks
+    // Create all categories
+    const categoryMap = new Map();
     for (const categoryData of WEDDING_PLANNING_TEMPLATE.categories) {
-      // Create the template category
       const category = await prisma.templateCategory.create({
         data: {
           name: categoryData.name,
@@ -67,28 +67,32 @@ async function seedTemplate() {
           templateId: template.id,
         },
       });
-
+      categoryMap.set(categoryData.name, category.id);
       console.log(`  Created category: ${category.name}`);
+    }
 
-      // Create tasks for this category
+    // Batch create ALL tasks at once
+    const allTasksData = [];
+    for (const categoryData of WEDDING_PLANNING_TEMPLATE.categories) {
       for (const taskData of categoryData.tasks) {
-        const task = await prisma.templateTask.create({
-          data: {
-            name: taskData.name,
-            description: taskData.description || null,
-            taskType: taskData.taskType || 'Task',
-            dependencyMetadata: taskData.dependencyMetadata || null,
-            defaultPriority: taskData.defaultPriority,
-            defaultDueOffsetDays: taskData.defaultDueOffsetDays,
-            sortOrder: taskData.sortOrder,
-            categoryId: category.id,
-          },
+        allTasksData.push({
+          name: taskData.name,
+          description: taskData.description || null,
+          taskType: taskData.taskType || 'Task',
+          dependencyMetadata: taskData.dependencyMetadata || null,
+          defaultPriority: taskData.defaultPriority,
+          defaultDueOffsetDays: taskData.defaultDueOffsetDays,
+          sortOrder: taskData.sortOrder,
+          categoryId: categoryMap.get(categoryData.name),
         });
-
-        if (taskData.sortOrder % 5 === 0) {
-          console.log(`    - ${task.name} (due ${task.defaultDueOffsetDays} days before wedding)`);
-        }
       }
+    }
+
+    if (allTasksData.length > 0) {
+      await prisma.templateTask.createMany({
+        data: allTasksData,
+      });
+      console.log(`  Batch created all ${allTasksData.length} tasks in one query`);
     }
 
     // Count actual tasks in database

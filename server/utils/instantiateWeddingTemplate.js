@@ -199,14 +199,9 @@ async function instantiateWeddingTemplate(weddingId, templateId) {
 
     const createdCategories = [];
     const createdTasks = [];
-    const taskMap = new Map(); // Maps template task name to created task ID for dependencies
 
-    // Create all categories and tasks
+    // Create all categories first
     for (const category of template.categories) {
-      // Determine if this is a couple task category
-      const isClientTaskCategory = category.name.startsWith('Client Task -');
-
-      // Create the task category
       const createdCategory = await prisma.taskCategory.create({
         data: {
           name: category.name,
@@ -214,79 +209,79 @@ async function instantiateWeddingTemplate(weddingId, templateId) {
           weddingId,
         },
       });
-
       createdCategories.push(createdCategory);
+    }
 
-      // Create all tasks in this category
-      for (const templateTask of category.tasks) {
-        const dueDate = calculateDueDate(wedding.date, templateTask.defaultDueOffsetDays);
-
-        const createdTask = await prisma.task.create({
-          data: {
-            name: templateTask.name,
-            description: templateTask.description || null,
-            priority: templateTask.defaultPriority,
-            dueDate,
-            sortOrder: templateTask.sortOrder,
-            categoryId: createdCategory.id,
-            templateTaskId: templateTask.id,
-            assignToCouple: isClientTaskCategory,
-            // Dependencies will be handled in second pass
-          },
-        });
-
-        createdTasks.push(createdTask);
-        taskMap.set(templateTask.name, createdTask.id);
-
-        // If this is a client task and we have couple users, assign it to them
-        if (isClientTaskCategory && coupleUsers.length > 0) {
-          for (const coupleUser of coupleUsers) {
-            await prisma.coupleTask.create({
-              data: {
-                taskId: createdTask.id,
-                assignedToId: coupleUser.id
-              }
-            }).catch(err => {
-              // Ignore duplicate unique constraint errors
-              if (!err.message.includes('Unique constraint failed')) {
-                throw err;
-              }
-            });
-          }
-          console.log(`[Template] Assigned task "${createdTask.name}" to ${coupleUsers.length} couple members`);
-        }
+    // Build map of category names to IDs
+    const categoryNameMap = new Map();
+    for (const category of template.categories) {
+      const dbCategory = await prisma.taskCategory.findFirst({
+        where: { name: category.name, weddingId },
+      });
+      if (dbCategory) {
+        categoryNameMap.set(category.name, dbCategory.id);
       }
     }
 
-    // Second pass: link task dependencies using the task map
-    // Refetch template tasks to get dependency info
-    const templateTasks = await prisma.templateTask.findMany({
-      where: { category: { templateId } },
-      include: { dependsOn: true },
+    // Batch create ALL tasks at once
+    const allTasksData = [];
+    for (const category of template.categories) {
+      const isClientTaskCategory = category.name.startsWith('Client Task -');
+      const categoryId = categoryNameMap.get(category.name);
+
+      for (const templateTask of category.tasks) {
+        allTasksData.push({
+          name: templateTask.name,
+          description: templateTask.description || null,
+          priority: templateTask.defaultPriority,
+          dueDate: calculateDueDate(wedding.date, templateTask.defaultDueOffsetDays),
+          sortOrder: templateTask.sortOrder,
+          categoryId: categoryId,
+          templateTaskId: templateTask.id,
+          assignToCouple: isClientTaskCategory,
+        });
+      }
+    }
+
+    if (allTasksData.length > 0) {
+      await prisma.task.createMany({
+        data: allTasksData,
+      });
+      console.log(`[Template] Batch created all ${allTasksData.length} tasks in one query`);
+    }
+
+    // Fetch all created tasks
+    const allCreatedTasks = await prisma.task.findMany({
+      where: { weddingId },
     });
 
-    for (const templateTask of templateTasks) {
-      if (templateTask.dependsOnId) {
-        // Find the parent template task to get its name
-        const parentTemplate = await prisma.templateTask.findUnique({
-          where: { id: templateTask.dependsOnId },
-        });
-
-        if (parentTemplate) {
-          const parentTaskId = taskMap.get(parentTemplate.name);
-          if (parentTaskId) {
-            // Find the created task for this template task
-            const createdTask = createdTasks.find((t) => t.name === templateTask.name);
-            if (createdTask) {
-              await prisma.task.update({
-                where: { id: createdTask.id },
-                data: { dependsOnId: parentTaskId },
-              });
-            }
-          }
+    // Batch assign couple tasks for all client task categories
+    const coupleTasksData = [];
+    for (const task of allCreatedTasks) {
+      if (task.assignToCouple && coupleUsers.length > 0) {
+        for (const coupleUser of coupleUsers) {
+          coupleTasksData.push({
+            taskId: task.id,
+            assignedToId: coupleUser.id,
+          });
         }
       }
     }
+
+    if (coupleTasksData.length > 0) {
+      await prisma.coupleTask.createMany({
+        data: coupleTasksData,
+        skipDuplicates: true,
+      });
+      console.log(`[Template] Batch assigned ${coupleTasksData.length} couple task instances`);
+    }
+
+    // Process dependencies (feature for future use - currently disabled)
+    // for (const templateTask of template.tasks) {
+    //   if (templateTask.dependsOnId) {
+    //     // Handle dependency logic here when needed
+    //   }
+    // }
 
     // Update wedding to link template (already done during creation, but ensure it's set)
     const taskCount = createdTasks.length;

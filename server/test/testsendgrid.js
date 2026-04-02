@@ -10,8 +10,8 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 // uncomment the above line if you are sending mail using a regional EU subuser
 
 const msg = {
-  to: 'mikeweinstein183+test@gmail.com', // Change to your recipient
-  from: 'mikeweinstein183@gmail.com', // Change to your verified sender
+  to: 'process.env.SENDGRID_FROM_EMAIL', // Change to your recipient
+  from: 'process.env.SENDGRID_FROM_EMAIL', // Change to your verified sender
   subject: 'Sending with SendGrid is Fun',
   text: 'and easy to do anywhere, even with Node.js',
   html: '<strong>and easy to do anywhere, even with Node.js</strong>',
