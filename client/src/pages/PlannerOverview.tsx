@@ -97,10 +97,10 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
       label: 'Planner', 
       className: 'text-left pb-2 w-1/4',
       render: (stat: PlannerStats) => (
-        <div>
+        <>
           <div className="font-medium">{stat.planner.name}</div>
           <div className="text-sm text-slate-400">{stat.planner.email}</div>
-        </div>
+        </>
       )
     },
     { 
@@ -161,7 +161,7 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
           type="text"
           placeholder="Search planners by name or email..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
           className="mb-4"
         />
         {loading ? (

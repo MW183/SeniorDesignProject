@@ -186,7 +186,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
               type="text"
               placeholder="Search tasks by name, wedding, or category..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
               className="mb-4"
             />
             {filteredUpcomingTasks.length === 0 && upcomingTasks.length > 0 ? (

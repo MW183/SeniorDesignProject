@@ -244,36 +244,36 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
             <CollapsibleContent className="pt-4">
               <form onSubmit={createVendor} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
+                  <>
                     <label className="text-sm text-slate-400 block mb-2">Name *</label>
                     <Input
                       value={createName}
-                      onChange={(e) => setCreateName(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreateName(e.target.value)}
                     />
-                  </div>
-                  <div>
+                  </>
+                  <>
                     <label className="text-sm text-slate-400 block mb-2">Email</label>
                     <Input
                       type="email"
                       value={createEmail}
-                      onChange={(e) => setCreateEmail(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreateEmail(e.target.value)}
                     />
-                  </div>
+                  </>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
+                  <>
                     <label className="text-sm text-slate-400 block mb-2">Phone</label>
                     <Input
                       value={createPhone}
-                      onChange={(e) => setCreatePhone(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreatePhone(e.target.value)}
                     />
-                  </div>
-                  <div>
+                  </>
+                  <>
                     <label className="text-sm text-slate-400 block mb-2">Rating (0-5)</label>
                     <select
                       value={createRating}
-                      onChange={(e) => setCreateRating(parseInt(e.target.value))}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCreateRating(parseInt(e.target.value))}
                       className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white"
                     >
                       <option value="0">0 - Not Rated</option>
@@ -283,18 +283,18 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                       <option value="4">4 Stars</option>
                       <option value="5">5 Stars</option>
                     </select>
-                  </div>
+                  </>
                 </div>
 
-                <div>
+                <>
                   <label className="text-sm text-slate-400 block mb-2">Notes</label>
                   <textarea
                     value={createNotes}
-                    onChange={(e) => setCreateNotes(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCreateNotes(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
                     rows={3}
                   />
-                </div>
+                </>
 
                 <div className="flex gap-2 justify-end pt-2">
                   <Button
@@ -350,13 +350,13 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                 >
                   {isEditing ? (
                     // Edit Mode
-                    <div className="space-y-4" onClick={(e) => e.stopPropagation()}>
+                    <div className="space-y-4" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="text-xs text-slate-400 block mb-1">Name</label>
                           <Input
                             value={editName}
-                            onChange={(e) => setEditName(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditName(e.target.value)}
                           />
                         </div>
                         <div>
@@ -364,7 +364,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                           <Input
                             type="email"
                             value={editEmail}
-                            onChange={(e) => setEditEmail(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditEmail(e.target.value)}
                           />
                         </div>
                       </div>
@@ -374,14 +374,14 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                           <label className="text-xs text-slate-400 block mb-1">Phone</label>
                           <Input
                             value={editPhone}
-                            onChange={(e) => setEditPhone(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditPhone(e.target.value)}
                           />
                         </div>
                         <div>
                           <label className="text-xs text-slate-400 block mb-1">Rating (0-5)</label>
                           <select
                             value={editRating}
-                            onChange={(e) => setEditRating(parseInt(e.target.value))}
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEditRating(parseInt(e.target.value))}
                             className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
                           >
                             <option value="0">0 - Not Rated</option>
@@ -398,7 +398,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                         <label className="text-xs text-slate-400 block mb-1">Notes</label>
                         <textarea
                           value={editNotes}
-                          onChange={(e) => setEditNotes(e.target.value)}
+                          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEditNotes(e.target.value)}
                           className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
                           rows={2}
                         />
@@ -435,8 +435,8 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                           <Input
                             type="text"
                             value={tagInput}
-                            onChange={(e) => setTagInput(e.target.value)}
-                            onKeyDown={async (e) => {
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTagInput(e.target.value)}
+                            onKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
                               if (e.key === 'Enter' && tagInput.trim()) {
                                 e.preventDefault();
                                 try {

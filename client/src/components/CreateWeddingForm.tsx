@@ -139,7 +139,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
             id="date"
             type="date"
             value={date}
-            onChange={e => setDate(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDate(e.target.value)}
             required
           />
         </FormField>
@@ -149,7 +149,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
             type="checkbox"
             id="enterSpouseData"
             checked={enterSpouseData}
-            onChange={e => setEnterSpouseData(e.target.checked)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEnterSpouseData(e.target.checked)}
             className="rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500"
           />
           <label htmlFor="enterSpouseData" className="text-sm font-medium">
@@ -166,7 +166,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
                 type="text"
                 placeholder="e.g., Alice Johnson"
                 value={spouse1.name}
-                onChange={e => setSpouse1({...spouse1, name: e.target.value})}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSpouse1({...spouse1, name: e.target.value})}
               />
             </FormField>
             <FormField label="Email" id="spouse1Email">
@@ -175,7 +175,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
                 type="email"
                 placeholder="alice@example.com"
                 value={spouse1.email}
-                onChange={e => setSpouse1({...spouse1, email: e.target.value})}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSpouse1({...spouse1, email: e.target.value})}
               />
             </FormField>
             <FormField label="Phone (Optional)" id="spouse1Phone">
@@ -184,7 +184,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
                 type="tel"
                 placeholder="+1-555-0101"
                 value={spouse1.phone}
-                onChange={e => setSpouse1({...spouse1, phone: e.target.value})}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSpouse1({...spouse1, phone: e.target.value})}
               />
             </FormField>
 
@@ -195,7 +195,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
                 type="text"
                 placeholder="e.g., Bob Johnson"
                 value={spouse2.name}
-                onChange={e => setSpouse2({...spouse2, name: e.target.value})}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSpouse2({...spouse2, name: e.target.value})}
               />
             </FormField>
             <FormField label="Email" id="spouse2Email">
@@ -204,7 +204,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
                 type="email"
                 placeholder="bob@example.com"
                 value={spouse2.email}
-                onChange={e => setSpouse2({...spouse2, email: e.target.value})}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSpouse2({...spouse2, email: e.target.value})}
               />
             </FormField>
             <FormField label="Phone (Optional)" id="spouse2Phone">
@@ -213,7 +213,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
                 type="tel"
                 placeholder="+1-555-0102"
                 value={spouse2.phone}
-                onChange={e => setSpouse2({...spouse2, phone: e.target.value})}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSpouse2({...spouse2, phone: e.target.value})}
               />
             </FormField>
 

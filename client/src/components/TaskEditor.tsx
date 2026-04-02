@@ -252,7 +252,7 @@ export default function TaskEditor({
                   <input
                     type="text"
                     value={editingTask.name}
-                    onChange={(e) => setEditingTask({ ...editingTask, name: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditingTask({ ...editingTask, name: e.target.value })}
                     className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm"
                   />
                 </div>
@@ -263,7 +263,7 @@ export default function TaskEditor({
                     <label className="text-xs text-slate-400 block mb-1">Status</label>
                     <select
                       value={editingTask.currentStatus}
-                      onChange={(e) => setEditingTask({ ...editingTask, currentStatus: e.target.value })}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEditingTask({ ...editingTask, currentStatus: e.target.value })}
                       className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
                     >
                       <option value="PENDING">PENDING</option>
@@ -277,7 +277,7 @@ export default function TaskEditor({
                     <label className="text-xs text-slate-400 block mb-1">Priority</label>
                     <select
                       value={editingTask.priority}
-                      onChange={(e) => setEditingTask({ ...editingTask, priority: parseInt(e.target.value) })}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEditingTask({ ...editingTask, priority: parseInt(e.target.value) })}
                       className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
                     >
                       <option value="0">NORMAL</option>
@@ -294,7 +294,7 @@ export default function TaskEditor({
                     <input
                       type="date"
                       value={editingTask.dueDate.split('T')[0]}
-                      onChange={(e) => setEditingTask({ ...editingTask, dueDate: e.target.value })}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditingTask({ ...editingTask, dueDate: e.target.value })}
                       className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
                     />
                   </div>
@@ -303,7 +303,7 @@ export default function TaskEditor({
                       type="checkbox"
                       id={`couple-${editingTask.id}`}
                       checked={editingTask.assignToCouple}
-                      onChange={(e) => setEditingTask({ ...editingTask, assignToCouple: e.target.checked })}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditingTask({ ...editingTask, assignToCouple: e.target.checked })}
                       className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500 cursor-pointer"
                     />
                     <label htmlFor={`couple-${editingTask.id}`} className="text-xs text-slate-300 cursor-pointer">
@@ -317,7 +317,7 @@ export default function TaskEditor({
                   <label className="text-xs text-slate-400 block mb-1">Notes</label>
                   <textarea
                     value={editingTask.notes}
-                    onChange={(e) => setEditingTask({ ...editingTask, notes: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEditingTask({ ...editingTask, notes: e.target.value })}
                     placeholder="Add notes..."
                     className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs placeholder-slate-400"
                     rows={2}
@@ -328,7 +328,7 @@ export default function TaskEditor({
                 <div className="flex gap-2 justify-end pt-2">
                   <button
                     type="button"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                       e.stopPropagation();
                       setEditingTask(null);
                     }}
@@ -338,7 +338,7 @@ export default function TaskEditor({
                   </button>
                   <button
                     type="button"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                       e.stopPropagation();
                       updateTask(task.id);
                     }}
@@ -362,7 +362,7 @@ export default function TaskEditor({
                   {currentUser?.role === 'ADMIN' && (
                     <button
                       type="button"
-                      onClick={(e) => {
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                         e.stopPropagation();
                         deleteTask(task.id);
                       }}

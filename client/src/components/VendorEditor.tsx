@@ -589,26 +589,26 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
               <Input
                 placeholder="Vendor name *"
                 value={newVendorName}
-                onChange={(e) => setNewVendorName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewVendorName(e.target.value)}
                 className="text-sm"
               />
               <Input
                 placeholder="Email"
                 type="email"
                 value={newVendorEmail}
-                onChange={(e) => setNewVendorEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewVendorEmail(e.target.value)}
                 className="text-sm"
               />
               <Input
                 placeholder="Phone"
                 value={newVendorPhone}
-                onChange={(e) => setNewVendorPhone(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewVendorPhone(e.target.value)}
                 className="text-sm"
               />
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                     e.stopPropagation();
                     handleCreateVendor();
                   }}
@@ -619,7 +619,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                 </button>
                 <button
                   type="button"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                     e.stopPropagation();
                     setShowCreateVendorForm(false);
                     setNewVendorName('');
@@ -638,7 +638,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
 
           <button
             type="button"
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
               setShowAddVendor(false);
               setVendorSearch('');

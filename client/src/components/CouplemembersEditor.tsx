@@ -121,7 +121,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
   return (
     <div className="space-y-6">
       {/* Spouse 1 */}
-      <div>
+      <>
         <h4 className="text-sm font-medium text-slate-300 mb-3">Couple Member 1</h4>
         {selectedSpouse1 ? (
           <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
@@ -134,7 +134,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
             )}
             <button
               type="button"
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                 e.stopPropagation();
                 setSelectedSpouse1(null);
               }}
@@ -150,10 +150,10 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
             placeholder="Search for couple member 1..."
           />
         )}
-      </div>
+      </>
 
       {/* Spouse 2 */}
-      <div>
+      <>
         <h4 className="text-sm font-medium text-slate-300 mb-3">Couple Member 2</h4>
         {selectedSpouse2 ? (
           <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
@@ -166,7 +166,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
             )}
             <button
               type="button"
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                 e.stopPropagation();
                 setSelectedSpouse2(null);
               }}
@@ -182,7 +182,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
             placeholder="Search for couple member 2..."
           />
         )}
-      </div>
+      </>
 
       {error && <div className="text-sm text-red-400 mt-4">{error}</div>}
 

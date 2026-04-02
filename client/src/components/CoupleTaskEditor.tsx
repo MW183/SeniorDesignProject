@@ -96,7 +96,7 @@ export default function CoupleTaskEditor({
           <input
             type="checkbox"
             checked={assignToCouple}
-            onChange={(e) => handleAssignToCoupleToggle(e.target.checked)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleAssignToCoupleToggle(e.target.checked)}
             disabled={loading}
             className="w-5 h-5 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           />

@@ -203,11 +203,11 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
                       </div>
 
                       <div className="flex items-center gap-4 text-sm text-slate-400 mb-3">
-                        <div>
+                        <>
                           <span className="text-slate-500">Priority: </span>
                           <span className="text-slate-300">{priorityLabels[task.priority] || 'Unknown'}</span>
-                        </div>
-                        <div>
+                        </>
+                        <>
                           <span className="text-slate-500">Due: </span>
                           <span className="text-slate-300">
                             {new Date(task.dueDate).toLocaleDateString('en-US', {

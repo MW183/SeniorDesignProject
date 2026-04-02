@@ -41,10 +41,10 @@ export default function Users({ currentUser }: { currentUser?: any }) {
         <h2 className="text-2xl font-semibold mb-4">{isAdmin ? 'Users' : 'Planners'}</h2>
         {isAdmin && (
           <form onSubmit={create} className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-            <Input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} />
-            <Input placeholder="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} />
+            <Input placeholder="Name" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+            <Input placeholder="Email" type="email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
             <div className="flex gap-2">
-              <Input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} className="flex-1" />
+              <Input placeholder="Password" type="password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} className="flex-1" />
               <Button type="submit">Create</Button>
             </div>
           </form>
@@ -54,7 +54,7 @@ export default function Users({ currentUser }: { currentUser?: any }) {
           type="text"
           placeholder="Search users by name or email..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
           className="mb-4"
         />
 

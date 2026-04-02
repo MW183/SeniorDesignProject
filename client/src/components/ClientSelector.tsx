@@ -104,7 +104,7 @@ export default function ClientSelector({
         {!showForm && (
           <button
             type="button"
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
               setShowForm(true);
             }}
@@ -133,7 +133,7 @@ export default function ClientSelector({
               <Input
                 placeholder={placeholder}
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
                 className="m-1 mb-0"
               />
               <Command>
@@ -178,7 +178,7 @@ export default function ClientSelector({
               type="text"
               placeholder="Full name"
               value={newClient.name}
-              onChange={e => setNewClient({ ...newClient, name: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewClient({ ...newClient, name: e.target.value })}
               required
             />
           </FormField>
@@ -188,7 +188,7 @@ export default function ClientSelector({
               type="email"
               placeholder="Email (optional)"
               value={newClient.email}
-              onChange={e => setNewClient({ ...newClient, email: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewClient({ ...newClient, email: e.target.value })}
             />
           </FormField>
           <FormField label="Phone" id="client-phone">
@@ -197,7 +197,7 @@ export default function ClientSelector({
               type="tel"
               placeholder="Phone (optional)"
               value={newClient.phone}
-              onChange={e => setNewClient({ ...newClient, phone: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewClient({ ...newClient, phone: e.target.value })}
             />
           </FormField>
           {error && <div className="text-xs text-red-400">{error}</div>}
@@ -207,7 +207,7 @@ export default function ClientSelector({
             </Button>
             <button
               type="button"
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                 e.stopPropagation();
                 setShowForm(false);
                 setNewClient({ name: '', email: '', phone: '' });

@@ -116,7 +116,7 @@ export default function SetPassword() {
                     id="password"
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                     placeholder="Enter password (min 6 characters)"
                     disabled={loading}
                   />
@@ -127,7 +127,7 @@ export default function SetPassword() {
                     id="confirmPassword"
                     type="password"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm password"
                     disabled={loading}
                   />

@@ -97,7 +97,7 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
           type="text"
           placeholder="Search planners by name or email..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
         />
       </Card>
       
@@ -105,9 +105,9 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
       <Card className="mb-6">
         <h3 className="text-lg font-semibold mb-3">Add New Planner</h3>
         <form onSubmit={createUser} className="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <Input placeholder="Name" value={name} onChange={e=>setName(e.target.value)} required />
-          <Input placeholder="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
-          <Input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} required />
+          <Input placeholder="Name" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} required />
+          <Input placeholder="Email" type="email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} required />
+          <Input placeholder="Password" type="password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} required />
           <Button type="submit">Create User</Button>
         </form>
       </Card>

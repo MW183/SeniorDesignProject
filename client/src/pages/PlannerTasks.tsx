@@ -240,7 +240,7 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
           type="text"
           placeholder="Search tasks..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
           className="mb-4"
         />
         
@@ -251,7 +251,7 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
             <label className="text-sm text-slate-300">Sort by:</label>
             <select
               value={sortMode}
-              onChange={(e) => setSortMode(e.target.value as SortMode)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortMode(e.target.value as SortMode)}
               className="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
             >
               <option value="name">Name</option>
@@ -265,7 +265,7 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
             <input
               type="checkbox"
               checked={showCompleted}
-              onChange={(e) => setShowCompleted(e.target.checked)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setShowCompleted(e.target.checked)}
               className="w-4 h-4"
             />
             Show completed tasks

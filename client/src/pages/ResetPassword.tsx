@@ -133,7 +133,7 @@ export default function ResetPassword() {
                   type="email"
                   placeholder="your@example.com"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                   disabled={loading}
                 />
               </FormField>
@@ -168,7 +168,7 @@ export default function ResetPassword() {
                   type="password"
                   placeholder="At least 6 characters"
                   value={newPassword}
-                  onChange={e => setNewPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value)}
                   disabled={loading}
                 />
               </FormField>
@@ -179,7 +179,7 @@ export default function ResetPassword() {
                   type="password"
                   placeholder="Repeat password"
                   value={confirmPassword}
-                  onChange={e => setConfirmPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                   disabled={loading}
                 />
               </FormField>

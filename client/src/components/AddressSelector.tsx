@@ -55,7 +55,7 @@ export default function AddressSelector({
   const [loading, setLoading] = useState(false);
 
   // Parse Nominatim response to extract address components
-  const parseNominatimAddress = (result: any) => {
+  const parseNominatimAddress = (result: Record<string, any>) => {
     const address = result.address || {};
     const components = {
       street: result.namedetails?.name || address.house_number && address.road 
@@ -208,7 +208,7 @@ export default function AddressSelector({
         {!showForm && (
           <button
             type="button"
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
               setShowForm(true);
             }}
@@ -237,7 +237,7 @@ export default function AddressSelector({
               <Input
                 placeholder={placeholder}
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e : React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
                 className="m-1 mb-0"
               />
               <Command>
@@ -277,7 +277,7 @@ export default function AddressSelector({
               type="text"
               placeholder="Street address"
               value={newAddress.street}
-              onChange={e => setNewAddress({ ...newAddress, street: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewAddress({ ...newAddress, street: e.target.value })}
               required
             />
           </FormField>
@@ -287,7 +287,7 @@ export default function AddressSelector({
               type="text"
               placeholder="City"
               value={newAddress.city}
-              onChange={e => setNewAddress({ ...newAddress, city: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewAddress({ ...newAddress, city: e.target.value })}
               required
             />
           </FormField>
@@ -299,7 +299,7 @@ export default function AddressSelector({
                 placeholder="State"
                 maxLength={2}
                 value={newAddress.state}
-                onChange={e => setNewAddress({ ...newAddress, state: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewAddress({ ...newAddress, state: e.target.value })}
                 required
               />
             </FormField>
@@ -309,7 +309,7 @@ export default function AddressSelector({
                 type="text"
                 placeholder="Zip"
                 value={newAddress.zip}
-                onChange={e => setNewAddress({ ...newAddress, zip: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewAddress({ ...newAddress, zip: e.target.value })}
                 required
               />
             </FormField>
@@ -318,7 +318,7 @@ export default function AddressSelector({
             <select
               id="addr-type"
               value={newAddress.type}
-              onChange={e => setNewAddress({ ...newAddress, type: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNewAddress({ ...newAddress, type: e.target.value })}
               className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
             >
               <option value="Venue">Venue</option>
@@ -333,7 +333,7 @@ export default function AddressSelector({
             </Button>
             <button
               type="button"
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                 e.stopPropagation();
                 setShowForm(false);
                 setNewAddress({ street: '', city: '', state: '', zip: '', type: 'Venue' });

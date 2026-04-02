@@ -172,7 +172,7 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
             id="wedding-date"
             type="date"
             value={weddingDate}
-            onChange={(e) => setWeddingDate(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWeddingDate(e.target.value)}
           />
         </FormField>
         {dateHasChanged && (

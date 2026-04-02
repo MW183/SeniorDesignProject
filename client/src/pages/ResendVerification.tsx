@@ -67,18 +67,18 @@ export default function ResendVerification() {
           </div>
         ) : (
           <form onSubmit={submit} className="space-y-4">
-            <div>
+            <>
               <p className="text-sm text-slate-400 mb-4">
                 Enter the email address associated with your account, and we'll send you a new verification link.
               </p>
-            </div>
+            </>
             
             <FormField label="Email Address" id="email">
               <Input
                 id="email"
                 type="email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 disabled={loading}
               />

@@ -118,7 +118,7 @@ export default function Register() {
               type="text"
               placeholder="John Doe"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
               disabled={loading}
             />
           </FormField>
@@ -129,7 +129,7 @@ export default function Register() {
               type="email"
               placeholder="john@example.com"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               disabled={loading}
             />
           </FormField>
@@ -140,7 +140,7 @@ export default function Register() {
               type="password"
               placeholder="At least 6 characters"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               disabled={loading}
             />
           </FormField>
@@ -151,16 +151,16 @@ export default function Register() {
               type="password"
               placeholder="Repeat password"
               value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
               disabled={loading}
             />
           </FormField>
 
-          <div>
+          <>
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? 'Creating Account...' : 'Create Account'}
             </Button>
-          </div>
+          </>
         </form>
 
         {error && <div className="mt-3 text-sm text-red-400">{error}</div>}

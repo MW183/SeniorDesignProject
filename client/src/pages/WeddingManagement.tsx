@@ -104,7 +104,7 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
           type="text"
           placeholder="Search weddings by couple name..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
         />
       </Card>
 
