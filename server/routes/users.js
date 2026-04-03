@@ -7,7 +7,7 @@ import requireRole from '../middleware/requireRole.js';
 import { validateUser } from '../validators/validateUsers.js';
 
 const router = express.Router();
-
+ 
 // GET /users — list users with optional query filters
 router.get('/', requireAuth, async (req, res) => {
   try {

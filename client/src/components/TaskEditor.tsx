@@ -63,6 +63,15 @@ export default function TaskEditor({
   onSaveComplete
 }: TaskEditorProps) {
   const [editingTask, setEditingTask] = useState<EditingTaskState | null>(null);
+  const [creatingNewTask, setCreatingNewTask] = useState(false);
+  const [newTaskData, setNewTaskData] = useState({
+    name: '',
+    description: '',
+    priority: 0,
+    dueDate: new Date().toISOString().split('T')[0],
+    assignToCouple: false,
+    notes: ''
+  });
   const [savingTaskId, setSavingTaskId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -212,6 +221,87 @@ export default function TaskEditor({
     }
   };
 
+  const createNewTask = async () => {
+    if (!newTaskData.name.trim()) {
+      setError('Task name is required');
+      return;
+    }
+
+    setSavingTaskId('new');
+    setError(null);
+    try {
+      const res = await api('/tasks', {
+        method: 'POST',
+        body: {
+          name: newTaskData.name.trim(),
+          description: newTaskData.description.trim() || null,
+          priority: newTaskData.priority,
+          dueDate: newTaskData.dueDate,
+          categoryId: categoryId,
+          sortOrder: tasks.length
+        }
+      });
+
+      if (!res.ok) {
+        setError(res.body?.error || 'Failed to create task');
+        setSavingTaskId(null);
+        return;
+      }
+
+      const createdTask: Task = {
+        ...res.body,
+        category: {
+          id: categoryId,
+          name: categoryName,
+          weddingId: weddingId,
+          sortOrder: 0
+        },
+        notes: newTaskData.notes || null,
+        dueDate: new Date(res.body.dueDate).toISOString(),
+        currentStatus: 'PENDING',
+        assignToCouple: newTaskData.assignToCouple
+      };
+
+      // If assign to couple is checked, sync with couple members
+      if (newTaskData.assignToCouple) {
+        try {
+          const weddingRes = await api(`/weddings/${weddingId}`);
+          if (weddingRes.ok) {
+            const wedding = weddingRes.body;
+            const coupleUserIds = [];
+            if (wedding.spouse1?.id) coupleUserIds.push(wedding.spouse1.id);
+            if (wedding.spouse2?.id) coupleUserIds.push(wedding.spouse2.id);
+
+            for (const userId of coupleUserIds) {
+              await api(`/tasks/${createdTask.id}/couple`, {
+                method: 'POST',
+                body: { assignedToId: userId }
+              });
+            }
+          }
+        } catch (err) {
+          console.error('Error syncing couple assignments:', err);
+        }
+      }
+
+      onTasksChange([...tasks, createdTask]);
+      setCreatingNewTask(false);
+      setNewTaskData({
+        name: '',
+        description: '',
+        priority: 0,
+        dueDate: new Date().toISOString().split('T')[0],
+        assignToCouple: false,
+        notes: ''
+      });
+      onSaveComplete?.();
+    } catch (err) {
+      setError('An error occurred while creating the task');
+    } finally {
+      setSavingTaskId(null);
+    }
+  };
+
   const startEditingTask = (task: Task) => {
     setEditingTask({
       id: task.id,
@@ -226,23 +316,152 @@ export default function TaskEditor({
 
   const tasksToShow = showCompleted ? tasks : tasks.filter(t => t.currentStatus !== 'COMPLETED' && t.currentStatus !== 'CANCELLED');
 
-  if (tasksToShow.length === 0) {
-    return <div className="px-4 py-3 text-sm text-slate-400">No tasks in this category</div>;
-  }
-
   return (
     <div className="bg-slate-900 divide-y divide-slate-800">
       {error && <div className="px-4 py-2 bg-red-900 border-b border-red-700 text-red-200 text-sm">{error}</div>}
 
-      {tasksToShow.map(task => {
-        const daysUntil = getDaysUntil(task.dueDate);
-        const isEditing = editingTask?.id === task.id;
-
-        return (
-          <div
-            key={task.id}
-            className={`px-4 py-3 ${isEditing ? 'bg-slate-800' : 'hover:bg-slate-800'} transition cursor-pointer`}
+      {/* Create New Task Button */}
+      {!creatingNewTask && (
+        <div className="px-4 py-3 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setCreatingNewTask(true)}
+            className="px-3 py-1 bg-blue-700 hover:bg-blue-600 rounded text-white text-xs"
           >
+            + Add Task
+          </button>
+        </div>
+      )}
+
+      {/* Create New Task Form */}
+      {creatingNewTask && (
+        <div className="px-4 py-3 bg-slate-800 border-b border-slate-700">
+          <h4 className="text-sm font-medium text-white mb-3">Create New Task in {categoryName}</h4>
+          <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
+            {/* Name */}
+            <div>
+              <label className="text-xs text-slate-400 block mb-1">Task Name*</label>
+              <input
+                type="text"
+                value={newTaskData.name}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTaskData({ ...newTaskData, name: e.target.value })}
+                placeholder="Enter task name"
+                className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm placeholder-slate-500"
+              />
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="text-xs text-slate-400 block mb-1">Description</label>
+              <textarea
+                value={newTaskData.description}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setNewTaskData({ ...newTaskData, description: e.target.value })}
+                placeholder="Enter task description (optional)"
+                className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs placeholder-slate-500"
+                rows={2}
+              />
+            </div>
+
+            {/* Priority and Due Date */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-slate-400 block mb-1">Priority*</label>
+                <select
+                  value={newTaskData.priority}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNewTaskData({ ...newTaskData, priority: parseInt(e.target.value) })}
+                  className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
+                >
+                  <option value="0">NORMAL</option>
+                  <option value="1">URGENT</option>
+                  <option value="2">HIGH</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs text-slate-400 block mb-1">Due Date*</label>
+                <input
+                  type="date"
+                  value={newTaskData.dueDate}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTaskData({ ...newTaskData, dueDate: e.target.value })}
+                  className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
+                />
+              </div>
+            </div>
+
+            {/* Couple Assignment */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="new-couple-assign"
+                checked={newTaskData.assignToCouple}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTaskData({ ...newTaskData, assignToCouple: e.target.checked })}
+                className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500 cursor-pointer"
+              />
+              <label htmlFor="new-couple-assign" className="text-xs text-slate-300 cursor-pointer">
+                Assign to couple
+              </label>
+            </div>
+
+            {/* Notes */}
+            <div>
+              <label className="text-xs text-slate-400 block mb-1">Notes</label>
+              <textarea
+                value={newTaskData.notes}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setNewTaskData({ ...newTaskData, notes: e.target.value })}
+                placeholder="Add notes (optional)"
+                className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs placeholder-slate-500"
+                rows={2}
+              />
+            </div>
+
+            {/* Create/Cancel Buttons */}
+            <div className="flex gap-2 justify-end pt-2">
+              <button
+                type="button"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
+                  setCreatingNewTask(false);
+                  setNewTaskData({
+                    name: '',
+                    description: '',
+                    priority: 0,
+                    dueDate: new Date().toISOString().split('T')[0],
+                    assignToCouple: false,
+                    notes: ''
+                  });
+                }}
+                className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
+                  createNewTask();
+                }}
+                disabled={savingTaskId === 'new'}
+                className="px-3 py-1 bg-green-700 hover:bg-green-600 rounded text-white text-xs disabled:opacity-50"
+              >
+                {savingTaskId === 'new' ? 'Creating...' : 'Create Task'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Task List */}
+      {tasksToShow.length === 0 && !creatingNewTask ? (
+        <div className="px-4 py-3 text-sm text-slate-400">No tasks in this category</div>
+      ) : (
+        tasksToShow.map(task => {
+          const daysUntil = getDaysUntil(task.dueDate);
+          const isEditing = editingTask?.id === task.id;
+
+          return (
+            <div
+              key={task.id}
+              className={`px-4 py-3 ${isEditing ? 'bg-slate-800' : 'hover:bg-slate-800'} transition cursor-pointer`}
+            >
             {isEditing ? (
               // EDIT MODE
               <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
@@ -399,7 +618,8 @@ export default function TaskEditor({
             )}
           </div>
         );
-      })}
+        })
+      )}
     </div>
   );
 }

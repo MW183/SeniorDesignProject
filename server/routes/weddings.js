@@ -278,52 +278,58 @@ router.put('/:id', requireAuth, async (req, res) => {
     // Handle spouse1: either existing ID, inline data, or clear it
     if (spouse1Id !== undefined || spouse1 !== undefined) {
       if (spouse1Id) {
-        const ok = await ensureExistsOrRespond(res, 'client', spouse1Id, 'spouse1Id');
+        const ok = await ensureExistsOrRespond(res, 'user', spouse1Id, 'spouse1Id');
         if (!ok) return;
         update.spouse1Id = spouse1Id;
       } else if (spouse1 && spouse1.name) {
-        // Create or update client from inline data
-        let clientId = null;
+        // Create or update user from inline data
+        let userId = null;
         if (spouse1.email) {
-          // Try to find existing client by email
-          const existingClient = await prisma.client.findFirst({
+          // Try to find existing user by email with CLIENT role
+          const existingUser = await prisma.user.findUnique({
             where: { email: spouse1.email }
           });
-          if (existingClient) {
-            clientId = existingClient.id;
-            // Update existing client with new data
-            await prisma.client.update({
-              where: { id: clientId },
+          if (existingUser && existingUser.role === 'CLIENT') {
+            userId = existingUser.id;
+            // Update existing user with new data
+            await prisma.user.update({
+              where: { id: userId },
               data: {
                 name: spouse1.name,
                 phone: spouse1.phone || undefined
               }
             });
-          } else {
-            // Create new client
-            const newClient = await prisma.client.create({
+          } else if (!existingUser) {
+            // Create new CLIENT user
+            const newUser = await prisma.user.create({
               data: {
                 name: spouse1.name,
                 email: spouse1.email,
-                phone: spouse1.phone || null
+                phone: spouse1.phone || null,
+                password: await hashPassword('password'),
+                role: 'CLIENT',
+                emailVerified: true
               }
             });
-            clientId = newClient.id;
+            userId = newUser.id;
+          } else {
+            return res.status(400).json({ error: `Email ${spouse1.email} is already registered as a non-CLIENT user` });
           }
-          
-          // Create CLIENT user account if it doesn't exist
-          await createOrGetClientUser(spouse1.email, spouse1.name);
         } else {
-          // Create new client without email
-          const newClient = await prisma.client.create({
+          // Create new user without email
+          const newUser = await prisma.user.create({
             data: {
               name: spouse1.name,
-              phone: spouse1.phone || null
+              phone: spouse1.phone || null,
+              email: `spouse1-${Date.now()}@temp.local`,
+              password: await hashPassword('password'),
+              role: 'CLIENT',
+              emailVerified: false
             }
           });
-          clientId = newClient.id;
+          userId = newUser.id;
         }
-        update.spouse1Id = clientId;
+        update.spouse1Id = userId;
       } else if (spouse1Id === null) {
         update.spouse1Id = null;
       }
@@ -332,52 +338,58 @@ router.put('/:id', requireAuth, async (req, res) => {
     // Handle spouse2: either existing ID, inline data, or clear it
     if (spouse2Id !== undefined || spouse2 !== undefined) {
       if (spouse2Id) {
-        const ok = await ensureExistsOrRespond(res, 'client', spouse2Id, 'spouse2Id');
+        const ok = await ensureExistsOrRespond(res, 'user', spouse2Id, 'spouse2Id');
         if (!ok) return;
         update.spouse2Id = spouse2Id;
       } else if (spouse2 && spouse2.name) {
-        // Create or update client from inline data
-        let clientId = null;
+        // Create or update user from inline data
+        let userId = null;
         if (spouse2.email) {
-          // Try to find existing client by email
-          const existingClient = await prisma.client.findFirst({
+          // Try to find existing user by email with CLIENT role
+          const existingUser = await prisma.user.findUnique({
             where: { email: spouse2.email }
           });
-          if (existingClient) {
-            clientId = existingClient.id;
-            // Update existing client with new data
-            await prisma.client.update({
-              where: { id: clientId },
+          if (existingUser && existingUser.role === 'CLIENT') {
+            userId = existingUser.id;
+            // Update existing user with new data
+            await prisma.user.update({
+              where: { id: userId },
               data: {
                 name: spouse2.name,
                 phone: spouse2.phone || undefined
               }
             });
-          } else {
-            // Create new client
-            const newClient = await prisma.client.create({
+          } else if (!existingUser) {
+            // Create new CLIENT user
+            const newUser = await prisma.user.create({
               data: {
                 name: spouse2.name,
                 email: spouse2.email,
-                phone: spouse2.phone || null
+                phone: spouse2.phone || null,
+                password: await hashPassword('password'),
+                role: 'CLIENT',
+                emailVerified: true
               }
             });
-            clientId = newClient.id;
+            userId = newUser.id;
+          } else {
+            return res.status(400).json({ error: `Email ${spouse2.email} is already registered as a non-CLIENT user` });
           }
-          
-          // Create CLIENT user account if it doesn't exist
-          await createOrGetClientUser(spouse2.email, spouse2.name);
         } else {
-          // Create new client without email
-          const newClient = await prisma.client.create({
+          // Create new user without email
+          const newUser = await prisma.user.create({
             data: {
               name: spouse2.name,
-              phone: spouse2.phone || null
+              phone: spouse2.phone || null,
+              email: `spouse2-${Date.now()}@temp.local`,
+              password: await hashPassword('password'),
+              role: 'CLIENT',
+              emailVerified: false
             }
           });
-          clientId = newClient.id;
+          userId = newUser.id;
         }
-        update.spouse2Id = clientId;
+        update.spouse2Id = userId;
       } else if (spouse2Id === null) {
         update.spouse2Id = null;
       }
