@@ -63,7 +63,7 @@ export default function Users({ currentUser }: { currentUser?: any }) {
             <li key={u.id} className="flex items-center justify-between">
               <div>
                 <div className="font-medium">{u.name}</div>
-                <div className="text-sm text-pink-300">{u.email}</div>
+                <div className="text-sm text-foreground">{u.email}</div>
               </div>
             </li>
           ))}

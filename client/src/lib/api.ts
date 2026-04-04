@@ -1,3 +1,5 @@
+import { triggerLogout } from './auth';
+
 export async function api(path: string, options: any = {}) {
   const base = import.meta.env.VITE_API_URL || 'http://localhost:3000'; // default to local dev API
   const headers = options.headers || {};
@@ -7,7 +9,13 @@ export async function api(path: string, options: any = {}) {
           ...options, headers, body: options.body 
           ? JSON.stringify(options.body) 
           : undefined, credentials: 'include' });
-      const text = await res.text();
+  
+  // Handle JWT expiration (401 Unauthorized)
+  if (res.status === 401) {
+    triggerLogout();
+  }
+  
+  const text = await res.text();
   try { 
     return { 
       ok: res.ok, 

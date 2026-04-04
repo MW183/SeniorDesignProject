@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { api } from '../lib/api';
-import { Card } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import FormField  from '../components/ui/formField';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import FormField  from '../../components/ui/formField';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 
 export default function ResetPassword() {
@@ -101,7 +101,7 @@ export default function ResetPassword() {
           <div className="text-center">
             <h2 className="text-2xl font-semibold mb-4 text-green-400">✓ Password Reset</h2>
             <div className="bg-green-900/20 border border-green-600 rounded p-4 mb-6">
-              <p className="text-pink-200">
+              <p className="text-card-foreground">
                 Your password has been successfully reset. You can now log in with your new password.
               </p>
             </div>
@@ -122,7 +122,7 @@ export default function ResetPassword() {
         {stage === 'request' ? (
           <>
             <h2 className="text-2xl font-semibold mb-4">Reset Password</h2>
-            <p className="text-pink-400 mb-6">
+            <p className="text-foreground mb-6">
               Enter your email address and we'll send you a link to reset your password.
             </p>
 
@@ -138,27 +138,19 @@ export default function ResetPassword() {
                 />
               </FormField>
 
-              <Button type="submit" disabled={loading} className="w-full">
+              <Button type="submit" disabled={loading} className="w-auto flex place-self-center">
                 {loading ? 'Sending...' : 'Send Reset Link'}
               </Button>
             </form>
 
-            {error && <div className="mt-3 text-sm text-red-400">{error}</div>}
+            {error && <div className="mt-3 text-lg w-auto place-self-center text-red-400">{error}</div>}
 
-            <div className="mt-6 pt-6 border-t border-pink-700">
-              <p className="text-sm text-pink-400 text-center">
-                Remember your password?{' '}
-                <Link to="/login" className="text-blue-400 hover:text-blue-300">
-                  Sign in
-                </Link>
-              </p>
-            </div>
           </>
         ) : (
           <>
             <h2 className="text-2xl font-semibold mb-4">Set New Password</h2>
-            <p className="text-pink-400 mb-6">
-              Enter your new password below.
+            <p className="text-input mb-6">
+              Enter your  password below.
             </p>
 
             <form onSubmit={handleReset} className="space-y-4">
@@ -189,7 +181,7 @@ export default function ResetPassword() {
               </Button>
             </form>
 
-            {error && <div className="mt-3 text-sm text-red-400">{error}</div>}
+            {error && <div className="mt-3 text-sm text-destructive-foreground">{error}</div>}
           </>
         )}
       </Card>

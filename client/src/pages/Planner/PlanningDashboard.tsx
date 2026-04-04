@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card } from '../components/ui';
-import { Button } from '../components/ui';
-import {Input} from '../components/ui';
-import { api } from '../lib/api';
+import { Card } from '../../components/ui';
+import { Button } from '../../components/ui';
+import {Input} from '../../components/ui';
+import { api } from '../../lib/api';
 
 interface Task {
   id: string;
@@ -161,7 +161,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
     <div className="max-w-6xl mx-auto mt-8">
       <Card className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">Dashboard</h2>
-        <p className="text-pink-400">Welcome, {currentUser?.name}!</p>
+        <p className="text-foreground">Welcome, {currentUser?.name}!</p>
       </Card>
 
       <div className="mb-6 flex gap-2">
@@ -179,7 +179,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
         {error && <div className="text-sm text-red-400 mb-4">{error}</div>}
 
         {loading ? (
-          <p className="text-pink-400">Loading tasks...</p>
+          <p className="text-foreground">Loading tasks...</p>
         ) : (
           <>
             <Input
@@ -190,9 +190,9 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
               className="mb-4"
             />
             {filteredUpcomingTasks.length === 0 && upcomingTasks.length > 0 ? (
-              <p className="text-pink-400 mt-4">No tasks match your search.</p>
+              <p className="text-foreground mt-4">No tasks match your search.</p>
             ) : upcomingTasks.length === 0 ? (
-              <p className="text-pink-400 mt-4">No upcoming tasks at the moment - great work!</p>
+              <p className="text-foreground mt-4">No upcoming tasks at the moment - great work!</p>
             ) : (
               <div className="space-y-2 mt-4">
               {filteredUpcomingTasks.map(({ task, wedding }) => {
@@ -202,7 +202,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
               return (
                 <div
                   key={task.id}
-                  className={`p-3 border border-pink-700 rounded hover:bg-pink-800 transition cursor-pointer ${
+                  className={`p-3 border border-pink-700 rounded hover:bg-primary transition cursor-pointer ${
                     hasUnmetDependency ? 'opacity-75' : ''
                   }`}
                   onClick={() => navigate(`/my-weddings/${task.category.weddingId}/tasks`)}
@@ -216,10 +216,10 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
                       <h4 className="font-medium text-white wrap-break-word">{task.name}</h4>
-                      <div className="text-xs text-pink-400 mt-1">
+                      <div className="text-xs text-foreground mt-1">
                         <div className="font-semibold">{getWeddingName(wedding)}</div>
                         <div className="flex gap-2 mt-1">
-                          <span className="text-xs bg-pink-700 px-2 py-1 rounded">
+                          <span className="text-xs bg-primary px-2 py-1 rounded">
                             {task.category.name}
                           </span>
                         </div>
@@ -233,7 +233,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
                             ? 'bg-red-900 text-red-200'
                             : task.priority === 2
                             ? 'bg-amber-900 text-amber-200'
-                            : 'bg-pink-700 text-pink-200'
+                            : 'bg-primary text-foreground'
                         }`}
                       >
                         {getPriorityLabel(task.priority)}

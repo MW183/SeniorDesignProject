@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../lib/api';
-import { Card } from '../components/ui/card';
-import { Button } from '../components/ui/button';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 
 export default function VerifyEmail() {
@@ -53,7 +53,7 @@ export default function VerifyEmail() {
       <div className="max-w-md mx-auto mt-12">
         <Card>
           <h2 className="text-2xl font-semibold mb-4">Email Verification</h2>
-          <p className="text-pink-400 mb-6">
+          <p className="text-foreground mb-6">
             No verification token found. Please check your email for the verification link.
           </p>
           <Link to="/login">
@@ -76,13 +76,13 @@ export default function VerifyEmail() {
               <div className="flex justify-center mb-4">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
               </div>
-              <p className="text-pink-400">Please wait while we verify your email address.</p>
+              <p className="text-foreground">Please wait while we verify your email address.</p>
             </>
           ) : verified ? (
             <>
               <h2 className="text-2xl font-semibold mb-4 text-green-400">✓ Email Verified!</h2>
               <div className="bg-green-900/20 border border-green-600 rounded p-4 mb-6">
-                <p className="text-pink-200">
+                <p className="text-foreground">
                   Your email has been successfully verified. You can now log in to your account.
                 </p>
               </div>
@@ -96,8 +96,8 @@ export default function VerifyEmail() {
             <>
               <h2 className="text-2xl font-semibold mb-4 text-red-400">✗ Verification Failed</h2>
               <div className="bg-red-900/20 border border-red-600 rounded p-4 mb-6">
-                <p className="text-pink-200 mb-3">{error}</p>
-                <p className="text-sm text-pink-400">
+                <p className="text-foreground mb-3">{error}</p>
+                <p className="text-sm text-foreground">
                   The link may have expired or is invalid.
                 </p>
               </div>

@@ -3,9 +3,9 @@ import { api } from '../lib/api';
 import {Button} from './ui/button';
 import {Input} from './ui/input';
 import FormField from './ui/formField';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from './ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { Check, ChevronsUpDown, Plus } from 'lucide-react';
+import { ChevronsUpDown, Plus } from 'lucide-react';
 
 
 interface Client {
@@ -109,7 +109,7 @@ export default function ClientSelector({
               e.stopPropagation();
               setShowForm(true);
             }}
-            className="text-xs text-accent hover:text-accent/80 underline flex items-center gap-1"
+            className="text-xs text-muted-foreground hover:text-accent/80 underline flex items-center gap-1"
           >
             <Plus className="h-3 w-3" /> Create new
           </button>
@@ -125,7 +125,7 @@ export default function ClientSelector({
               aria-expanded={open}
               className="w-full justify-between"
             >
-              <span className="truncate text-slate-400">{placeholder}</span>
+              <span className="truncate text-muted-foreground">{placeholder}</span>
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -154,9 +154,9 @@ export default function ClientSelector({
                       }}
                     >
                       <div className="flex-1">
-                        <p className="font-medium text-white">{client.name}</p>
+                        <p className="font-medium text-muted-foreground">{client.name}</p>
                         {(client.email || client.phone) && (
-                          <p className="text-xs text-slate-400">
+                          <p className="text-xs text-muted-foreground">
                             {client.email && <span>{client.email}</span>}
                             {client.email && client.phone && <span> • </span>}
                             {client.phone && <span>{client.phone}</span>}

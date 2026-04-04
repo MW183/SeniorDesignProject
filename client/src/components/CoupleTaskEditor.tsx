@@ -101,7 +101,7 @@ export default function CoupleTaskEditor({
             className="w-5 h-5 rounded border-border bg-input text-accent focus:ring-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <div>
-            <label className="font-semibold text-white cursor-pointer">
+            <label className="font-semibold text-card-foreground cursor-pointer">
               Assign to Couple Members
             </label>
             <p className="text-sm text-muted-foreground mt-1">

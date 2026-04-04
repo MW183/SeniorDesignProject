@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../lib/api';
-import { Card } from '../components/ui';
-import { Input } from '../components/ui';
-import Table from '../components/ui/table';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui';
+import { Input } from '../../components/ui';
+import Table from '../../components/ui/table';
 
 type PlannerStats = {
   planner: {
@@ -155,7 +155,7 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
       <Card>
         <div className="flex items-baseline justify-between gap-4 mb-4">
           <h2 className="text-2xl font-semibold m-0">Planner Overview</h2>
-          <p className="m-0 text-sm text-pink-400">Task distribution across planners</p>
+          <p className="m-0 text-sm text-foreground">Task distribution across planners</p>
         </div>
         <Input
           type="text"
@@ -167,9 +167,9 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
         {loading ? (
           <p>Loading...</p>
         ) : filteredStats.length === 0 && stats.length > 0 ? (
-          <p className="text-pink-400 mt-4">No planners match your search.</p>
+          <p className="text-foreground mt-4">No planners match your search.</p>
         ) : stats.length === 0 ? (
-          <p className="text-pink-400 mt-4">No planners found.</p>
+          <p className="text-foreground mt-4">No planners found.</p>
         ) : (
           <div className="mt-4">
             <Table columns={columns} data={filteredStats} />

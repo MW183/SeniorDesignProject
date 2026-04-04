@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import CreateWeddingForm from '../components/CreateWeddingForm';
+import CreateWeddingForm from '../../components/CreateWeddingForm';
 
 export default function CreateWedding() {
   const navigate = useNavigate();

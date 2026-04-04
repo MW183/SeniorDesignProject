@@ -4,7 +4,8 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { ChevronsUpDown, Plus } from 'lucide-react';
+import { ChevronsUpDown, Plus, Star } from 'lucide-react';
+import ConfirmDialog from './ConfirmDialog';
 
 interface Tag {
   id: string;
@@ -53,6 +54,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
   const [searchLoading, setSearchLoading] = useState(false);
   const [editingVendorId, setEditingVendorId] = useState<string | null>(null);
   const [editRating, setEditRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
   const [editNotes, setEditNotes] = useState('');
   const [editError, setEditError] = useState<string | null>(null);
   const [openAssignedSearch, setOpenAssignedSearch] = useState(false);
@@ -61,7 +63,11 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
   const [newVendorName, setNewVendorName] = useState('');
   const [newVendorEmail, setNewVendorEmail] = useState('');
   const [newVendorPhone, setNewVendorPhone] = useState('');
+  const [newVendorRating, setNewVendorRating] = useState(0);
+  const [newVendorNotes, setNewVendorNotes] = useState('');
+  const [newVendorHoverRating, setNewVendorHoverRating] = useState(0);
   const [creatingVendor, setCreatingVendor] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<WeddingVendor | null>(null);
 
   useEffect(() => {
     fetchWeddingVendors();
@@ -203,17 +209,17 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
     }
   };
 
-  const handleRemoveVendor = async (vendorId: string) => {
-    if (!confirm('Remove this vendor from the wedding?')) return;
+  const confirmRemoveVendor = async () => {
+    if (!deleteConfirm) return;
 
     try {
       setError(null);
-      const res = await api(`/weddings/${weddingId}/vendors/${vendorId}`, {
+      const res = await api(`/weddings/${weddingId}/vendors/${deleteConfirm.vendorId}`, {
         method: 'DELETE'
       });
 
       if (res.ok) {
-        const updatedVendors = weddingVendors.filter(wv => wv.vendorId !== vendorId);
+        const updatedVendors = weddingVendors.filter(wv => wv.vendorId !== deleteConfirm.vendorId);
         setWeddingVendors(updatedVendors);
         onUpdate?.(updatedVendors);
         onSaveComplete?.();
@@ -222,6 +228,8 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
       }
     } catch (err) {
       setError('An error occurred while removing vendor');
+    } finally {
+      setDeleteConfirm(null);
     }
   };
 
@@ -251,10 +259,14 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
         return;
       }
 
-      // Assign vendor to wedding
+      // Assign vendor to wedding with rating and notes
       const vendor = vendorRes.body;
       const assignRes = await api(`/weddings/${weddingId}/vendors/${vendor.id}`, {
-        method: 'POST'
+        method: 'POST',
+        body: {
+          rating: newVendorRating,
+          notes: newVendorNotes.trim() || undefined
+        }
       });
 
       if (assignRes.ok) {
@@ -262,6 +274,8 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
         setNewVendorName('');
         setNewVendorEmail('');
         setNewVendorPhone('');
+        setNewVendorRating(0);
+        setNewVendorNotes('');
         setShowCreateVendorForm(false);
         setShowAddVendor(false);
         onUpdate?.([...weddingVendors, assignRes.body]);
@@ -277,7 +291,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
   };
 
   if (loading) {
-    return <p className="text-slate-400">Loading vendors...</p>;
+    return <p className="text-muted-foreground">Loading vendors...</p>;
   }
 
   const editingVendor = weddingVendors.find(wv => wv.vendorId === editingVendorId);
@@ -298,7 +312,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                 aria-expanded={openAssignedSearch}
                 className="w-full justify-between"
               >
-                <span className="truncate text-slate-400">Search assigned vendors...</span>
+                <span className="truncate text-muted-foreground">Search assigned vendors...</span>
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -323,9 +337,9 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                         }}
                       >
                         <div className="flex-1">
-                          <p className="font-medium text-white">{wv.vendor.name}</p>
+                          <p className="font-medium text-card-foreground">{wv.vendor.name}</p>
                           {(wv.vendor.email || wv.vendor.phone) && (
-                            <p className="text-xs text-slate-400">
+                            <p className="text-xs text-muted-foreground">
                               {wv.vendor.email && <span>{wv.vendor.email}</span>}
                               {wv.vendor.email && wv.vendor.phone && <span> • </span>}
                               {wv.vendor.phone && <span>{wv.vendor.phone}</span>}
@@ -341,18 +355,18 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
             </PopoverContent>
           </Popover>
           {filteredWeddingVendors.map(wv => (
-            <div key={wv.vendorId} className="bg-slate-800 border border-slate-700 rounded p-3">
+            <div key={wv.vendorId} className="bg-card border border-border rounded p-3">
               {editingVendorId === wv.vendorId ? (
                 // Edit mode
                 <div className="space-y-3">
                   <div>
-                    <h5 className="font-medium text-white mb-2">{wv.vendor.name}</h5>
-                    {wv.vendor.email && <p className="text-xs text-slate-400">{wv.vendor.email}</p>}
-                    {wv.vendor.phone && <p className="text-xs text-slate-400">{wv.vendor.phone}</p>}
+                    <h5 className="font-medium text-card-foreground mb-2">{wv.vendor.name}</h5>
+                    {wv.vendor.email && <p className="text-xs text-muted-foreground">{wv.vendor.email}</p>}
+                    {wv.vendor.phone && <p className="text-xs text-muted-foreground">{wv.vendor.phone}</p>}
                     {wv.vendor.tags && wv.vendor.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-2">
                         {wv.vendor.tags.map(vt => (
-                          <span key={vt.tag.id} className="text-xs bg-slate-700 text-slate-200 px-2 py-1 rounded">
+                          <span key={vt.tag.id} className="text-xs bg-card text-card-foreground px-2 py-1 rounded">
                             {vt.tag.name}
                           </span>
                         ))}
@@ -363,8 +377,8 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                   {/* Rating */}
                   <div>
                     <label className="text-sm text-foreground mb-2 block">Rating (0-5 stars)</label>
-                    <div className="flex gap-1">
-                      {[0, 1, 2, 3, 4, 5].map(star => (
+                    <div className="flex gap-1 items-center">
+                      {[1, 2, 3, 4, 5].map(star => (
                         <button
                           key={star}
                           type="button"
@@ -372,15 +386,23 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                             e.stopPropagation();
                             setEditRating(star);
                           }}
-                          className={`px-3 py-1 text-sm rounded ${
-                            editRating === star
-                              ? 'bg-yellow-600 text-white'
-                              : 'bg-card text-card-foreground hover:bg-card/80'
-                          }`}
+                          onMouseEnter={() => setHoverRating(star)}
+                          onMouseLeave={() => setHoverRating(0)}
+                          className="p-0 hover:scale-110 transition-transform"
                         >
-                          {'★'.repeat(star || 1)}
+                          <Star
+                            size={24}
+                            className={`${
+                              star <= (hoverRating || editRating)
+                                ? 'fill-accent stroke-accent'
+                                : 'stroke-muted-foreground'
+                            }`}
+                          />
                         </button>
                       ))}
+                      {editRating > 0 && (
+                        <span className="text-xs text-muted-foreground ml-2">{editRating}/5</span>
+                      )}
                     </div>
                   </div>
 
@@ -397,7 +419,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                       }}
                       onClick={(e) => e.stopPropagation()}
                       placeholder="Add notes about this vendor..."
-                      className="w-full bg-slate-900 border border-slate-600 rounded px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 outline-none"
+                      className="w-full bg-card border border-border rounded px-3 py-2 text-sm text-card-foreground placeholder-muted-foreground focus:border-ring outline-none"
                       rows={3}
                     />
                   </div>
@@ -411,7 +433,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                         e.stopPropagation();
                         handleSaveRating();
                       }}
-                      className="px-3 py-1 bg-green-700 hover:bg-green-600 text-white text-sm rounded"
+                      className="px-3 py-1 bg-primary hover:bg-primary/80 text-primary-foreground text-sm rounded"
                     >
                       Save
                     </button>
@@ -421,7 +443,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                         e.stopPropagation();
                         setEditingVendorId(null);
                       }}
-                      className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded"
+                      className="px-3 py-1 bg-input hover:bg-input/80 text-foreground text-sm rounded"
                     >
                       Cancel
                     </button>
@@ -432,15 +454,15 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                 <div>
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h5 className="font-medium text-white">{wv.vendor.name}</h5>
-                      {wv.vendor.email && <p className="text-xs text-slate-400">{wv.vendor.email}</p>}
-                      {wv.vendor.phone && <p className="text-xs text-slate-400">{wv.vendor.phone}</p>}
+                      <h5 className="font-medium text-card-foreground">{wv.vendor.name}</h5>
+                      {wv.vendor.email && <p className="text-xs text-muted-foreground">{wv.vendor.email}</p>}
+                      {wv.vendor.phone && <p className="text-xs text-muted-foreground">{wv.vendor.phone}</p>}
                     </div>
                     <div className="text-right">
                       {wv.rating === 0 ? (
-                        <p className="text-xs text-slate-500">No rating</p>
+                        <p className="text-xs text-muted-foreground">No rating</p>
                       ) : (
-                        <p className="text-sm text-yellow-400">{'★'.repeat(wv.rating)}</p>
+                        <p className="text-sm text-primary">{'★'.repeat(wv.rating)}</p>
                       )}
                     </div>
                   </div>
@@ -448,7 +470,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                   {wv.vendor.tags && wv.vendor.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-2">
                       {wv.vendor.tags.map(vt => (
-                        <span key={vt.tag.id} className="text-xs bg-slate-700 text-slate-200 px-2 py-1 rounded">
+                        <span key={vt.tag.id} className="text-xs bg-card text-card-foreground px-2 py-1 rounded">
                           {vt.tag.name}
                         </span>
                       ))}
@@ -472,7 +494,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleRemoveVendor(wv.vendorId);
+                        setDeleteConfirm(wv);
                       }}
                       className="text-xs text-destructive hover:text-destructive/80 underline"
                     >
@@ -496,12 +518,12 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
             e.stopPropagation();
             setShowAddVendor(true);
           }}
-          className="w-full px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded"
+          className="w-full px-3 py-2 bg-primary hover:bg-primary/80 text-primary-foreground text-sm rounded"
         >
           + Add Vendor
         </button>
       ) : (
-        <div className="bg-slate-800 border border-slate-700 rounded p-3 space-y-3">
+        <div className="bg-card border border-border rounded p-3 space-y-3">
           <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
             <Plus className="h-4 w-4" /> Search & Add Vendors
           </h4>
@@ -515,7 +537,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                 aria-expanded={openAddVendorSearch}
                 className="w-full justify-between"
               >
-                <span className="truncate text-slate-400">Search vendors by name, email, phone, or tag...</span>
+                <span className="truncate text-muted-foreground">Search vendors by name, email, phone, or tag...</span>
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -544,9 +566,9 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                         }}
                       >
                         <div className="flex-1">
-                          <p className="font-medium text-white">{vendor.name}</p>
+                          <p className="font-medium text-card-foreground">{vendor.name}</p>
                           {(vendor.email || vendor.phone) && (
-                            <p className="text-xs text-slate-400">
+                            <p className="text-xs text-muted-foreground">
                               {vendor.email && <span>{vendor.email}</span>}
                               {vendor.email && vendor.phone && <span> • </span>}
                               {vendor.phone && <span>{vendor.phone}</span>}
@@ -555,7 +577,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                           {vendor.tags && vendor.tags.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1">
                               {vendor.tags.map(vt => (
-                                <span key={vt.tag.id} className="text-xs bg-slate-700 text-slate-200 px-1.5 py-0.5 rounded">
+                                <span key={vt.tag.id} className="text-xs bg-card text-card-foreground px-1.5 py-0.5 rounded">
                                   {vt.tag.name}
                                 </span>
                               ))}
@@ -579,13 +601,13 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                 e.stopPropagation();
                 setShowCreateVendorForm(true);
               }}
-              className="w-full px-3 py-2 bg-green-900 hover:bg-green-800 text-white text-sm rounded"
+              className="w-full px-3 py-2 bg-primary hover:bg-primary/80 text-primary-foreground text-sm rounded"
             >
               + Create New Vendor
             </button>
           ) : (
-            <div className="bg-slate-700 border border-slate-600 rounded p-3 space-y-2">
-              <h4 className="text-sm font-medium text-slate-200">New Vendor</h4>
+            <div className="bg-card border border-border rounded p-3 space-y-2">
+              <h4 className="text-sm font-medium text-card-foreground">New Vendor</h4>
               <Input
                 placeholder="Vendor name *"
                 value={newVendorName}
@@ -605,6 +627,57 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewVendorPhone(e.target.value)}
                 className="text-sm"
               />
+
+              {/* Rating */}
+              <div>
+                <label className="text-xs text-foreground mb-1 block">Rating (0-5 stars)</label>
+                <div className="flex gap-1 items-center">
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setNewVendorRating(star);
+                      }}
+                      onMouseEnter={() => setNewVendorHoverRating(star)}
+                      onMouseLeave={() => setNewVendorHoverRating(0)}
+                      className="p-0 hover:scale-110 transition-transform"
+                    >
+                      <Star
+                        size={20}
+                        className={`${
+                          star <= (newVendorHoverRating || newVendorRating)
+                            ? 'fill-accent stroke-accent'
+                            : 'stroke-muted-foreground'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                  {newVendorRating > 0 && (
+                    <span className="text-xs text-muted-foreground ml-2">{newVendorRating}/5</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label className="text-xs text-foreground mb-1 block">
+                  Notes {newVendorRating > 0 && <span className="text-destructive">*</span>}
+                </label>
+                <textarea
+                  value={newVendorNotes}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    setNewVendorNotes(e.target.value);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  placeholder="Add notes about this vendor..."
+                  className="w-full bg-card border border-border rounded px-2 py-1 text-xs text-card-foreground placeholder-muted-foreground focus:border-ring outline-none"
+                  rows={2}
+                />
+              </div>
+
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -613,7 +686,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                     handleCreateVendor();
                   }}
                   disabled={creatingVendor}
-                  className="flex-1 px-2 py-1 bg-green-700 hover:bg-green-600 disabled:bg-slate-600 text-white text-sm rounded"
+                  className="flex-1 px-2 py-1 bg-primary hover:bg-primary/80 disabled:bg-muted text-primary-foreground text-sm rounded"
                 >
                   {creatingVendor ? 'Creating...' : 'Create'}
                 </button>
@@ -625,8 +698,10 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                     setNewVendorName('');
                     setNewVendorEmail('');
                     setNewVendorPhone('');
+                    setNewVendorRating(0);
+                    setNewVendorNotes('');
                   }}
-                  className="flex-1 px-2 py-1 bg-slate-600 hover:bg-slate-500 text-white text-sm rounded"
+                  className="flex-1 px-2 py-1 bg-input hover:bg-input/80 text-card-foreground text-sm rounded"
                 >
                   Cancel
                 </button>
@@ -634,7 +709,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
             </div>
           )}
 
-          {error && <div className="text-sm text-red-400">{error}</div>}
+          {error && <div className="text-sm text-destructive-foreground">{error}</div>}
 
           <button
             type="button"
@@ -643,13 +718,30 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
               setShowAddVendor(false);
               setVendorSearch('');
               setAvailableVendors([]);
+              setNewVendorName('');
+              setNewVendorEmail('');
+              setNewVendorPhone('');
+              setNewVendorRating(0);
+              setNewVendorNotes('');
+              setShowCreateVendorForm(false);
             }}
-            className="w-full px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded"
+            className="w-full px-3 py-2 bg-input hover:bg-input/80 text-card-foreground text-sm rounded"
           >
             Cancel
           </button>
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={deleteConfirm !== null}
+        title="Remove Vendor"
+        message={`Are you sure you want to remove ${deleteConfirm?.vendor.name} from this wedding?`}
+        confirmText="Remove"
+        cancelText="Cancel"
+        isDangerous={true}
+        onConfirm={confirmRemoveVendor}
+        onCancel={() => setDeleteConfirm(null)}
+      />
     </div>
   );
 }

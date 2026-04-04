@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../lib/api';
-import { Card } from '../components/ui';
-import { Button } from '../components/ui';
-import { Input } from '../components/ui';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui';
+import { Button } from '../../components/ui';
+import { Input } from '../../components/ui';
 import { useNavigate } from 'react-router-dom';
 
 interface Client {
@@ -125,8 +125,8 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
       <Card className="mb-6">
         <div className="flex justify-between items-start">
           <div>
-            <h2 className="text-2xl font-semibold mb-2">Your Weddings</h2>
-            <p className="text-secondary-foreground">
+            <h2 className="text-2xl text-foreground font-semibold mb-2">Your Weddings</h2>
+            <p className="text-foreground">
               {currentUser?.name} • {weddings.length} assigned wedding{weddings.length !== 1 ? 's' : ''}
             </p>
           </div>
@@ -180,7 +180,7 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
             return (
               <Card
                 key={wedding.id}
-                className={`border-l-4 cursor-pointer hover:bg-secondary/50 transition ${urgencyClass.split(' ')[0]} ${urgencyClass.split(' ')[1]}`}
+                className={`border-l-4 cursor-pointer hover:bg-secondary transition ${urgencyClass.split(' ')[0]} ${urgencyClass.split(' ')[1]}`}
               >
                 <button
                   onClick={() => navigate(`/my-weddings/${wedding.id}/tasks`)}
@@ -189,9 +189,9 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <h3 className="font-semibold text-foreground mb-1">{getClientNames(wedding)}</h3>
-                      <div className="flex items-center gap-4 text-sm text-pink-300">
+                      <div className="flex items-center gap-4 text-sm text-foreground">
                         <span className="font-medium">{formatDate(wedding.date)}</span>
-                        <span className="text-secondary-foreground">
+                        <span className="text-foreground">
                           {daysUntil < 0
                             ? `${Math.abs(daysUntil)} day${Math.abs(daysUntil) !== 1 ? 's' : ''} ago`
                             : daysUntil === 0
@@ -202,7 +202,7 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-semibold text-foreground">{remaining}/{total} tasks</div>
-                      <div className="text-xs text-secondary-foreground">
+                      <div className="text-xs text-foreground">
                         {remaining === 0 ? 'All done!' : `${remaining} remaining`}
                       </div>
                     </div>

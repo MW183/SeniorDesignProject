@@ -103,6 +103,8 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
         method: 'DELETE'
       });
 
+      
+
       if (res.ok) {
         await loadPlanners();
         onAssignmentChanged?.();
@@ -137,7 +139,7 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
       <div className="mb-6">
         <h5 className="text-sm font-medium text-foreground mb-3">Currently Assigned</h5>
         {planners.length === 0 ? (
-          <p className="text-xs text-slate-400">No planners assigned yet</p>
+          <p className="text-xs text-muted-foreground">No planners assigned yet</p>
         ) : (
           <div className="space-y-2">
             {planners.map(planner => (
@@ -146,8 +148,8 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
                 className="flex items-center justify-between bg-card border border-border rounded p-3"
               >
                 <div>
-                  <p className="font-medium text-white">{planner.name}</p>
-                  <p className="text-xs text-slate-400">{planner.email}</p>
+                  <p className="font-medium text-card-foreground">{planner.name}</p>
+                  <p className="text-xs text-muted-foreground">{planner.email}</p>
                 </div>
                 <button
                   onClick={() => handleRemovePlanner(planner.id)}
@@ -178,7 +180,7 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
           {searchTerm && (
             <div className="border border-border rounded bg-card max-h-48 overflow-y-auto">
               {filteredPlanners.length === 0 ? (
-                <p className="text-xs text-slate-400 p-3">No planners found</p>
+                <p className="text-xs text-muted-foreground p-3">No planners found</p>
               ) : (
                 filteredPlanners.map(planner => {
                   const isAssigned = planners.some(p => p.id === planner.id);
@@ -211,9 +213,9 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
 
           {selectedPlannerId && (
             <div>
-              <p className="text-xs text-slate-400 mb-2">Selected:</p>
+              <p className="text-xs text-muted-foreground mb-2">Selected:</p>
               <div className="bg-card border border-border rounded p-2 mb-3">
-                <p className="text-sm font-medium text-white">
+                <p className="text-sm font-medium text-card-foreground">
                   {availablePlanners.find(p => p.id === selectedPlannerId)?.name}
                 </p>
               </div>

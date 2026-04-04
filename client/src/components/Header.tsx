@@ -11,7 +11,7 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-card text-foreground h-16 shadow-sm border-b border-accent">
-      <div className="max-w-275 mx-auto px-4">
+      <div className="max-w-11/12 mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="">
             <Link to="/" >
@@ -30,9 +30,9 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
             <span className="block w-5 h-0.5 bg-foreground my-0.75" />
           </button>
 
-          <nav className={`${open ? 'flex' : 'hidden'} md:flex items-center gap-4 md:static absolute top-16 right-4 bg-card md:bg-transparent flex-col md:flex-row p-3 md:p-0 rounded-md min-w-40 border md:border-0 border-accent`}>
+          <nav className={`${open ? 'flex' : 'hidden'} md:flex items-center gap-4 md:static absolute top-16 right-4 bg-card md:bg-transparent flex-col md:flex-row p-3 md:p-0 rounded-xl min-w-40 border md:border-0 border-accent`}>
             {!currentUser ? (
-              <Link to="/login" className="text-foreground px-2 py-1 rounded-md hover:bg-secondary/80">Login</Link>
+              <Link to="/login" className="align-end  text-foreground px-2 py-1 rounded-lg hover:bg-secondary/80">Login</Link>
             ) : isAdmin || isSupport ? (
               <>
                 <Link to="/planners" className="text-foreground bg-secondary px-2 py-1 rounded-lg hover:bg-secondary/80">Dashboard</Link>
@@ -43,9 +43,9 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
               </>
             ) : (
               <>
-                <Link to="/my-weddings" className="text-foreground px-2 py-1 rounded-lg hover:bg-secondary/80">My Weddings</Link>
-                <Link to="/manage-vendors" className="text-foreground px-2 py-1 rounded-lg hover:bg-secondary/80">Vendors</Link>
-                <button className="logout-btn text-foreground px-2 py-1 rounded-lg hover:bg-secondary/80" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
+                <Link to="/my-weddings" className="text-foreground bg-secondary px-2 py-1 rounded-lg hover:bg-secondary/80">My Weddings</Link>
+                <Link to="/manage-vendors" className="text-foreground bg-secondary px-2 py-1 rounded-lg hover:bg-secondary/80">Vendors</Link>
+                <button className="logout-btn text-foreground bg-secondary px-2 py-1 rounded-lg hover:bg-secondary/80" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
               </>
             )}
           </nav>

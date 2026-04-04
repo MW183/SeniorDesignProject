@@ -1,22 +1,23 @@
 import { useState, useEffect } from 'react'
 import "./index.css"
-import Login from './pages/Login'
-import Register from './pages/Register'
-import VerifyEmail from './pages/VerifyEmail'
-import ResendVerification from './pages/ResendVerification'
-import SetPassword from './pages/SetPassword'
-import ResetPassword from './pages/ResetPassword'
-import ClientDashboard from './pages/ClientDashboard'
-import PlannerManagement from './pages/PlannerManagement'
-import WeddingManagement from './pages/WeddingManagement'
-import CreateWedding from './pages/CreateWedding'
-import AdminDashboard from './pages/AdminDashboard'
-import PlanningDashboard from './pages/PlanningDashboard'
-import PlannerWorkspace from './pages/PlannerWorkspace'
-import AssignedWeddings from './pages/AssignedWeddings'
-import Vendors from './pages/Vendors'
+import Login from './pages/Login/Login'
+import Register from './pages/Login/Register'
+import VerifyEmail from './pages/Login/VerifyEmail'
+import ResendVerification from './pages/Login/ResendVerification'
+import SetPassword from './pages/Login/SetPassword'
+import ResetPassword from './pages/Login/ResetPassword'
+import ClientDashboard from './pages/Client/ClientDashboard'
+import PlannerManagement from './pages/Admin/PlannerManagement'
+import WeddingManagement from './pages/Admin/WeddingManagement'
+import CreateWedding from './pages/Admin/CreateWedding'
+import AdminDashboard from './pages/Admin/AdminDashboard'
+import PlanningDashboard from './pages/Planner/PlanningDashboard'
+import PlannerWorkspace from './pages/Planner/PlannerWorkspace'
+import AssignedWeddings from './pages/Planner/AssignedWeddings'
+import Vendors from './pages/Admin/Vendors'
 import { setToken } from './lib/api'
 import { api } from './lib/api'
+import { onLogoutNeeded, resetLogoutTrigger } from './lib/auth'
 import Layout from './components/Layout'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
@@ -53,13 +54,20 @@ function App() {
   async function loadMe() {
     try {
       const res = await api('/auth/me');
-      if (res.ok && res.body?.user) setCurrentUser(res.body.user);
-      else setCurrentUser(null);
+      if (res.ok && res.body?.user) {
+        resetLogoutTrigger();
+        setCurrentUser(res.body.user);
+      } else {
+        setCurrentUser(null);
+      }
     } catch (e) { setCurrentUser(null); }
     finally { setLoading(false); }
   }
 
-  function onLogin() { loadMe(); }
+  function onLogin() { 
+    resetLogoutTrigger();
+    loadMe(); 
+  }
 
   async function serverLogout() {
     try {
@@ -70,6 +78,15 @@ function App() {
     setCurrentUser(null);
     setToken(null);
   }
+
+  // Subscribe to automatic logout when JWT expires (401 Unauthorized)
+  useEffect(() => {
+    const unsubscribe = onLogoutNeeded(() => {
+      console.log('[App] JWT expired or unauthorized - logging out');
+      serverLogout();
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => { loadMe(); }, []);
 

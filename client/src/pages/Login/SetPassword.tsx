@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { api } from '../lib/api';
-import { Card } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import FormField from '../components/ui/formField';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import FormField from '../../components/ui/formField';
 
 export default function SetPassword() {
   const [searchParams] = useSearchParams();
@@ -69,7 +69,7 @@ export default function SetPassword() {
       <div className="max-w-md mx-auto mt-12">
         <Card>
           <h2 className="text-2xl font-semibold mb-4">Set Your Password</h2>
-          <p className="text-pink-400 mb-4">
+          <p className="text-foreground mb-4">
             No verification token found. This link may have expired.
           </p>
           <Link to="/login">
@@ -90,10 +90,10 @@ export default function SetPassword() {
             <>
               <h2 className="text-2xl font-semibold mb-4 text-green-400">✓ Password Set!</h2>
               <div className="bg-green-900/20 border border-green-600 rounded p-4 mb-6">
-                <p className="text-pink-200 mb-2">
+                <p className="text-foreground mb-2">
                   Your password has been set successfully.
                 </p>
-                <p className="text-sm text-pink-400">
+                <p className="text-sm text-foreground">
                   Redirecting to login page...
                 </p>
               </div>
@@ -106,7 +106,7 @@ export default function SetPassword() {
           ) : (
             <>
               <h2 className="text-2xl font-semibold mb-2">Set Your Password</h2>
-              <p className="text-pink-400 mb-6">
+              <p className="text-foreground mb-6">
                 Welcome! Please create a password for your account.
               </p>
 
@@ -148,7 +148,7 @@ export default function SetPassword() {
                 </Button>
               </form>
 
-              <p className="text-xs text-pink-400 mt-4">
+              <p className="text-xs text-foreground mt-4">
                 Password must be at least 6 characters long
               </p>
             </>

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../lib/api';
-import { Card } from '../components/ui';
-import { Button } from '../components/ui';
-import { Input } from '../components/ui';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../components/ui';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui';
+import { Button } from '../../components/ui';
+import { Input } from '../../components/ui';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../../components/ui';
+import { Star } from 'lucide-react';
 
 interface Vendor {
   id: string;
@@ -40,6 +41,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
   const [createEmail, setCreateEmail] = useState('');
   const [createPhone, setCreatePhone] = useState('');
   const [createRating, setCreateRating] = useState(0);
+  const [createHoverRating, setCreateHoverRating] = useState(0);
   const [createNotes, setCreateNotes] = useState('');
   
   // Edit form state
@@ -48,6 +50,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
   const [editEmail, setEditEmail] = useState('');
   const [editPhone, setEditPhone] = useState('');
   const [editRating, setEditRating] = useState(0);
+  const [editHoverRating, setEditHoverRating] = useState(0);
   const [editNotes, setEditNotes] = useState('');
   const [editTags, setEditTags] = useState<Set<string>>(new Set());
   const [tagInput, setTagInput] = useState('');
@@ -224,7 +227,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
       {/* Header and Stats */}
       <Card className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">Vendors</h2>
-        <p className="text-pink-400 mb-4">
+        <p className="text-foreground mb-4">
           {vendors.length} vendor{vendors.length !== 1 ? 's' : ''} • {ratedVendors} rated • Avg rating: {avgRating}/5
         </p>
         
@@ -238,60 +241,78 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
             open={showCreateForm}
             onOpenChange={setShowCreateForm}
           >
-            <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
+            <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-foreground transition-colors">
               Add New Vendor
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-4">
               <form onSubmit={createVendor} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <>
-                    <label className="text-sm text-pink-400 block mb-2">Name *</label>
+                    <label className="text-sm text-foreground block mb-2">Name *</label>
                     <Input
                       value={createName}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreateName(e.target.value)}
+                      className="bg-input"
                     />
                   </>
                   <>
-                    <label className="text-sm text-pink-400 block mb-2">Email</label>
+                    <label className="text-sm text-foreground block mb-2">Email</label>
                     <Input
                       type="email"
                       value={createEmail}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreateEmail(e.target.value)}
+                      className="bg-input"
                     />
                   </>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <>
-                    <label className="text-sm text-pink-400 block mb-2">Phone</label>
+                    <label className="text-sm text-foreground block mb-2">Phone</label>
                     <Input
                       value={createPhone}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreatePhone(e.target.value)}
+                      className="bg-input"
                     />
                   </>
                   <>
-                    <label className="text-sm text-pink-400 block mb-2">Rating (0-5)</label>
-                    <select
-                      value={createRating}
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCreateRating(parseInt(e.target.value))}
-                      className="w-full px-3 py-2 bg-pink-700 border border-pink-600 rounded text-white"
-                    >
-                      <option value="0">0 - Not Rated</option>
-                      <option value="1">1 Star</option>
-                      <option value="2">2 Stars</option>
-                      <option value="3">3 Stars</option>
-                      <option value="4">4 Stars</option>
-                      <option value="5">5 Stars</option>
-                    </select>
+                    <label className="text-sm text-foreground mb-2 w-auto">Rating</label>
+                    <div className="flex gap-1 place-items-end">
+                      {[1, 2, 3, 4, 5].map(star => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCreateRating(star);
+                          }}
+                          onMouseEnter={() => setCreateHoverRating(star)}
+                          onMouseLeave={() => setCreateHoverRating(0)}
+                          className="p-0 hover:scale-110 transition-transform"
+                        >
+                          <Star
+                            size={24}
+                            className={`${
+                              star <= (createHoverRating || createRating)
+                                ? 'fill-accent stroke-accent'
+                                : 'stroke-muted-foreground'
+                            }`}
+                          />
+                        </button>
+                      ))}
+                      {createRating > 0 && (
+                        <span className="text-sm text-muted-foreground ml-2">{createRating}/5</span>
+                      )}
+                    </div>
                   </>
                 </div>
 
                 <>
-                  <label className="text-sm text-pink-400 block mb-2">Notes</label>
+                  <label className="text-sm text-foreground block mb-2">Notes</label>
                   <textarea
                     value={createNotes}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCreateNotes(e.target.value)}
-                    className="w-full px-3 py-2 bg-pink-700 border border-pink-600 rounded text-white text-sm"
+                    className="w-full px-3 py-2 bg-input text-sm focus:border-ring"
                     rows={3}
                   />
                 </>
@@ -299,7 +320,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                 <div className="flex gap-2 justify-end pt-2">
                   <Button
                     onClick={() => setShowCreateForm(false)}
-                    className="bg-pink-700 hover:bg-pink-600"
+                    className="bg-primary hover:bg-primary/80"
                   >
                     Cancel
                   </Button>
@@ -324,17 +345,18 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
           placeholder="Search vendors by name, email, phone, or tag..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          className="bg-input"
         />
       </Card>
 
       {/* Vendor List */}
       <Card>
         {loading ? (
-          <p className="text-pink-400">Loading vendors...</p>
+          <p className="text-foreground">Loading vendors...</p>
         ) : filteredVendors.length === 0 && vendors.length > 0 ? (
-          <p className="text-pink-400">No vendors match your search.</p>
+          <p className="text-foreground">No vendors match your search.</p>
         ) : vendors.length === 0 ? (
-          <p className="text-pink-400">No vendors found.</p>
+          <p className="text-foreground">No vendors found.</p>
         ) : (
           <div className="space-y-3">
             {filteredVendors.map(vendor => {
@@ -345,7 +367,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                 <div
                   key={vendor.id}
                   className={`p-4 rounded border ${
-                    isEditing ? 'border-blue-600 bg-pink-800' : 'border-pink-700 bg-pink-900 hover:bg-pink-800'
+                    isEditing ? 'border-blue-600 bg-primary' : 'border-pink-700 bg-primary hover:bg-primary'
                   } transition`}
                 >
                   {isEditing ? (
@@ -353,67 +375,85 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                     <div className="space-y-4" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="text-xs text-pink-400 block mb-1">Name</label>
+                          <label className="text-xs text-foreground block mb-1">Name</label>
                           <Input
                             value={editName}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditName(e.target.value)}
+                            className="bg-primary border"
                           />
                         </div>
                         <div>
-                          <label className="text-xs text-pink-400 block mb-1">Email</label>
+                          <label className="text-xs text-foreground block mb-1">Email</label>
                           <Input
                             type="email"
                             value={editEmail}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditEmail(e.target.value)}
+                            className="bg-input border"
                           />
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="text-xs text-pink-400 block mb-1">Phone</label>
+                          <label className="text-xs text-foreground block mb-1">Phone</label>
                           <Input
                             value={editPhone}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditPhone(e.target.value)}
+                            className="bg-input border"
                           />
                         </div>
                         <div>
-                          <label className="text-xs text-pink-400 block mb-1">Rating (0-5)</label>
-                          <select
-                            value={editRating}
-                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEditRating(parseInt(e.target.value))}
-                            className="w-full px-3 py-2 bg-pink-700 border border-pink-600 rounded text-white text-sm"
-                          >
-                            <option value="0">0 - Not Rated</option>
-                            <option value="1">1 Star</option>
-                            <option value="2">2 Stars</option>
-                            <option value="3">3 Stars</option>
-                            <option value="4">4 Stars</option>
-                            <option value="5">5 Stars</option>
-                          </select>
+                          <label className="text-xs text-foreground block mb-1">Rating (0-5 stars)</label>
+                          <div className="flex gap-1 items-center">
+                            {[1, 2, 3, 4, 5].map(star => (
+                              <button
+                                key={star}
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setEditRating(star);
+                                }}
+                                onMouseEnter={() => setEditHoverRating(star)}
+                                onMouseLeave={() => setEditHoverRating(0)}
+                                className="p-0 hover:scale-110 transition-transform"
+                              >
+                                <Star
+                                  size={20}
+                                  className={`${
+                                    star <= (editHoverRating || editRating)
+                                      ? 'fill-accent stroke-accent'
+                                      : 'stroke-muted-foreground'
+                                  }`}
+                                />
+                              </button>
+                            ))}
+                            {editRating > 0 && (
+                              <span className="text-xs text-muted-foreground ml-2">{editRating}/5</span>
+                            )}
+                          </div>
                         </div>
                       </div>
 
                       <div>
-                        <label className="text-xs text-pink-400 block mb-1">Notes</label>
+                        <label className="text-xs text-foreground block border mb-1">Notes</label>
                         <textarea
                           value={editNotes}
                           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEditNotes(e.target.value)}
-                          className="w-full px-3 py-2 bg-pink-700 border border-pink-600 rounded text-white text-sm"
+                          className="w-full px-3 py-2 border bg-card text-sm"
                           rows={2}
                         />
                       </div>
 
                       <div>
-                        <label className="text-xs text-pink-400 block mb-2">Tags</label>
-                        <div className="flex flex-wrap gap-2 mb-2 p-2 bg-pink-700 rounded min-h-10 items-start">
+                        <label className="text-xs text-foreground block mb-2">Tags</label>
+                        <div className="flex flex-wrap gap-2 mb-2 p-2 bg-primary rounded min-h-10 items-start">
                           {editTags.size === 0 ? (
-                            <span className="text-xs text-pink-500 self-center">No tags selected</span>
+                            <span className="text-xs text-foreground self-center">No tags selected</span>
                           ) : (
                             Array.from(editTags).map(tagId => {
                               const tag = allTags.find(t => t.id === tagId);
                               return (
-                                <div key={tagId} className="flex items-center gap-1 bg-pink-600 px-2 py-1 rounded text-xs text-white">
+                                <div key={tagId} className="flex items-center gap-1 bg-primary px-2 py-1 rounded text-xs text-white">
                                   {tag?.name}
                                   <button
                                     type="button"
@@ -422,7 +462,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                                       newTags.delete(tagId);
                                       setEditTags(newTags);
                                     }}
-                                    className="ml-1 text-pink-300 hover:text-red-400 font-bold"
+                                    className="ml-1 text-foreground hover:text-red-400 font-bold"
                                   >
                                     ✕
                                   </button>
@@ -476,7 +516,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                             setTagInput('');
                           }}
                           size="sm"
-                          className="bg-pink-700 hover:bg-pink-600"
+                          className="bg-primary hover:bg-primary/80"
                           disabled={isSaving}
                         >
                           Cancel
@@ -501,17 +541,17 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                         <div className="flex items-center gap-3 mb-2">
                           <h4 className="font-semibold text-white">{vendor.name}</h4>
                           {vendor.rating > 0 && (
-                            <span className="text-sm text-pink-400">
+                            <span className="text-sm text-foreground">
                               {'★'.repeat(vendor.rating)}{'☆'.repeat(5 - vendor.rating)}
                             </span>
                           )}
                         </div>
                         
-                        <div className="text-sm text-pink-400 space-y-1">
+                        <div className="text-sm text-foreground space-y-1">
                           {vendor.email && <div>📧 {vendor.email}</div>}
                           {vendor.phone && <div>📱 {vendor.phone}</div>}
                           {vendor.notes && (
-                            <div className="text-xs mt-2 bg-pink-800 p-2 rounded">
+                            <div className="text-xs mt-2 bg-primary focus:border-primary p-2 rounded">
                               <span className="font-semibold">Notes:</span> {vendor.notes}
                             </div>
                           )}
@@ -520,7 +560,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                               <div className="font-semibold mb-1">Tags:</div>
                               <div className="flex flex-wrap gap-1">
                                 {vendor.tags.map(vt => (
-                                  <span key={vt.tag.id} className="bg-pink-700 px-2 py-1 rounded text-pink-200">
+                                  <span key={vt.tag.id} className="bg-primary px-2 py-1 rounded text-foreground">
                                     {vt.tag.name}
                                   </span>
                                 ))}

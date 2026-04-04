@@ -7,7 +7,8 @@ import FormField from './ui/formField';
 import AddressSelector from './AddressSelector';
 import PlannerAssignment from './PlannerAssignment';
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from './ui/collapsible';
-import { ChevronDown } from 'lucide-react';
+import ConfirmDialog from './ConfirmDialog';
+import { ChevronDown, Loader } from 'lucide-react';
 
 interface Client {
   id: string;
@@ -53,6 +54,8 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
   const [selectedLocation, setSelectedLocation] = useState<Address | null>(null);
   const [weddingDate, setWeddingDate] = useState<string>('');
   const [locationOpen, setLocationOpen] = useState(false);
+  const [showDateConfirm, setShowDateConfirm] = useState(false);
+  const [pendingUpdates, setPendingUpdates] = useState<any>(null);
 
   useEffect(() => {
     fetchWeddingDetails();
@@ -83,27 +86,43 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
     if (!wedding) return;
     
     setError(null);
+
+    const updates: any = {};
+    
+    // Check for date changes
+    const currentDateStr = new Date(wedding.date).toISOString().split('T')[0];
+    const dateHasChanged = weddingDate && weddingDate !== currentDateStr;
+    
+    if (dateHasChanged) {
+      updates.date = new Date(weddingDate).toISOString();
+    }
+    
+    if (selectedLocation?.id && selectedLocation.id !== wedding.locationId) {
+      updates.locationId = selectedLocation.id;
+    }
+
+    if (Object.keys(updates).length === 0) {
+      setError('No changes to save');
+      return;
+    }
+
+    // If date changed, show confirmation dialog
+    if (dateHasChanged) {
+      setPendingUpdates(updates);
+      setShowDateConfirm(true);
+      return;
+    }
+
+    // Otherwise proceed directly with save
+    await performSave(updates);
+  };
+
+  const performSave = async (updates: any) => {
+    if (!wedding) return;
+    
     setUpdating(true);
 
     try {
-      const updates: any = {};
-      
-      // Check for date changes
-      const currentDateStr = new Date(wedding.date).toISOString().split('T')[0];
-      if (weddingDate && weddingDate !== currentDateStr) {
-        updates.date = new Date(weddingDate).toISOString();
-      }
-      
-      if (selectedLocation?.id && selectedLocation.id !== wedding.locationId) {
-        updates.locationId = selectedLocation.id;
-      }
-
-      if (Object.keys(updates).length === 0) {
-        setError('No changes to save');
-        setUpdating(false);
-        return;
-      }
-
       const res = await api(`/weddings/${weddingId}`, {
         method: 'PUT',
         body: updates
@@ -121,6 +140,10 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
         onUpdate?.(updatedWedding);
         setError(null);
         onSaveComplete?.();
+        setShowDateConfirm(false);
+        setPendingUpdates(null);
+        // Reload page to update sidebar and all dependent components
+        window.location.reload();
       } else {
         setError(res.body?.error || 'Failed to save wedding details');
       }
@@ -139,7 +162,7 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
   };
 
   if (loading) {
-    return <Card><p className="text-slate-400">Loading wedding details...</p></Card>;
+    return <Card><p className="text-muted-foreground">Loading wedding details...</p></Card>;
   }
 
   if (!wedding) {
@@ -161,7 +184,16 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
   })();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 relative">
+      {/* Loading Spinner Overlay */}
+      {updating && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 rounded">
+          <div className="bg-card rounded-lg p-8 flex flex-col items-center gap-3">
+            <Loader className="h-8 w-8 animate-spin text-accent" />
+            <p className="text-foreground font-medium">Updating wedding date and tasks...</p>
+          </div>
+        </div>
+      )}
       {showTitle && (
         <h3 className="text-sm font-semibold text-foreground">{weddingDisplayName}</h3>
       )}
@@ -175,12 +207,6 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWeddingDate(e.target.value)}
           />
         </FormField>
-        {dateHasChanged && (
-          <div className="mt-2 p-2 bg-blue-900 border border-blue-700 rounded text-xs text-blue-200">
-            <p className="font-semibold mb-1">Wedding date will recalculate all task due dates</p>
-            <p>Template & manual tasks will be updated automatically.</p>
-          </div>
-        )}
       </div>
 
       {/* Location - Collapsible */}
@@ -191,11 +217,11 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-2 pl-0">
           {selectedLocation ? (
-            <div className="bg-slate-700 border border-slate-600 rounded p-3 mb-2">
-              <p className="font-medium text-white text-sm">
+            <div className="bg-card border border-border rounded p-3 mb-2">
+              <p className="font-medium text-card-foreground text-sm">
                 {selectedLocation.street}
               </p>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {selectedLocation.city}, {selectedLocation.state} {selectedLocation.zip}
               </p>
               <button
@@ -204,7 +230,7 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
                   e.stopPropagation();
                   setSelectedLocation(null);
                 }}
-                className="text-xs text-accent hover:text-accent/80 mt-2 underline"
+                className="text-xs text-foreground hover:text-foreground/80 mt-2"
               >
                 Change Location
               </button>
@@ -229,16 +255,30 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
       <Button 
         onClick={handleSaveDetails} 
         disabled={updating || !hasChanges()}
-        className="w-full text-sm py-2"
+        className="w-full bg-primary text-primary-foreground rounded-2xl text-md hover:bg-primary/80"
       >
         {updating ? 'Saving...' : 'Save'}
       </Button>
 
       {!showOnlyLocation && currentUser?.role === 'ADMIN' && (
-        <div className="pt-4 border-t border-slate-700">
+        <div className="pt-4 border-t border-border">
           <PlannerAssignment weddingId={weddingId} onAssignmentChanged={() => onUpdate?.(wedding!)} />
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={showDateConfirm}
+        title="Update Wedding Date"
+        message="Changing the wedding date will recalculate all task due dates. Template & manual tasks will be updated automatically."
+        confirmText="Update Date"
+        cancelText="Cancel"
+        isDangerous={false}
+        onConfirm={() => performSave(pendingUpdates)}
+        onCancel={() => {
+          setShowDateConfirm(false);
+          setPendingUpdates(null);
+        }}
+      />
     </div>
   );
 }

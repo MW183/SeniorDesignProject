@@ -144,13 +144,13 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
           />
         </FormField>
 
-        <div className="flex items-center gap-3 p-3 bg-slate-700/50 rounded">
+        <div className="flex items-center gap-3 p-3 bg-card rounded">
           <input
             type="checkbox"
             id="enterSpouseData"
             checked={enterSpouseData}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEnterSpouseData(e.target.checked)}
-            className="rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500"
+            className="rounded border-border bg-card text-ring focus:ring-ring"
           />
           <label htmlFor="enterSpouseData" className="text-sm font-medium">
             Enter couple names & emails now
@@ -158,8 +158,8 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
         </div>
 
         {enterSpouseData && (
-          <div className="border border-slate-600 rounded p-4 space-y-4 bg-slate-800/50">
-            <h4 className="font-semibold text-slate-200">Spouse 1 (Optional)</h4>
+          <div className="border border-border rounded p-4 space-y-4 bg-card">
+            <h4 className="font-semibold text-muted-foreground">Spouse 1 (Optional)</h4>
             <FormField label="Name" id="spouse1Name">
               <Input
                 id="spouse1Name"
@@ -188,7 +188,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
               />
             </FormField>
 
-            <h4 className="font-semibold text-slate-200 mt-6">Spouse 2 (Optional)</h4>
+            <h4 className="font-semibold text-muted-foreground mt-6">Spouse 2 (Optional)</h4>
             <FormField label="Name" id="spouse2Name">
               <Input
                 id="spouse2Name"
@@ -217,19 +217,19 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
               />
             </FormField>
 
-            <div className="text-xs text-slate-400 mt-3 p-2 bg-slate-700/50 rounded">
+            <div className="text-xs text-muted-foreground mt-3 p-2 bg-card rounded">
               <strong>Note:</strong> CLIENT accounts will be automatically created for couple members with emails. They'll receive verification and password setup links.
             </div>
           </div>
         )}
 
-        <div className="flex items-center gap-3 p-3 bg-slate-700/50 rounded">
+        <div className="flex items-center gap-3 p-3 bg-card rounded">
           <input
             type="checkbox"
             id="useTemplate"
             checked={useTemplate}
             onChange={e => setUseTemplate(e.target.checked)}
-            className="rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500"
+            className="rounded border-border bg-card text-ring focus:ring-ring"
           />
           <label htmlFor="useTemplate" className="text-sm font-medium">
             Auto-populate tasks from template
@@ -242,7 +242,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
               id="template"
               value={selectedTemplate || ''}
               onChange={e => setSelectedTemplate(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 bg-card border border-border rounded text-card-foreground text-sm focus:outline-none focus:border-ring"
             >
               <option value="">-- Select a template --</option>
               {templates.map(t => (
@@ -267,7 +267,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
         )}
       </form>
 
-      <p className="text-sm text-slate-400 mt-4">
+      <p className="text-sm text-muted-foreground mt-4">
         You can add or modify couple details and location after creating the wedding.
       </p>
     </Card>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { api } from '../lib/api';
-import { Card } from '../components/ui';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../components/ui';
-import { Input } from '../components/ui';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../../components/ui';
+import { Input } from '../../components/ui';
 
-import TaskEditor from '../components/TaskEditor';
+import TaskEditor from '../../components/TaskEditor';
 
 interface TaskDependency {
   id: string;
@@ -217,7 +217,7 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
         <div className="mb-4">
           <button
             onClick={() => navigate('/my-weddings')}
-            className="px-3 py-2 bg-pink-700 hover:bg-pink-600 rounded text-white text-sm"
+            className="px-3 py-2 bg-primary hover:bg-primary/80 rounded text-primary-foreground text-sm"
           >
             ← Back to Weddings
           </button>
@@ -228,7 +228,7 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
         <h2 className="text-2xl font-semibold mb-2">
           {weddingId && weddingName ? `${weddingName} - Tasks` : 'My Tasks'}
         </h2>
-        <p className="text-pink-400">
+        <p className="text-foreground">
           {currentUser?.name} • {activeTasks.length} active task{activeTasks.length !== 1 ? 's' : ''}
           {completedTasks.length > 0 && `, ${completedTasks.length} completed`}
         </p>
@@ -241,18 +241,18 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
           placeholder="Search tasks..."
           value={searchTerm}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-          className="mb-4"
+          className="mb-4 bg-input"
         />
         
 
         {/* Sort and Display Options */}
         <div className="flex justify-between items-center flex-wrap gap-4 mt-4">
           <div className="flex gap-2 items-center">
-            <label className="text-sm text-pink-300">Sort by:</label>
+            <label className="text-sm text-foreground">Sort by:</label>
             <select
               value={sortMode}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortMode(e.target.value as SortMode)}
-              className="px-3 py-2 bg-pink-700 border border-pink-600 rounded text-white text-sm"
+              className="px-3 py-2 bg-primary border border-secondary rounded text-primary-foreground text-sm"
             >
               <option value="name">Name</option>
               <option value="Due Date">Due Date</option>
@@ -261,7 +261,7 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
             </select>
           </div>
           
-          <label className="flex items-center gap-2 text-sm text-pink-300">
+          <label className="flex items-center gap-2 text-sm text-foreground">
             <input
               type="checkbox"
               checked={showCompleted}
@@ -276,13 +276,13 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
         {error && <div className="text-sm text-red-400 mb-4">{error}</div>}
 
         {loading ? (
-          <p className="text-pink-400">Loading tasks...</p>
+          <p className="text-foreground">Loading tasks...</p>
         ) : activeTasks.length === 0 && !showCompleted ? (
-          <p className="text-pink-400">No active tasks to display</p>
+          <p className="text-foreground">No active tasks to display</p>
         ) : (
           <div className="space-y-4">
             {categoriesSorted.length === 0 ? (
-              <p className="text-pink-400">No tasks match your search</p>
+              <p className="text-foreground">No tasks match your search</p>
             ) : (
               categoriesSorted.map((categoryName, index) => {
                 const categoryData = tasksByCategory[categoryName];
@@ -296,10 +296,10 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
                       open={isExpanded}
                       onOpenChange={() => toggleCategoryExpanded(categoryName)}
                     >
-                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-foreground transition-colors">
                         {categoryName}
                       </CollapsibleTrigger>
-                      <div className="text-sm text-pink-400 mb-2">
+                      <div className="text-sm text-foreground mb-2">
                         {activeCategoryTasks.length} active task{activeCategoryTasks.length !== 1 ? 's' : ''}
                       </div>
                       <CollapsibleContent>

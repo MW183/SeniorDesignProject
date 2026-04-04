@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../lib/api';
-import { Card } from '../components/ui/card';
-import { Button } from '../components/ui/button';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
 
 /** id, name, description, currentStatus, dueDate, priority
  *  categories: id, name, weddingId, sortOrder */
@@ -176,11 +176,11 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
       ) : (
         Object.entries(groupedTasks).map(([weddingId, weddingData]) => (
           <Card key={weddingId}>
-            <h2 className="text-2xl font-semibold mb-6 text-pink-100">Wedding #{weddingId.slice(0, 8)}</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-secondary-foreground">Wedding #{weddingId.slice(0, 8)}</h2>
 
             {Object.entries(weddingData.categories).map(([categoryName, categoryTasks]) => (
               <div key={categoryName} className="mb-8 last:mb-0">
-                <h3 className="text-lg font-semibold bg-accent-foreground mb-4 pb-2 border-b border-pink-600">
+                <h3 className="text-lg font-semibold bg-accent-foreground mb-4 pb-2 border-b border-accent">
                   {categoryName}
                 </h3>
 

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../lib/api';
-import { Card } from '../components/ui';
-import { Input } from '../components/ui';
-import PlannerAssignment from '../components/PlannerAssignment';
-import CouplemembersEditor from '../components/CouplemembersEditor';
-import VenueEditor from '../components/VenueEditor';
-import VendorEditor from '../components/VendorEditor';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../components/ui';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui';
+import { Input } from '../../components/ui';
+import PlannerAssignment from '../../components/PlannerAssignment';
+import CouplemembersEditor from '../../components/CouplemembersEditor';
+import VenueEditor from '../../components/VenueEditor';
+import VendorEditor from '../../components/VendorEditor';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../../components/ui';
 
 
 interface Wedding {
@@ -109,11 +109,11 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
       </Card>
 
       {loading ? (
-        <Card><p className="text-pink-400">Loading weddings...</p></Card>
+        <Card><p className="secondary-foreground">Loading weddings...</p></Card>
       ) : filteredWeddings.length === 0 && weddings.length > 0 ? (
-        <Card><p className="text-pink-400">No weddings match your search.</p></Card>
+        <Card><p className="secondary-foreground">No weddings match your search.</p></Card>
       ) : weddings.length === 0 ? (
-        <Card><p className="text-pink-400">No weddings found.</p></Card>
+        <Card><p className="secondary-foreground">No weddings found.</p></Card>
       ) : (
         <div className="space-y-3">
           {filteredWeddings.map((wedding) => {
@@ -148,13 +148,13 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         </div>
                       )}
                     </div>
-                    <div className="text-pink-500 text-xs pt-1">
+                    <div className="primary-foreground text-xs pt-1">
                     </div>
                   </div>
                 </button>
 
                 {isExpanded && (
-                  <div className="mt-4 pt-4 border-t border-pink-700 space-y-0">
+                  <div className="mt-4 pt-4 border-t border space-y-0">
                     {/* Couple Members Section */}
                     <Collapsible
                       open={editingCouplemembersWeddingId === wedding.id}
@@ -162,23 +162,25 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         setEditingCouplemembersWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 text-foreground hover:accent-foreground/20 transition-colors">
                         Couple Members
                       </CollapsibleTrigger>
-                      <div className="bg-pink-800 border border-pink-700 rounded p-3 text-sm space-y-1 mb-2">
-                        <div>
-                          <span className="text-pink-400">Member 1: </span>
-                          <span className="font-medium text-white">
-                            {wedding.spouse1?.name || 'Not set'}
-                          </span>
+                      {editingCouplemembersWeddingId !== wedding.id && (
+                        <div className="bg-accent-foreground rounded p-3 text-sm space-y-1 mb-2">
+                          <div>
+                            <span className="muted-foreground">Member 1: </span>
+                            <span className="font-medium text-white">
+                              {wedding.spouse1?.name || 'Not set'}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="muted-foreground">Member 2: </span>
+                            <span className="font-medium text-white">
+                              {wedding.spouse2?.name || 'Not set'}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-pink-400">Member 2: </span>
-                          <span className="font-medium text-white">
-                            {wedding.spouse2?.name || 'Not set'}
-                          </span>
-                        </div>
-                      </div>
+                      )}
                       <CollapsibleContent>
                         <CouplemembersEditor
                           weddingId={wedding.id}
@@ -197,18 +199,20 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         setEditingVenueWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
+                      <CollapsibleTrigger className="w-auto text-left font-semibold py-2 text-foreground">
                         Venue
                       </CollapsibleTrigger>
-                      {wedding.location ? (
-                        <div className="bg-pink-800 border border-pink-700 rounded p-3 text-sm space-y-1 mb-2">
-                          <p className="font-medium text-white">{wedding.location.street}</p>
-                          <p className="text-pink-400">
-                            {wedding.location.city}, {wedding.location.state} {wedding.location.zip}
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="text-sm text-pink-500 mb-2">No venue set</div>
+                      {editingVenueWeddingId !== wedding.id && (
+                        wedding.location ? (
+                          <div className="bg-accent-foreground border rounded p-3 text-sm space-y-1 mb-2">
+                            <p className="font-medium text-white">{wedding.location.street}</p>
+                            <p className="muted-foreground">
+                              {wedding.location.city}, {wedding.location.state} {wedding.location.zip}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="text-sm text-foreground mb-2">No venue set</div>
+                        )
                       )}
                       <CollapsibleContent>
                         <VenueEditor
@@ -228,10 +232,12 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         setEditingVendorsWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 text-foreground hover:text-foreground transition-colors">
                         Vendors
                       </CollapsibleTrigger>
-                      <div className="text-sm text-pink-500 mb-2">Manage vendors for this wedding</div>
+                      {editingVendorsWeddingId !== wedding.id && (
+                        <div className="text-sm text-foreground mb-2">Manage vendors for this wedding</div>
+                      )}
                       <CollapsibleContent>
                         <VendorEditor
                           weddingId={wedding.id}
@@ -250,20 +256,22 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         setExpandedPlannersWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 text-foreground hover:text-foreground transition-colors">
                         Assign Planners
                       </CollapsibleTrigger>
-                      {wedding.planners && wedding.planners.length > 0 ? (
-                        <div className="bg-pink-800 border border-pink-700 rounded p-3 text-sm space-y-1 mb-2">
-                          {wedding.planners.map((p) => (
-                            <div key={p.planner.id} className="flex items-center justify-between">
-                              <span className="text-white font-medium">{p.planner.name}</span>
-                              <span className="text-xs text-pink-400">{p.planner.email}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-sm text-pink-500 mb-2">No planners assigned</div>
+                      {expandedPlannersWeddingId !== wedding.id && (
+                        wedding.planners && wedding.planners.length > 0 ? (
+                          <div className="bg-accent-foreground border rounded p-3 text-sm space-y-1 mb-2">
+                            {wedding.planners.map((p) => (
+                              <div key={p.planner.id} className="flex items-center justify-between">
+                                <span className="text-white font-medium">{p.planner.name}</span>
+                                <span className="text-xs muted-foreground">{p.planner.email}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-sm text-foreground mb-2">No planners assigned</div>
+                        )
                       )}
                       <CollapsibleContent>
                         <PlannerAssignment

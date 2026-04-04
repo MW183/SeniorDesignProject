@@ -1,4 +1,5 @@
 import express from 'express';
+import { PrismaClient } from '@prisma/client';
 import prisma from '../prismaClient.js';
 import { handlePrismaError, ensureExistsOrRespond, hashPassword, signJwt } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
@@ -400,7 +401,7 @@ router.put('/:id', requireAuth, async (req, res) => {
       if (!ok) return;
     }
 
-    // If date has changed, recalculate all task due dates for this wedding
+    // If date has changed, recalculate all task due dates for this wedding (batch update)
     if (dateHasChanged) {
       try {
         const tasks = await prisma.task.findMany({
@@ -414,28 +415,44 @@ router.put('/:id', requireAuth, async (req, res) => {
           }
         });
         
-        // Recalculate due dates for each task
-        for (const task of tasks) {
-          let newDueDate;
-          
-          if (task.templateTask?.defaultDueOffsetDays !== undefined) {
-            // Recalculate from template offset with new wedding date
-            newDueDate = calculateDueDate(newDate, task.templateTask.defaultDueOffsetDays);
-          } else {
-            // Shift manually created task by the same amount the wedding date moved
-            newDueDate = new Date(task.dueDate);
-            newDueDate.setDate(newDueDate.getDate() + dateDiffDays);
-            // Apply weekend adjustment
-            newDueDate = shiftWeekendToFriday(newDueDate);
-          }
-          
-          await prisma.task.update({
-            where: { id: task.id },
-            data: { dueDate: newDueDate }
+        if (tasks.length > 0) {
+          // Pre-calculate all new due dates using JavaScript logic
+          const updateData = tasks.map(task => {
+            let newDueDate;
+            
+            if (task.templateTask?.defaultDueOffsetDays !== undefined) {
+              // Recalculate from template offset with new wedding date
+              newDueDate = calculateDueDate(newDate, task.templateTask.defaultDueOffsetDays);
+            } else {
+              // Shift manually created task by the same amount the wedding date moved
+              newDueDate = new Date(task.dueDate);
+              newDueDate.setDate(newDueDate.getDate() + dateDiffDays);
+              // Apply weekend adjustment
+              newDueDate = shiftWeekendToFriday(newDueDate);
+            }
+            
+            return { id: task.id, newDueDate };
           });
+          
+          // Build CASE statement for batch update
+          const caseStatements = updateData.map(d => 
+            `WHEN '${d.id}' THEN '${d.newDueDate.toISOString()}'`
+          ).join(' ');
+          
+          const taskIds = updateData.map(d => `'${d.id}'`).join(',');
+          
+          // Batch update all tasks in a single SQL query
+          await prisma.$executeRawUnsafe(`
+            UPDATE "Task" 
+            SET "dueDate" = CASE id
+              ${caseStatements}
+              ELSE "dueDate"
+            END
+            WHERE id IN (${taskIds})
+          `);
+          
+          console.log(`[Weddings] Batch updated ${tasks.length} task due dates for wedding ${id} (date shifted by ${dateDiffDays} days)`);
         }
-        
-        console.log(`[Weddings] Updated ${tasks.length} task due dates for wedding ${id} (date shifted by ${dateDiffDays} days)`);
       } catch (err) {
         console.error('Error recalculating task due dates:', err);
         // Don't fail the wedding update, but log the error

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { api } from '../lib/api';
-import { Card } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import FormField  from '../components/ui/formField';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import FormField  from '../../components/ui/formField';
 import { useNavigate, Link } from 'react-router-dom';
 
 export default function Register() {
@@ -76,18 +76,18 @@ export default function Register() {
         <Card>
           <div className="text-center">
             <h2 className="text-2xl font-semibold mb-4 text-green-400">Account Created!</h2>
-            <div className="bg-pink-700/50 p-4 rounded mb-6">
-              <p className="text-pink-200 mb-4">
+            <div className="bg-primary/50 p-4 rounded mb-6">
+              <p className="text-foreground mb-4">
                 A verification email has been sent to <strong>{email}</strong>
               </p>
-              <p className="text-sm text-pink-400">
+              <p className="text-sm text-foreground">
                 Please check your email and click the verification link to activate your account.
               </p>
             </div>
 
             {verificationLink && (
               <div>
-                <p className="text-xs text-pink-500 mb-3">Dev Mode: Direct link</p>
+                <p className="text-xs text-foreground mb-3">Dev Mode: Direct link</p>
                 <Link to={`/verify-email?token=${verificationLink.split('token=')[1]}`}>
                   <Button className="w-full bg-blue-600 hover:bg-blue-700 mb-3">
                     Verify Email Now
@@ -166,7 +166,7 @@ export default function Register() {
         {error && <div className="mt-3 text-sm text-red-400">{error}</div>}
 
         <div className="mt-6 pt-6 border-t border-pink-700">
-          <p className="text-sm text-pink-400 text-center">
+          <p className="text-sm text-foreground text-center">
             Already have an account?{' '}
             <Link to="/login" className="text-blue-400 hover:text-blue-300">
               Sign in
@@ -174,7 +174,7 @@ export default function Register() {
           </p>
         </div>
 
-        <div className="mt-4 p-3 bg-pink-700/30 rounded text-xs text-pink-400">
+        <div className="mt-4 p-3 bg-primary/30 rounded text-xs text-foreground">
           <strong>Tip:</strong> If you were added as a couple member, look for the verification email from your wedding planner.
         </div>
       </Card>

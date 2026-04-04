@@ -18,11 +18,11 @@ export default function Table<T>({
 }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full table-fixed border-collapse">
+      <table className="w-full border-collapse">
         <thead>
           <tr className="border-b border-b-inherit">
             {columns.map(c => (
-              <th key={c.key} className={c.className ?? 'text-left pb-2'}>{c.label}</th>
+              <th key={c.key} className={c.className ?? 'text-left pb-2 px-2'}>{c.label}</th>
             ))}
           </tr>
         </thead>
@@ -30,7 +30,7 @@ export default function Table<T>({
           {data.map((row: any) => (
             <tr key={row[rowKey]} className="odd:bg-auto">
               {columns.map(c => (
-                <td key={c.key} className="py-2 align-top">
+                <td key={c.key} className="py-2 px-2 align-top">
                   {c.render ? c.render(row) : (row as any)[c.key]}
                 </td>
               ))}

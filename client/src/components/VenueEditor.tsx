@@ -97,7 +97,7 @@ export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: Ven
   };
 
   if (loading) {
-    return <p className="text-slate-400">Loading venue...</p>;
+    return <p className="text-muted-foreground">Loading venue...</p>;
   }
 
   if (!wedding) {
@@ -110,8 +110,8 @@ export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: Ven
       <div>
         <h4 className="text-sm font-medium text-foreground mb-3">Venue Location</h4>
         {selectedAddress ? (
-          <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
-            <p className="font-medium text-white">{selectedAddress.street}</p>
+          <div className="bg-card border border-border rounded p-3 mb-2">
+            <p className="font-medium text-card-foreground">{selectedAddress.street}</p>
             <p className="text-sm text-foreground">
               {selectedAddress.city}, {selectedAddress.state} {selectedAddress.zipCode}
             </p>
@@ -137,7 +137,7 @@ export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: Ven
 
       {error && <div className="text-sm text-destructive mt-4">{error}</div>}
 
-      <div className="flex gap-2 mt-6">
+      <div className="flex gap-2 mt-4">
         <Button
           onClick={handleSaveVenue}
           disabled={updating || !hasChanges()}
@@ -145,7 +145,7 @@ export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: Ven
           {updating ? 'Saving...' : 'Save'}
         </Button>
         {!hasChanges() && selectedAddress && (
-          <span className="text-xs text-slate-400 flex items-center">✓ Venue set</span>
+          <span className="text-xs text-muted-foreground flex items-center">✓ Venue set</span>
         )}
       </div>
     </div>

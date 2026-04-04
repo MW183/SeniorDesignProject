@@ -111,7 +111,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
   };
 
   if (loading) {
-    return <p className="text-slate-400">Loading couple members...</p>;
+    return <p className="text-muted-foreground">Loading couple members...</p>;
   }
 
   if (!wedding) {
@@ -124,13 +124,13 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
       <>
         <h4 className="text-sm font-medium text-foreground mb-3">Couple Member 1</h4>
         {selectedSpouse1 ? (
-          <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
-            <p className="font-medium text-white">{selectedSpouse1.name}</p>
+          <div className="bg-card border rounded-lg p-3 m-5">
+            <p className="font-medium text-card-foreground">{selectedSpouse1.name}</p>
             {selectedSpouse1.email && (
-              <p className="text-xs text-slate-400">{selectedSpouse1.email}</p>
+              <p className="text-xs text-muted-foreground">{selectedSpouse1.email}</p>
             )}
             {selectedSpouse1.phone && (
-              <p className="text-xs text-slate-400">{selectedSpouse1.phone}</p>
+              <p className="text-xs text-muted-foreground">{selectedSpouse1.phone}</p>
             )}
             <button
               type="button"
@@ -138,7 +138,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
                 e.stopPropagation();
                 setSelectedSpouse1(null);
               }}
-              className="text-xs text-blue-400 hover:text-blue-300 mt-2 underline"
+              className="text-xs text-primary hover:text-primary-foreground mt-2 underline"
             >
               Change
             </button>
@@ -156,13 +156,13 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
       <>
         <h4 className="text-sm font-medium text-foreground mb-3">Couple Member 2</h4>
         {selectedSpouse2 ? (
-          <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
-            <p className="font-medium text-white">{selectedSpouse2.name}</p>
+          <div className="bg-card border border-border rounded p-3 m-5">
+            <p className="font-medium text-card-foreground">{selectedSpouse2.name}</p>
             {selectedSpouse2.email && (
-              <p className="text-xs text-slate-400">{selectedSpouse2.email}</p>
+              <p className="text-xs text-muted-foreground">{selectedSpouse2.email}</p>
             )}
             {selectedSpouse2.phone && (
-              <p className="text-xs text-slate-400">{selectedSpouse2.phone}</p>
+              <p className="text-xs text-muted-foreground">{selectedSpouse2.phone}</p>
             )}
             <button
               type="button"
@@ -170,7 +170,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
                 e.stopPropagation();
                 setSelectedSpouse2(null);
               }}
-              className="text-xs text-blue-400 hover:text-blue-300 mt-2 underline"
+              className="text-xs text-primary hover:text-primary-foreground mt-2 underline"
             >
               Change
             </button>
@@ -194,7 +194,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
           {updating ? 'Saving...' : 'Save'}
         </Button>
         {!hasChanges() && selectedSpouse1 && selectedSpouse2 && (
-          <span className="text-xs text-slate-400 flex items-center">✓ Couple members set</span>
+          <span className="text-xs text-muted-foreground flex items-center\">✓ Couple members set</span>
         )}
       </div>
     </div>

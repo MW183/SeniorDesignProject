@@ -212,7 +212,7 @@ export default function AddressSelector({
               e.stopPropagation();
               setShowForm(true);
             }}
-            className="text-xs text-accent hover:text-accent/80 underline flex items-center gap-1"
+            className="bg-muted rounded-lg p-1 text-xs text-card-foreground hover:text-card-foreground/80 flex items-center gap-1"
           >
             <Plus className="h-3 w-3" /> Manual entry
           </button>
@@ -228,7 +228,7 @@ export default function AddressSelector({
               aria-expanded={open}
               className="w-full justify-between"
             >
-              <span className="truncate text-secondary-foreground">{placeholder}</span>
+              <span className="truncate text-card-foreground">{placeholder}</span>
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -256,7 +256,7 @@ export default function AddressSelector({
                       }}
                     >
                       <div className="flex-1">
-                        <p className="font-medium text-white">{suggestion.displayName}</p>
+                        <p className="font-medium text-card-foreground">{suggestion.displayName}</p>
                         {suggestion.isExisting && (
                           <p className="text-xs bg-accent">In your database</p>
                         )}
@@ -270,7 +270,7 @@ export default function AddressSelector({
           </PopoverContent>
         </Popover>
       ) : (
-        <form onSubmit={handleCreateAddress} className="space-y-2 bg-accent p-3 rounded border bg-accent">
+        <form onSubmit={handleCreateAddress} className="space-y-2 bg-card p-3 rounded border">
           <FormField label="Street Address" id="addr-street">
             <Input
               id="addr-street"
@@ -297,6 +297,7 @@ export default function AddressSelector({
                 id="addr-state"
                 type="text"
                 placeholder="State"
+                className="bg-input"
                 maxLength={2}
                 value={newAddress.state}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewAddress({ ...newAddress, state: e.target.value })}
@@ -307,6 +308,7 @@ export default function AddressSelector({
               <Input
                 id="addr-zip"
                 type="text"
+                className="bg-input focus:bg-input/20"
                 placeholder="Zip"
                 value={newAddress.zip}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewAddress({ ...newAddress, zip: e.target.value })}
@@ -319,7 +321,7 @@ export default function AddressSelector({
               id="addr-type"
               value={newAddress.type}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNewAddress({ ...newAddress, type: e.target.value })}
-              className="w-full px-3 py-2 bg-accent border rounded text-sm focus:outline-none focus:bg-ring"
+              className="w-full px-3 py-2 bg-muted border rounded text-sm focus:outline-none focus:bg-ring"
             >
               <option value="Venue">Venue</option>
               <option value="Vendor">Vendor</option>

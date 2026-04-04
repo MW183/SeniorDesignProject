@@ -4,6 +4,7 @@ import Table from './ui/table';
 import {Button} from './ui/button';
 import {Card} from './ui/card';
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from './ui/collapsible';
+import ConfirmDialog from './ConfirmDialog';
 import WeddingDetailsEditor from './WeddingDetailsEditor';
 
 type Wedding = {
@@ -29,6 +30,7 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
   const [weddings, setWeddings] = useState<Wedding[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedWeddingIds, setExpandedWeddingIds] = useState<Set<string>>(new Set());
+  const [deleteConfirm, setDeleteConfirm] = useState<Wedding | null>(null);
 
   async function load() {
     setLoading(true);
@@ -47,13 +49,19 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
 
   useEffect(() => { load(); }, []);
 
-  async function deleteWedding(weddingId: string) {
-    if (!confirm('Remove yourself from this wedding?')) return;
-    const res = await api(`/weddings/${weddingId}`, { method: 'DELETE' });
+  async function deleteWedding(wedding: Wedding) {
+    setDeleteConfirm(wedding);
+  }
+
+  async function confirmDelete() {
+    if (!deleteConfirm) return;
+    const res = await api(`/weddings/${deleteConfirm.id}`, { method: 'DELETE' });
     if (res.ok) {
+      setDeleteConfirm(null);
       load();
     } else {
       alert(res.body?.error || 'Failed to remove from wedding');
+      setDeleteConfirm(null);
     }
   }
 
@@ -105,7 +113,7 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
       label: 'Created',
       className: 'text-left pb-2 w-1/4',
       render: (wedding: Wedding) => (
-        <span className="text-sm text-slate-400">{formatDate(wedding.createdAt)}</span>
+        <span className="text-sm text-muted-foreground">{formatDate(wedding.createdAt)}</span>
       )
     },
     {
@@ -130,7 +138,7 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
             >
               {isExpanded ? 'Close' : 'Edit'}
             </Button>
-            <Button variant="default" color='red' size="sm" onClick={() => deleteWedding(wedding.id)}>
+            <Button variant="default" color='red' size="sm" onClick={() => deleteWedding(wedding)}>
               Remove
             </Button>
           </div>
@@ -146,7 +154,7 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
           <h3 className="text-lg font-semibold m-0">
             {currentUser?.role === 'ADMIN' ? 'All Weddings' : 'Your Weddings'}
           </h3>
-          <p className="m-0 text-sm text-slate-400">
+          <p className="m-0 text-sm text-muted-foreground">
             {weddings.length} wedding{weddings.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -154,7 +162,7 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
         {loading ? (
           <p>Loading...</p>
         ) : weddings.length === 0 ? (
-          <p className="text-slate-400">No weddings assigned yet.</p>
+          <p className="text-muted-foreground">No weddings assigned yet.</p>
         ) : (
           <Table columns={columns} data={weddings} />
         )}
@@ -194,6 +202,17 @@ const WeddingList = forwardRef(function WeddingList({ currentUser }: { currentUs
     </Card>
   );
 })}
+
+      <ConfirmDialog
+        isOpen={deleteConfirm !== null}
+        title="Remove Wedding"
+        message="Are you sure you want to remove yourself from this wedding? This action cannot be undone."
+        confirmText="Remove"
+        cancelText="Cancel"
+        isDangerous={true}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteConfirm(null)}
+      />
     </>
   );
 });

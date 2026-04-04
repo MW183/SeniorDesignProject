@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../lib/api';
-import Table from '../components/ui/table';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Card } from '../components/ui/card';
+import { api } from '../../lib/api';
+import Table from '../../components/ui/table';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Card } from '../../components/ui/card';
+import ConfirmDialog from '../../components/ConfirmDialog';
 
 type User = {
   id: number;
@@ -16,6 +17,7 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<User | null>(null);
 
   const filteredUsers = users
     .filter(user =>
@@ -52,10 +54,19 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
   }
 
   async function deleteUser(user: User) {
-    if (!confirm(`Delete user ${user.email}?`)) return;
-    const res = await api(`/users/${user.id}`, { method: 'DELETE' });
-    if (res.ok) load();
-    else alert(res.body?.error || 'Delete failed');
+    setDeleteConfirm(user);
+  }
+
+  async function confirmDelete() {
+    if (!deleteConfirm) return;
+    const res = await api(`/users/${deleteConfirm.id}`, { method: 'DELETE' });
+    if (res.ok) {
+      setDeleteConfirm(null);
+      load();
+    } else {
+      alert(res.body?.error || 'Delete failed');
+      setDeleteConfirm(null);
+    }
   }
 
   const columns = [
@@ -80,14 +91,6 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
     <div className="max-w-4xl mx-auto mt-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Manage Planners</h2>
-        <Button 
-          onClick={() => load()} 
-          variant="outline" 
-          size="sm"
-          disabled={loading}
-        >
-          {loading ? 'Refreshing...' : 'Refresh'}
-        </Button>
       </div>
       
       {/* Search */}
@@ -97,6 +100,11 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
           placeholder="Search planners by name or email..."
           value={searchTerm}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') {
+              load();
+            }
+          }}
         />
       </Card>
       
@@ -107,7 +115,7 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
           <Input placeholder="Name" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} required />
           <Input placeholder="Email" type="email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} required />
           <Input placeholder="Password" type="password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} required />
-          <Button type="submit">Create User</Button>
+          <Button type="submit" className="w-1/2 justify-self-center">Create User</Button>
         </form>
       </Card>
 
@@ -115,18 +123,29 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
       <Card>
         <div className="flex items-baseline justify-between gap-4 mb-3">
           <h3 className="text-lg font-semibold m-0">Planners</h3>
-          <p className="m-0 text-sm text-pink-400">Manage all planners in the system</p>
+          <p className="m-0 text-sm text-foreground">Manage all planners in the system</p>
         </div>
         {loading ? (
           <p>Loading...</p>
         ) : filteredUsers.length === 0 && users.length > 0 ? (
-          <p className="text-pink-400">No planners match your search.</p>
+          <p className="text-foreground">No planners match your search.</p>
         ) : users.length === 0 ? (
-          <p className="text-pink-400">No planners found.</p>
+          <p className="text-foreground">No planners found.</p>
         ) : (
           <Table columns={columns} data={filteredUsers} />
         )}
       </Card>
+
+      <ConfirmDialog
+        isOpen={deleteConfirm !== null}
+        title="Delete Planner"
+        message={`Are you sure you want to delete ${deleteConfirm?.name}? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        isDangerous={true}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteConfirm(null)}
+      />
     </div>
   );
 }

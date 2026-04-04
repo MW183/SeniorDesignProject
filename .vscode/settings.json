@@ -22,5 +22,6 @@
   "tailwindCSS.includeLanguages": {
     "typscript": "html",
     "typscriptreact": "html"
-  }
+  },
+  "js/ts.updateImportsOnFileMove.enabled": "always"
 }

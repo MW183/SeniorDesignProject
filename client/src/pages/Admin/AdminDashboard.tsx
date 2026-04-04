@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui';
-import { Button } from '../components/ui';
-import { Input } from '../components/ui';
-import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '../components/ui/command';
-import Table from '../components/ui/table';
-import { api } from '../lib/api';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui';
+import { Button } from '../../components/ui';
+import { Input } from '../../components/ui';
+import { Popover, PopoverContent, PopoverTrigger } from '../../components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '../../components/ui/command';
+import Table from '../../components/ui/table';
+import { api } from '../../lib/api';
 
 
 type PlannerStats = {
@@ -187,47 +187,47 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
     { 
       key: 'planner', 
       label: 'Planner', 
-      className: 'text-left pb-2 w-1/4',
+      className: 'text-left pb-2 min-w-[200px]',
       render: (stat: PlannerStats) => (
         <div>
-          <div className="font-medium">{stat.planner.name}</div>
-          <div className="text-sm text-secondary-foreground">{stat.planner.email}</div>
+          <div className="font-medium text-foreground">{stat.planner.name}</div>
+          <div className="text-sm text-foreground">{stat.planner.email}</div>
         </div>
       )
     },
     { 
       key: 'totalTasks', 
       label: 'Total Tasks', 
-      className: 'text-center pb-2 w-[100px]'
+      className: 'text-center pb-2 min-w-[85px]'
     },
     { 
       key: 'pending', 
       label: 'Pending', 
-      className: 'text-center pb-2 w-[100px]',
+      className: 'text-center pb-2 min-w-[70px]',
       render: (stat: PlannerStats) => (
-        <span className="text-secondary-foreground">{stat.pending}</span>
+        <span className="text-foreground">{stat.pending}</span>
       )
     },
     { 
       key: 'inProgress', 
       label: 'In Progress', 
-      className: 'text-center pb-2 w-[100px]',
+      className: 'text-center pb-2 min-w-[85px]',
       render: (stat: PlannerStats) => (
-        <span className="text-secondary-foreground">{stat.inProgress}</span>
+        <span className="text-foreground">{stat.inProgress}</span>
       )
     },
     { 
       key: 'completed', 
       label: 'Completed', 
-      className: 'text-center pb-2 w-[100px]',
+      className: 'text-center pb-2 min-w-[85px]',
       render: (stat: PlannerStats) => (
-        <span className="text-primary-foreground">{stat.completed}</span>
+        <span className="text-foreground">{stat.completed}</span>
       )
     },
     { 
       key: 'blocked', 
       label: 'Blocked', 
-      className: 'text-center pb-2 w-[100px]',
+      className: 'text-center pb-2 min-w-[60px]',
       render: (stat: PlannerStats) => (
         <span className="text-destructive-foreground">{stat.blocked}</span>
       )
@@ -235,7 +235,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
     { 
       key: 'cancelled', 
       label: 'Cancelled', 
-      className: 'text-center pb-2 w-[100px]',
+      className: 'text-center pb-2 min-w-[70px]',
       render: (stat: PlannerStats) => (
         <span className="text-muted-foreground">{stat.cancelled}</span>
       )
@@ -246,18 +246,18 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
     { 
       key: 'wedding', 
       label: 'Wedding', 
-      className: 'text-left pb-2 w-1/3',
+      className: 'text-left pb-2 min-w-[200px]',
       render: (stat: WeddingStats) => (
         <div>
           <div className="font-medium">{stat.wedding.spouse1Name} & {stat.wedding.spouse2Name}</div>
-          <div className="text-sm text-secondary-foreground">{new Date(stat.wedding.date).toLocaleDateString()}</div>
+          <div className="text-sm text-foreground">{new Date(stat.wedding.date).toLocaleDateString()}</div>
         </div>
       )
     },
     { 
       key: 'planner', 
       label: 'Planner', 
-      className: 'text-left pb-2 w-1/4',
+      className: 'text-left pb-2 min-w-[140px]',
       render: (stat: WeddingStats) => (
         <div className="font-medium">{stat.planner?.name || 'Unassigned'}</div>
       )
@@ -265,39 +265,39 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
     { 
       key: 'pending', 
       label: 'Pending', 
-      className: 'text-center pb-2 w-[80px]',
+      className: 'text-center pb-2 min-w-[70px]',
       render: (stat: WeddingStats) => (
-        <span className="text-secondary-foreground">{stat.pending}</span>
+        <span className="text-foreground">{stat.pending}</span>
       )
     },
     { 
       key: 'inProgress', 
       label: 'In Progress', 
-      className: 'text-center pb-2 w-[100px]',
+      className: 'text-center pb-2 min-w-[85px]',
       render: (stat: WeddingStats) => (
-        <span className="text-secondary-foreground">{stat.inProgress}</span>
+        <span className="text-foreground">{stat.inProgress}</span>
       )
     },
     { 
       key: 'completed', 
       label: 'Completed', 
-      className: 'text-center pb-2 w-[100px]',
+      className: 'text-center pb-2 min-w-[85px]',
       render: (stat: WeddingStats) => (
-        <span className="text-primary-foreground">{stat.completed}</span>
+        <span className="text-foreground">{stat.completed}</span>
       )
     },
     { 
       key: 'blocked', 
       label: 'Blocked', 
-      className: 'text-center pb-2 w-[80px]',
+      className: 'text-center pb-2 min-w-[60px]',
       render: (stat: WeddingStats) => (
-        <span className="text-destructive-foreground">{stat.blocked}</span>
+        <span className="text-foreground">{stat.blocked}</span>
       )
     },
     { 
       key: 'cancelled', 
       label: 'Cancelled', 
-      className: 'text-center pb-2 w-[100px]',
+      className: 'text-center pb-2 min-w-[70px]',
       render: (stat: WeddingStats) => (
         <span className="text-muted-foreground">{stat.cancelled}</span>
       )
@@ -352,9 +352,9 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p className="text-secondary-foreground">Loading...</p>
+            <p className="secondary-foreground">Loading...</p>
           ) : weddingStats.length === 0 ? (
-            <p className="text-secondary-foreground">No weddings found.</p>
+            <p className="secondary-foreground">No weddings found.</p>
           ) : (
             <Table 
               columns={weddingColumns} 

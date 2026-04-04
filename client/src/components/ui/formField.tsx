@@ -26,11 +26,11 @@ type FormFieldProps = {
 export default function FormField({ label, id, error, children, className }: FormFieldProps) {
   return (
     <div className={clsx('space-y-1', className)}>
-      <label htmlFor={id} className="block text-sm font-medium text-black">
+      <label htmlFor={id} className="block text-sm font-medium">
         {label}
       </label>
       {children}
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-destructive-foreground">{error}</p>}
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { api } from '../lib/api';
-import { Card } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import FormField from '../components/ui/formField';
+import { api } from '../../lib/api';
+import { Card } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import FormField from '../../components/ui/formField';
 import { Link } from 'react-router-dom';
 
 export default function Login({ onLogin }: { onLogin: () => void }) {
@@ -45,8 +45,8 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             />
           </FormField>
-          <p className="text-sm text-black text-center">
-            <Link to="/reset-password" className="text-black hover:text-slate-400">
+          <p className="text-sm text-center">
+            <Link to="/reset-password" className="">
               Forgot your password?
             </Link>
           </p>
