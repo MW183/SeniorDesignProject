@@ -101,7 +101,7 @@ export default function ResetPassword() {
           <div className="text-center">
             <h2 className="text-2xl font-semibold mb-4 text-green-400">✓ Password Reset</h2>
             <div className="bg-green-900/20 border border-green-600 rounded p-4 mb-6">
-              <p className="text-slate-200">
+              <p className="text-pink-200">
                 Your password has been successfully reset. You can now log in with your new password.
               </p>
             </div>
@@ -122,7 +122,7 @@ export default function ResetPassword() {
         {stage === 'request' ? (
           <>
             <h2 className="text-2xl font-semibold mb-4">Reset Password</h2>
-            <p className="text-slate-400 mb-6">
+            <p className="text-pink-400 mb-6">
               Enter your email address and we'll send you a link to reset your password.
             </p>
 
@@ -145,8 +145,8 @@ export default function ResetPassword() {
 
             {error && <div className="mt-3 text-sm text-red-400">{error}</div>}
 
-            <div className="mt-6 pt-6 border-t border-slate-700">
-              <p className="text-sm text-slate-400 text-center">
+            <div className="mt-6 pt-6 border-t border-pink-700">
+              <p className="text-sm text-pink-400 text-center">
                 Remember your password?{' '}
                 <Link to="/login" className="text-blue-400 hover:text-blue-300">
                   Sign in
@@ -157,7 +157,7 @@ export default function ResetPassword() {
         ) : (
           <>
             <h2 className="text-2xl font-semibold mb-4">Set New Password</h2>
-            <p className="text-slate-400 mb-6">
+            <p className="text-pink-400 mb-6">
               Enter your new password below.
             </p>
 

@@ -115,14 +115,14 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
   }
 
   if (!wedding) {
-    return <p className="text-red-400">Wedding not found</p>;
+    return <p className="text-destructive">Wedding not found</p>;
   }
 
   return (
     <div className="space-y-6">
       {/* Spouse 1 */}
       <>
-        <h4 className="text-sm font-medium text-slate-300 mb-3">Couple Member 1</h4>
+        <h4 className="text-sm font-medium text-foreground mb-3">Couple Member 1</h4>
         {selectedSpouse1 ? (
           <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
             <p className="font-medium text-white">{selectedSpouse1.name}</p>
@@ -154,7 +154,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
 
       {/* Spouse 2 */}
       <>
-        <h4 className="text-sm font-medium text-slate-300 mb-3">Couple Member 2</h4>
+        <h4 className="text-sm font-medium text-foreground mb-3">Couple Member 2</h4>
         {selectedSpouse2 ? (
           <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
             <p className="font-medium text-white">{selectedSpouse2.name}</p>
@@ -184,7 +184,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
         )}
       </>
 
-      {error && <div className="text-sm text-red-400 mt-4">{error}</div>}
+      {error && <div className="text-sm text-destructive mt-4">{error}</div>}
 
       <div className="flex gap-2 mt-6">
         <Button

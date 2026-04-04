@@ -143,7 +143,7 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
   }
 
   if (!wedding) {
-    return <Card><p className="text-red-400">Wedding not found</p></Card>;
+    return <Card><p className="text-destructive">Wedding not found</p></Card>;
   }
 
   const dateHasChanged = weddingDate !== new Date(wedding.date).toISOString().split('T')[0];
@@ -163,7 +163,7 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
   return (
     <div className="space-y-4">
       {showTitle && (
-        <h3 className="text-sm font-semibold text-slate-300">{weddingDisplayName}</h3>
+        <h3 className="text-sm font-semibold text-foreground">{weddingDisplayName}</h3>
       )}
       {/* Wedding Date */}
       <div>
@@ -185,7 +185,7 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
 
       {/* Location - Collapsible */}
       <Collapsible open={locationOpen} onOpenChange={setLocationOpen}>
-        <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-slate-200 w-full">
+        <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-foreground/80 w-full">
           <ChevronDown className={`h-4 w-4 transition-transform ${locationOpen ? 'rotate-180' : ''}`} />
           <span>{locationDisplay}</span>
         </CollapsibleTrigger>
@@ -204,7 +204,7 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
                   e.stopPropagation();
                   setSelectedLocation(null);
                 }}
-                className="text-xs text-blue-400 hover:text-blue-300 mt-2 underline"
+                className="text-xs text-accent hover:text-accent/80 mt-2 underline"
               >
                 Change Location
               </button>
@@ -221,7 +221,7 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
       </Collapsible>
 
       {error && (
-        <div className="text-sm text-red-400">
+        <div className="text-sm text-destructive">
           {error}
         </div>
       )}

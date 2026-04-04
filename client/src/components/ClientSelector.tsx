@@ -101,7 +101,7 @@ export default function ClientSelector({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-slate-300">{label}</span>
+        <span className="text-sm font-medium text-foreground">{label}</span>
         {!showForm && (
           <button
             type="button"
@@ -109,7 +109,7 @@ export default function ClientSelector({
               e.stopPropagation();
               setShowForm(true);
             }}
-            className="text-xs text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
+            className="text-xs text-accent hover:text-accent/80 underline flex items-center gap-1"
           >
             <Plus className="h-3 w-3" /> Create new
           </button>
@@ -172,7 +172,7 @@ export default function ClientSelector({
           </PopoverContent>
         </Popover>
       ) : (
-        <form onSubmit={handleCreateClient} className="space-y-2 bg-slate-800 p-3 rounded border border-slate-700">
+        <form onSubmit={handleCreateClient} className="space-y-2 bg-card p-3 rounded border border-border">
           <FormField label="Name" id="client-name">
             <Input
               id="client-name"
@@ -201,7 +201,7 @@ export default function ClientSelector({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewClient({ ...newClient, phone: e.target.value })}
             />
           </FormField>
-          {error && <div className="text-xs text-red-400">{error}</div>}
+          {error && <div className="text-xs text-destructive">{error}</div>}
           <div className="flex gap-2 pt-2">
             <Button type="submit" disabled={isCreating} className="text-sm py-1 px-3">
               {isCreating ? 'Creating...' : 'Create'}
@@ -214,7 +214,7 @@ export default function ClientSelector({
                 setNewClient({ name: '', email: '', phone: '' });
                 setError(null);
               }}
-              className="px-3 py-1 text-sm text-slate-400 hover:text-slate-300"
+              className="px-3 py-1 text-sm text-muted-foreground hover:text-muted-foreground/80"
             >
               Cancel
             </button>

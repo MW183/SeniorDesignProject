@@ -217,7 +217,7 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
         <div className="mb-4">
           <button
             onClick={() => navigate('/my-weddings')}
-            className="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded text-white text-sm"
+            className="px-3 py-2 bg-pink-700 hover:bg-pink-600 rounded text-white text-sm"
           >
             ← Back to Weddings
           </button>
@@ -228,7 +228,7 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
         <h2 className="text-2xl font-semibold mb-2">
           {weddingId && weddingName ? `${weddingName} - Tasks` : 'My Tasks'}
         </h2>
-        <p className="text-slate-400">
+        <p className="text-pink-400">
           {currentUser?.name} • {activeTasks.length} active task{activeTasks.length !== 1 ? 's' : ''}
           {completedTasks.length > 0 && `, ${completedTasks.length} completed`}
         </p>
@@ -248,11 +248,11 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
         {/* Sort and Display Options */}
         <div className="flex justify-between items-center flex-wrap gap-4 mt-4">
           <div className="flex gap-2 items-center">
-            <label className="text-sm text-slate-300">Sort by:</label>
+            <label className="text-sm text-pink-300">Sort by:</label>
             <select
               value={sortMode}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortMode(e.target.value as SortMode)}
-              className="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm"
+              className="px-3 py-2 bg-pink-700 border border-pink-600 rounded text-white text-sm"
             >
               <option value="name">Name</option>
               <option value="Due Date">Due Date</option>
@@ -261,7 +261,7 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
             </select>
           </div>
           
-          <label className="flex items-center gap-2 text-sm text-slate-300">
+          <label className="flex items-center gap-2 text-sm text-pink-300">
             <input
               type="checkbox"
               checked={showCompleted}
@@ -276,13 +276,13 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
         {error && <div className="text-sm text-red-400 mb-4">{error}</div>}
 
         {loading ? (
-          <p className="text-slate-400">Loading tasks...</p>
+          <p className="text-pink-400">Loading tasks...</p>
         ) : activeTasks.length === 0 && !showCompleted ? (
-          <p className="text-slate-400">No active tasks to display</p>
+          <p className="text-pink-400">No active tasks to display</p>
         ) : (
           <div className="space-y-4">
             {categoriesSorted.length === 0 ? (
-              <p className="text-slate-400">No tasks match your search</p>
+              <p className="text-pink-400">No tasks match your search</p>
             ) : (
               categoriesSorted.map((categoryName, index) => {
                 const categoryData = tasksByCategory[categoryName];
@@ -296,10 +296,10 @@ export default function PlannerTasks({ currentUser, hideBackButton = false }: { 
                       open={isExpanded}
                       onOpenChange={() => toggleCategoryExpanded(categoryName)}
                     >
-                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
                         {categoryName}
                       </CollapsibleTrigger>
-                      <div className="text-sm text-slate-400 mb-2">
+                      <div className="text-sm text-pink-400 mb-2">
                         {activeCategoryTasks.length} active task{activeCategoryTasks.length !== 1 ? 's' : ''}
                       </div>
                       <CollapsibleContent>

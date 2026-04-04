@@ -191,7 +191,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       render: (stat: PlannerStats) => (
         <div>
           <div className="font-medium">{stat.planner.name}</div>
-          <div className="text-sm text-slate-400">{stat.planner.email}</div>
+          <div className="text-sm text-secondary-foreground">{stat.planner.email}</div>
         </div>
       )
     },
@@ -205,7 +205,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'Pending', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
-        <span className="text-yellow-400">{stat.pending}</span>
+        <span className="text-secondary-foreground">{stat.pending}</span>
       )
     },
     { 
@@ -213,7 +213,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'In Progress', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
-        <span className="text-blue-400">{stat.inProgress}</span>
+        <span className="text-secondary-foreground">{stat.inProgress}</span>
       )
     },
     { 
@@ -221,7 +221,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'Completed', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
-        <span className="text-green-400">{stat.completed}</span>
+        <span className="text-primary-foreground">{stat.completed}</span>
       )
     },
     { 
@@ -229,7 +229,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'Blocked', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
-        <span className="text-red-400">{stat.blocked}</span>
+        <span className="text-destructive-foreground">{stat.blocked}</span>
       )
     },
     { 
@@ -237,7 +237,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'Cancelled', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
-        <span className="text-gray-400">{stat.cancelled}</span>
+        <span className="text-muted-foreground">{stat.cancelled}</span>
       )
     },
   ];
@@ -250,7 +250,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       render: (stat: WeddingStats) => (
         <div>
           <div className="font-medium">{stat.wedding.spouse1Name} & {stat.wedding.spouse2Name}</div>
-          <div className="text-sm text-slate-400">{new Date(stat.wedding.date).toLocaleDateString()}</div>
+          <div className="text-sm text-secondary-foreground">{new Date(stat.wedding.date).toLocaleDateString()}</div>
         </div>
       )
     },
@@ -267,7 +267,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'Pending', 
       className: 'text-center pb-2 w-[80px]',
       render: (stat: WeddingStats) => (
-        <span className="text-yellow-400">{stat.pending}</span>
+        <span className="text-secondary-foreground">{stat.pending}</span>
       )
     },
     { 
@@ -275,7 +275,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'In Progress', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: WeddingStats) => (
-        <span className="text-blue-400">{stat.inProgress}</span>
+        <span className="text-secondary-foreground">{stat.inProgress}</span>
       )
     },
     { 
@@ -283,7 +283,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'Completed', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: WeddingStats) => (
-        <span className="text-green-400">{stat.completed}</span>
+        <span className="text-primary-foreground">{stat.completed}</span>
       )
     },
     { 
@@ -291,7 +291,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'Blocked', 
       className: 'text-center pb-2 w-[80px]',
       render: (stat: WeddingStats) => (
-        <span className="text-red-400">{stat.blocked}</span>
+        <span className="text-destructive-foreground">{stat.blocked}</span>
       )
     },
     { 
@@ -299,7 +299,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'Cancelled', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: WeddingStats) => (
-        <span className="text-gray-400">{stat.cancelled}</span>
+        <span className="text-muted-foreground">{stat.cancelled}</span>
       )
     },
   ];
@@ -314,7 +314,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       </Card>
 
       {error && (
-        <Card className="mb-6 border-red-700 bg-red-950">
+        <Card className="mb-6 border-destructive bg-destructive/10">
           <CardContent className="pt-6">
             <p className="text-red-300">{error}</p>
           </CardContent>
@@ -328,13 +328,13 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
-            <Button onClick={() => navigate('/manage-weddings')} variant="outline">
+            <Button onClick={() => navigate('/manage-weddings')} variant="secondary">
               Manage Weddings
             </Button>
-            <Button onClick={() => navigate('/manage-planners')} variant="outline">
+            <Button onClick={() => navigate('/manage-planners')} variant="secondary">
               Manage Planners
             </Button>
-            <Button onClick={() => navigate('/create-wedding')} variant="outline">
+            <Button onClick={() => navigate('/create-wedding')} variant="secondary">
               Create New Wedding
             </Button>
             <Button onClick={() => loadStats()} variant="secondary" disabled={loading}>
@@ -352,9 +352,9 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p className="text-slate-400">Loading...</p>
+            <p className="text-secondary-foreground">Loading...</p>
           ) : weddingStats.length === 0 ? (
-            <p className="text-slate-400">No weddings found.</p>
+            <p className="text-secondary-foreground">No weddings found.</p>
           ) : (
             <Table 
               columns={weddingColumns} 

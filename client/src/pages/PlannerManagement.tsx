@@ -115,14 +115,14 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
       <Card>
         <div className="flex items-baseline justify-between gap-4 mb-3">
           <h3 className="text-lg font-semibold m-0">Planners</h3>
-          <p className="m-0 text-sm text-slate-400">Manage all planners in the system</p>
+          <p className="m-0 text-sm text-pink-400">Manage all planners in the system</p>
         </div>
         {loading ? (
           <p>Loading...</p>
         ) : filteredUsers.length === 0 && users.length > 0 ? (
-          <p className="text-slate-400">No planners match your search.</p>
+          <p className="text-pink-400">No planners match your search.</p>
         ) : users.length === 0 ? (
-          <p className="text-slate-400">No planners found.</p>
+          <p className="text-pink-400">No planners found.</p>
         ) : (
           <Table columns={columns} data={filteredUsers} />
         )}

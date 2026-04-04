@@ -51,12 +51,12 @@ export default function ResendVerification() {
         {sent ? (
           <div>
             <div className="bg-green-900/20 border border-green-600 rounded p-4 mb-6">
-              <p className="text-slate-200 mb-2">✓ Verification email sent!</p>
-              <p className="text-sm text-slate-400">
+              <p className="text-pink-200 mb-2">✓ Verification email sent!</p>
+              <p className="text-sm text-pink-400">
                 We've sent a new verification link to <strong>{email}</strong>. Please check your inbox and click the link to verify your email.
               </p>
             </div>
-            <p className="text-sm text-slate-400 mb-4">
+            <p className="text-sm text-pink-400 mb-4">
               If you don't see the email, check your spam folder. The link expires in 24 hours.
             </p>
             <Link to="/login">
@@ -68,7 +68,7 @@ export default function ResendVerification() {
         ) : (
           <form onSubmit={submit} className="space-y-4">
             <>
-              <p className="text-sm text-slate-400 mb-4">
+              <p className="text-sm text-pink-400 mb-4">
                 Enter the email address associated with your account, and we'll send you a new verification link.
               </p>
             </>

@@ -362,7 +362,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
 
                   {/* Rating */}
                   <div>
-                    <label className="text-sm text-slate-300 mb-2 block">Rating (0-5 stars)</label>
+                    <label className="text-sm text-foreground mb-2 block">Rating (0-5 stars)</label>
                     <div className="flex gap-1">
                       {[0, 1, 2, 3, 4, 5].map(star => (
                         <button
@@ -375,7 +375,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                           className={`px-3 py-1 text-sm rounded ${
                             editRating === star
                               ? 'bg-yellow-600 text-white'
-                              : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                              : 'bg-card text-card-foreground hover:bg-card/80'
                           }`}
                         >
                           {'★'.repeat(star || 1)}
@@ -386,8 +386,8 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
 
                   {/* Notes */}
                   <div>
-                    <label className="text-sm text-slate-300 mb-2 block">
-                      Notes {editRating > 0 && <span className="text-red-400">*</span>}
+                    <label className="text-sm text-foreground mb-2 block">
+                      Notes {editRating > 0 && <span className="text-destructive">*</span>}
                     </label>
                     <textarea
                       value={editNotes}
@@ -402,7 +402,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                     />
                   </div>
 
-                  {editError && <div className="text-sm text-red-400">{editError}</div>}
+                  {editError && <div className="text-sm text-destructive">{editError}</div>}
 
                   <div className="flex gap-2">
                     <button
@@ -455,7 +455,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                     </div>
                   )}
 
-                  {wv.notes && <p className="text-xs text-slate-300 mb-2 italic">{wv.notes}</p>}
+                  {wv.notes && <p className="text-xs text-muted-foreground mb-2 italic">{wv.notes}</p>}
 
                   <div className="flex gap-2">
                     <button
@@ -464,7 +464,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                         e.stopPropagation();
                         handleEditVendor(wv);
                       }}
-                      className="text-xs text-blue-400 hover:text-blue-300 underline"
+                      className="text-xs text-accent hover:text-accent/80 underline"
                     >
                       Edit
                     </button>
@@ -474,7 +474,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                         e.stopPropagation();
                         handleRemoveVendor(wv.vendorId);
                       }}
-                      className="text-xs text-red-400 hover:text-red-300 underline"
+                      className="text-xs text-destructive hover:text-destructive/80 underline"
                     >
                       Remove
                     </button>
@@ -485,7 +485,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
           ))}
         </div>
       ) : (
-        <p className="text-slate-400 text-sm">No vendors assigned yet</p>
+        <p className="text-muted-foreground text-sm">No vendors assigned yet</p>
       )}
 
       {/* Add vendor section */}
@@ -502,7 +502,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
         </button>
       ) : (
         <div className="bg-slate-800 border border-slate-700 rounded p-3 space-y-3">
-          <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2">
+          <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
             <Plus className="h-4 w-4" /> Search & Add Vendors
           </h4>
 

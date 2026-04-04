@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import headerImage from '../assets/VENUE LOGOS - 25.png'
 
 export default function Header({ currentUser, onLogout }: { currentUser?: any, onLogout?: () => void }) {
   const [open, setOpen] = useState(false);
@@ -9,11 +10,13 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
   const navigate = useNavigate();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900 text-white h-16 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-card text-foreground h-16 shadow-sm border-b border-accent">
       <div className="max-w-275 mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="">
-            <Link to="/" className="text-white font-bold text-lg tracking-wide">PlannerApp</Link>
+            <Link to="/" >
+            <img src={headerImage} className="h-12 w-auto border-s" />
+            </Link>
           </div>
 
           <button
@@ -22,27 +25,27 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
             aria-label="Toggle navigation"
             onClick={() => setOpen(v => !v)}
           >
-            <span className="block w-5 h-0.5 bg-white my-0.75" />
-            <span className="block w-5 h-0.5 bg-white my-0.75" />
-            <span className="block w-5 h-0.5 bg-white my-0.75" />
+            <span className="block w-5 h-0.5 bg-foreground my-0.75" />
+            <span className="block w-5 h-0.5 bg-foreground my-0.75" />
+            <span className="block w-5 h-0.5 bg-foreground my-0.75" />
           </button>
 
-          <nav className={`${open ? 'flex' : 'hidden'} md:flex items-center gap-4 md:static absolute top-16 right-4 bg-slate-900 md:bg-transparent flex-col md:flex-row p-3 md:p-0 rounded-md min-w-40`}>
+          <nav className={`${open ? 'flex' : 'hidden'} md:flex items-center gap-4 md:static absolute top-16 right-4 bg-card md:bg-transparent flex-col md:flex-row p-3 md:p-0 rounded-md min-w-40 border md:border-0 border-accent`}>
             {!currentUser ? (
-              <Link to="/login" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Login</Link>
+              <Link to="/login" className="text-foreground px-2 py-1 rounded-md hover:bg-secondary/80">Login</Link>
             ) : isAdmin || isSupport ? (
               <>
-                <Link to="/planners" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Dashboard</Link>
-                <Link to="/manage-weddings" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Manage Weddings</Link>
-                <Link to="/manage-planners" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Manage Planners</Link>
-                <Link to="/manage-vendors" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Manage Vendors</Link>
-                <button className="logout-btn text-sky-100 px-2 py-1 rounded-md hover:bg-white/5" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
+                <Link to="/planners" className="text-foreground bg-secondary px-2 py-1 rounded-lg hover:bg-secondary/80">Dashboard</Link>
+                <Link to="/manage-weddings" className="text-foreground bg-secondary px-2 py-1 rounded-lg hover:bg-secondary/80">Manage Weddings</Link>
+                <Link to="/manage-planners" className="text-foreground bg-secondary px-2 py-1 rounded-lg hover:bg-secondary/80">Manage Planners</Link>
+                <Link to="/manage-vendors" className="text-foreground bg-secondary px-2 py-1 rounded-lg hover:bg-secondary/80">Manage Vendors</Link>
+                <button className="logout-btn text-foreground bg-secondary px-2 py-1 rounded-lg hover:bg-secondary/80" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
               </>
             ) : (
               <>
-                <Link to="/my-weddings" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">My Weddings</Link>
-                <Link to="/manage-vendors" className="text-sky-100 px-2 py-1 rounded-md hover:bg-white/5">Vendors</Link>
-                <button className="logout-btn text-sky-100 px-2 py-1 rounded-md hover:bg-white/5" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
+                <Link to="/my-weddings" className="text-foreground px-2 py-1 rounded-lg hover:bg-secondary/80">My Weddings</Link>
+                <Link to="/manage-vendors" className="text-foreground px-2 py-1 rounded-lg hover:bg-secondary/80">Vendors</Link>
+                <button className="logout-btn text-foreground px-2 py-1 rounded-lg hover:bg-secondary/80" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>
               </>
             )}
           </nav>

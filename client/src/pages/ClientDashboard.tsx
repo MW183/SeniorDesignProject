@@ -103,11 +103,11 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
     }, {} as GroupedTasks);
 
   const statusColors: Record<string, string> = {
-    PENDING: 'bg-slate-600 text-slate-100',
-    IN_PROGRESS: 'bg-blue-600 text-white',
-    BLOCKED: 'bg-red-600 text-white',
-    COMPLETED: 'bg-green-600 text-white',
-    CANCELLED: 'bg-slate-500 text-slate-300'
+    PENDING: 'bg-secondary text-secondary-foreground',
+    IN_PROGRESS: 'bg-secondary text-secondary-foreground',
+    BLOCKED: 'bg-destructive text-destructive-foreground',
+    COMPLETED: 'bg-primary text-primary-foreground',
+    CANCELLED: 'bg-muted text-muted-foreground'
   };
 
   const priorityLabels: Record<number, string> = {
@@ -121,7 +121,7 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <p className="text-slate-400">Loading your tasks...</p>
+        <p className="text-secondary-foreground">Loading your tasks...</p>
       </div>
     );
   }
@@ -129,12 +129,12 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
   return (
     <div className="space-y-6 pb-8">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">My Wedding Tasks</h1>
-        <p className="text-slate-400">Track your wedding planning progress</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">My Wedding Tasks</h1>
+        <p className="text-secondary-foreground">Track your wedding planning progress</p>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-600/20 border border-red-600 rounded text-red-400 text-sm">
+        <div className="p-4 bg-destructive/20 border border-destructive rounded text-destructive text-sm">
           {error}
         </div>
       )}
@@ -169,18 +169,18 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
       {/* Tasks Grouped by Wedding and Category */}
       {Object.keys(groupedTasks).length === 0 ? (
         <Card>
-          <p className="text-slate-400 text-center py-8">
+          <p className="text-secondary-foreground text-center py-8">
             {selectedStatus ? `No tasks found with status: ${selectedStatus}` : 'No tasks assigned yet'}
           </p>
         </Card>
       ) : (
         Object.entries(groupedTasks).map(([weddingId, weddingData]) => (
           <Card key={weddingId}>
-            <h2 className="text-2xl font-semibold mb-6 text-slate-100">Wedding #{weddingId.slice(0, 8)}</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-pink-100">Wedding #{weddingId.slice(0, 8)}</h2>
 
             {Object.entries(weddingData.categories).map(([categoryName, categoryTasks]) => (
               <div key={categoryName} className="mb-8 last:mb-0">
-                <h3 className="text-lg font-semibold text-slate-300 mb-4 pb-2 border-b border-slate-600">
+                <h3 className="text-lg font-semibold bg-accent-foreground mb-4 pb-2 border-b border-pink-600">
                   {categoryName}
                 </h3>
 
@@ -188,13 +188,13 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
                   {categoryTasks.map((task) => (
                     <div
                       key={task.id}
-                      className="p-4 bg-slate-700/50 rounded border border-slate-600 hover:border-slate-500 transition-colors"
+                      className="p-4 bg-secondary/30 rounded border border-secondary hover:border-secondary/80 transition-colors"
                     >
                       <div className="flex items-start justify-between gap-4 mb-2">
                         <div className="flex-1">
-                          <h4 className="font-semibold text-white">{task.name}</h4>
+                          <h4 className="font-semibold text-foreground">{task.name}</h4>
                           {task.description && (
-                            <p className="text-sm text-slate-400 mt-1">{task.description}</p>
+                            <p className="text-sm text-secondary-foreground mt-1">{task.description}</p>
                           )}
                         </div>
                         <span className={`px-3 py-1 rounded text-xs font-semibold whitespace-nowrap ${statusColors[task.currentStatus]}`}>
@@ -202,14 +202,14 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-4 text-sm text-slate-400 mb-3">
+                      <div className="flex items-center gap-4 text-sm text-secondary-foreground mb-3">
                         <>
-                          <span className="text-slate-500">Priority: </span>
-                          <span className="text-slate-300">{priorityLabels[task.priority] || 'Unknown'}</span>
+                          <span className="bg-accent">Priority: </span>
+                          <span className="bg-accent-foreground">{priorityLabels[task.priority] || 'Unknown'}</span>
                         </>
                         <>
-                          <span className="text-slate-500">Due: </span>
-                          <span className="text-slate-300">
+                          <span className="bg-accent">Due: </span>
+                          <span className="bg-accent-foreground">
                             {new Date(task.dueDate).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
@@ -225,7 +225,7 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
                           <select
                             value={newStatus}
                             onChange={e => setNewStatus(e.target.value)}
-                            className="flex-1 px-3 py-2 bg-slate-600 border border-slate-500 rounded text-sm text-white focus:outline-none focus:border-blue-500"
+                            className="flex-1 px-3 py-2 bg-secondary border border-secondary rounded text-sm text-secondary-foreground focus:outline-none focus:border-accent"
                           >
                             <option value="">Select status...</option>
                             <option value="PENDING">Pending</option>
@@ -235,13 +235,13 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
                           </select>
                           <Button
                             onClick={() => updateTaskStatus(task.id, newStatus)}
-                            className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-xs"
+                            className="px-3 py-2 bg-primary hover:bg-primary/80 text-xs"
                           >
                             Save
                           </Button>
                           <Button
                             onClick={() => setEditingTaskId(null)}
-                            className="px-3 py-2 bg-slate-600 hover:bg-slate-500 text-xs"
+                            className="px-3 py-2 bg-secondary hover:bg-secondary/80 text-xs"
                           >
                             Cancel
                           </Button>
@@ -252,7 +252,7 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
                             setEditingTaskId(task.id);
                             setNewStatus(task.currentStatus);
                           }}
-                          className="text-xs bg-slate-600 hover:bg-slate-500"
+                          className="text-xs bg-secondary hover:bg-secondary/80"
                         >
                           Update Status
                         </Button>

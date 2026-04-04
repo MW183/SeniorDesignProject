@@ -204,7 +204,7 @@ export default function AddressSelector({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-slate-300">{label}</span>
+        <span className="text-sm font-medium bg-input">{label}</span>
         {!showForm && (
           <button
             type="button"
@@ -212,7 +212,7 @@ export default function AddressSelector({
               e.stopPropagation();
               setShowForm(true);
             }}
-            className="text-xs text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
+            className="text-xs text-accent hover:text-accent/80 underline flex items-center gap-1"
           >
             <Plus className="h-3 w-3" /> Manual entry
           </button>
@@ -228,7 +228,7 @@ export default function AddressSelector({
               aria-expanded={open}
               className="w-full justify-between"
             >
-              <span className="truncate text-slate-400">{placeholder}</span>
+              <span className="truncate text-secondary-foreground">{placeholder}</span>
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -258,7 +258,7 @@ export default function AddressSelector({
                       <div className="flex-1">
                         <p className="font-medium text-white">{suggestion.displayName}</p>
                         {suggestion.isExisting && (
-                          <p className="text-xs text-slate-500">In your database</p>
+                          <p className="text-xs bg-accent">In your database</p>
                         )}
                       </div>
                     </CommandItem>
@@ -270,7 +270,7 @@ export default function AddressSelector({
           </PopoverContent>
         </Popover>
       ) : (
-        <form onSubmit={handleCreateAddress} className="space-y-2 bg-slate-800 p-3 rounded border border-slate-700">
+        <form onSubmit={handleCreateAddress} className="space-y-2 bg-accent p-3 rounded border bg-accent">
           <FormField label="Street Address" id="addr-street">
             <Input
               id="addr-street"
@@ -319,14 +319,14 @@ export default function AddressSelector({
               id="addr-type"
               value={newAddress.type}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNewAddress({ ...newAddress, type: e.target.value })}
-              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 bg-accent border rounded text-sm focus:outline-none focus:bg-ring"
             >
               <option value="Venue">Venue</option>
               <option value="Vendor">Vendor</option>
               <option value="Client">Client</option>
             </select>
           </FormField>
-          {error && <div className="text-xs text-red-400">{error}</div>}
+          {error && <div className="text-xs text-destructive">{error}</div>}
           <div className="flex gap-2 pt-2">
             <Button type="submit" disabled={isCreating} className="text-sm py-1 px-3">
               {isCreating ? 'Creating...' : 'Create'}
@@ -339,7 +339,7 @@ export default function AddressSelector({
                 setNewAddress({ street: '', city: '', state: '', zip: '', type: 'Venue' });
                 setError(null);
               }}
-              className="px-3 py-1 text-sm text-slate-400 hover:text-slate-300"
+              className="px-3 py-1 text-sm text-secondary-foreground hover:text-secondary-foreground/80"
             >
               Cancel
             </button>

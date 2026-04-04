@@ -85,26 +85,26 @@ export default function CoupleTaskEditor({
       <h3 className="text-lg font-semibold mb-4">Couple Assignment</h3>
 
       {error && (
-        <div className="p-3 bg-red-600/20 border border-red-600 rounded text-red-400 text-sm mb-4">
+        <div className="p-3 bg-destructive/20 border border-destructive rounded text-destructive text-sm mb-4">
           {error}
         </div>
       )}
 
       {/* Checkbox */}
-      <div className="p-4 bg-slate-700/50 rounded border border-slate-600">
+      <div className="p-4 bg-card/50 rounded border border-border">
         <div className="flex items-center gap-3">
           <input
             type="checkbox"
             checked={assignToCouple}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleAssignToCoupleToggle(e.target.checked)}
             disabled={loading}
-            className="w-5 h-5 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-5 h-5 rounded border-border bg-input text-accent focus:ring-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <div>
             <label className="font-semibold text-white cursor-pointer">
               Assign to Couple Members
             </label>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {assignToCouple 
                 ? 'This task is assigned to both couple members'
                 : 'Check to assign this task to both couple members'}

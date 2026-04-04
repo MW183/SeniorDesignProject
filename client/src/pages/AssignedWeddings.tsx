@@ -114,10 +114,10 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
   };
 
   const getUrgencyColor = (daysUntil: number) => {
-    if (daysUntil < 0) return 'bg-red-950 border-red-700 text-red-200';
-    if (daysUntil === 0) return 'bg-red-900 border-red-700 text-red-200';
-    if (daysUntil <= 7) return 'bg-amber-900 border-amber-700 text-amber-200';
-    return 'bg-slate-800 border-slate-700 text-slate-300';
+    if (daysUntil < 0) return 'bg-destructive border-destructive text-destructive-foreground';
+    if (daysUntil === 0) return 'bg-destructive border-destructive text-destructive-foreground';
+    if (daysUntil <= 7) return 'bg-secondary border-secondary text-secondary-foreground';
+    return 'bg-card border-border text-card-foreground';
   };
 
   return (
@@ -126,7 +126,7 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
         <div className="flex justify-between items-start">
           <div>
             <h2 className="text-2xl font-semibold mb-2">Your Weddings</h2>
-            <p className="text-slate-400">
+            <p className="text-secondary-foreground">
               {currentUser?.name} • {weddings.length} assigned wedding{weddings.length !== 1 ? 's' : ''}
             </p>
           </div>
@@ -160,15 +160,15 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
 
       {loading ? (
         <Card>
-          <p className="text-slate-400">Loading weddings...</p>
+          <p className="text-secondary-foreground">Loading weddings...</p>
         </Card>
       ) : filteredWeddings.length === 0 && weddings.length > 0 ? (
         <Card>
-          <p className="text-slate-400">No weddings match your search.</p>
+          <p className="text-secondary-foreground">No weddings match your search.</p>
         </Card>
       ) : weddings.length === 0 ? (
         <Card>
-          <p className="text-slate-400">No weddings assigned yet.</p>
+          <p className="text-secondary-foreground">No weddings assigned yet.</p>
         </Card>
       ) : (
         <div className="space-y-3">
@@ -180,7 +180,7 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
             return (
               <Card
                 key={wedding.id}
-                className={`border-l-4 cursor-pointer hover:bg-slate-700 transition ${urgencyClass.split(' ')[0]} ${urgencyClass.split(' ')[1]}`}
+                className={`border-l-4 cursor-pointer hover:bg-secondary/50 transition ${urgencyClass.split(' ')[0]} ${urgencyClass.split(' ')[1]}`}
               >
                 <button
                   onClick={() => navigate(`/my-weddings/${wedding.id}/tasks`)}
@@ -188,10 +188,10 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-white mb-1">{getClientNames(wedding)}</h3>
-                      <div className="flex items-center gap-4 text-sm text-slate-300">
+                      <h3 className="font-semibold text-foreground mb-1">{getClientNames(wedding)}</h3>
+                      <div className="flex items-center gap-4 text-sm text-pink-300">
                         <span className="font-medium">{formatDate(wedding.date)}</span>
-                        <span className="text-slate-400">
+                        <span className="text-secondary-foreground">
                           {daysUntil < 0
                             ? `${Math.abs(daysUntil)} day${Math.abs(daysUntil) !== 1 ? 's' : ''} ago`
                             : daysUntil === 0
@@ -201,8 +201,8 @@ export default function AssignedWeddings({ currentUser }: { currentUser?: any })
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-semibold text-white">{remaining}/{total} tasks</div>
-                      <div className="text-xs text-slate-400">
+                      <div className="text-lg font-semibold text-foreground">{remaining}/{total} tasks</div>
+                      <div className="text-xs text-secondary-foreground">
                         {remaining === 0 ? 'All done!' : `${remaining} remaining`}
                       </div>
                     </div>

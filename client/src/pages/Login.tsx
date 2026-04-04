@@ -45,8 +45,8 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             />
           </FormField>
-          <p className="text-sm text-slate-400 text-center">
-            <Link to="/reset-password" className="text-blue-400 hover:text-blue-300">
+          <p className="text-sm text-black text-center">
+            <Link to="/reset-password" className="text-black hover:text-slate-400">
               Forgot your password?
             </Link>
           </p>

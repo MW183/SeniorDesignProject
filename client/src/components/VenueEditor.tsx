@@ -101,18 +101,18 @@ export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: Ven
   }
 
   if (!wedding) {
-    return <p className="text-red-400">Wedding not found</p>;
+    return <p className="text-destructive">Wedding not found</p>;
   }
 
   return (
     <div className="space-y-4">
       {/* Venue Display */}
       <div>
-        <h4 className="text-sm font-medium text-slate-300 mb-3">Venue Location</h4>
+        <h4 className="text-sm font-medium text-foreground mb-3">Venue Location</h4>
         {selectedAddress ? (
           <div className="bg-slate-800 border border-slate-700 rounded p-3 mb-2">
             <p className="font-medium text-white">{selectedAddress.street}</p>
-            <p className="text-sm text-slate-300">
+            <p className="text-sm text-foreground">
               {selectedAddress.city}, {selectedAddress.state} {selectedAddress.zipCode}
             </p>
             <button
@@ -121,7 +121,7 @@ export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: Ven
                 e.stopPropagation();
                 setSelectedAddress(null);
               }}
-              className="text-xs text-blue-400 hover:text-blue-300 mt-2 underline"
+              className="text-xs text-accent hover:text-accent/80 mt-2 underline"
             >
               Change
             </button>
@@ -135,7 +135,7 @@ export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: Ven
         )}
       </div>
 
-      {error && <div className="text-sm text-red-400 mt-4">{error}</div>}
+      {error && <div className="text-sm text-destructive mt-4">{error}</div>}
 
       <div className="flex gap-2 mt-6">
         <Button

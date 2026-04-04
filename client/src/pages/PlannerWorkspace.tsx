@@ -57,10 +57,10 @@ export default function PlannerWorkspace({ currentUser }: { currentUser?: any })
 
   // Desktop view - three column layout with flexible sizing
   return (
-    <div className="w-full flex bg-slate-900 min-h-[calc(100vh-120px)]">
+    <div className="w-full flex bg-pink-900 min-h-[calc(100vh-120px)]">
       {/* Left Sidebar - Wedding Details */}
       <div
-        className={`transition-all duration-300 ease-in-out overflow-hidden bg-slate-800 border-r border-slate-700 flex flex-col shrink-0 ${
+        className={`transition-all duration-300 ease-in-out overflow-hidden bg-pink-800 border-r border-pink-700 flex flex-col shrink-0 ${
           leftSidebarOpen ? 'w-80' : 'w-12'
         }`}
       >
@@ -76,7 +76,7 @@ export default function PlannerWorkspace({ currentUser }: { currentUser?: any })
       </div>
         
       {/* Center - Tasks (Main Content) */}
-      <div className="flex-1 overflow-auto bg-slate-900 min-w-0 w-full"> 
+      <div className="flex-1 overflow-auto bg-pink-900 min-w-0 w-full"> 
         <div className="max-w-7xl mx-auto w-full px-4 py-6 md:px-6 md:py-8">
           <PlannerTasks currentUser={currentUser} hideBackButton={true} />
         </div>
@@ -84,13 +84,13 @@ export default function PlannerWorkspace({ currentUser }: { currentUser?: any })
 
       {/* Right Sidebar - Vendors */}
       <div
-        className={`transition-all duration-300 ease-in-out overflow-hidden bg-slate-800 border-l border-slate-700 flex flex-col shrink-0 ${
+        className={`transition-all duration-300 ease-in-out overflow-hidden bg-pink-800 border-l border-pink-700 flex flex-col shrink-0 ${
           rightSidebarOpen ? 'w-80' : 'w-12'
         }`}
       >
         {rightSidebarOpen && weddingId && (
           <div className="flex-1 overflow-auto p-4 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-300 sticky top-0">Vendors</h3>
+            <h3 className="text-sm font-semibold text-pink-300 sticky top-0">Vendors</h3>
             <VendorEditor weddingId={weddingId} />
           </div>
         )}
@@ -99,7 +99,7 @@ export default function PlannerWorkspace({ currentUser }: { currentUser?: any })
       {/* Left Toggle Button - Fixed Position */}
       <button
         onClick={handleLeftSidebarToggle}
-        className="w-6 h-12 flex items-center justify-center hover:bg-slate-600 transition text-white bg-slate-700 fixed top-1/2 -translate-y-1/2 z-50 rounded-r border border-l-0 border-slate-700"
+        className="w-6 h-12 flex items-center justify-center hover:bg-pink-600 transition text-white bg-pink-700 fixed top-1/2 -tranpink-y-1/2 z-50 rounded-r border border-l-0 border-pink-700"
         title={leftSidebarOpen ? 'Hide wedding details' : 'Show wedding details'}
         style={{ left: leftSidebarOpen ? '320px' : '48px' }}
       >
@@ -109,7 +109,7 @@ export default function PlannerWorkspace({ currentUser }: { currentUser?: any })
       {/* Right Toggle Button - Fixed Position */}
       <button
         onClick={handleRightSidebarToggle}
-        className="w-6 h-12 flex items-center justify-center hover:bg-slate-600 transition text-white bg-slate-700 fixed top-1/2 -translate-y-1/2 z-50 rounded-l border border-r-0 border-slate-700"
+        className="w-6 h-12 flex items-center justify-center hover:bg-pink-600 transition text-white bg-pink-700 fixed top-1/2 -tranpink-y-1/2 z-50 rounded-l border border-r-0 border-pink-700"
         title={rightSidebarOpen ? 'Hide vendors' : 'Show vendors'}
         style={{ right: rightSidebarOpen ? '320px' : '48px' }}
       >

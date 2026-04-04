@@ -261,7 +261,7 @@ export default function CreateWeddingForm({ onWeddingCreated }: { onWeddingCreat
         </div>
 
         {error && (
-          <div className="text-sm text-red-400 mt-2">
+          <div className="text-sm text-destructive mt-2">
             {error}
           </div>
         )}

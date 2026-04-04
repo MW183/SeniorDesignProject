@@ -86,24 +86,24 @@ export default function TaskEditor({
   };
 
   const getUrgencyColor = (daysUntil: number) => {
-    if (daysUntil < 0) return 'text-red-500 bg-red-950';
-    if (daysUntil === 0) return 'text-red-400 bg-red-900';
-    if (daysUntil <= 7) return 'text-amber-400 bg-amber-950';
-    return 'text-slate-400 bg-slate-800';
+    if (daysUntil < 0) return 'text-destructive-foreground bg-destructive';
+    if (daysUntil === 0) return 'text-destructive-foreground bg-destructive';
+    if (daysUntil <= 7) return 'text-secondary-foreground bg-secondary';
+    return 'text-muted-foreground bg-card';
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'bg-green-900 text-green-200';
+        return 'bg-primary text-primary-foreground';
       case 'IN_PROGRESS':
-        return 'bg-blue-900 text-blue-200';
+        return 'bg-secondary text-secondary-foreground';
       case 'BLOCKED':
-        return 'bg-red-900 text-red-200';
+        return 'bg-destructive text-destructive-foreground';
       case 'CANCELLED':
-        return 'bg-slate-900 text-slate-200';
+        return 'bg-muted text-muted-foreground';
       default:
-        return 'bg-slate-700 text-slate-200';
+        return 'bg-card text-card-foreground';
     }
   };
 
@@ -317,7 +317,7 @@ export default function TaskEditor({
   const tasksToShow = showCompleted ? tasks : tasks.filter(t => t.currentStatus !== 'COMPLETED' && t.currentStatus !== 'CANCELLED');
 
   return (
-    <div className="bg-slate-900 divide-y divide-slate-800">
+    <div className="bg-background divide-y divide-border">
       {error && <div className="px-4 py-2 bg-red-900 border-b border-red-700 text-red-200 text-sm">{error}</div>}
 
       {/* Create New Task Button */}
@@ -326,7 +326,7 @@ export default function TaskEditor({
           <button
             type="button"
             onClick={() => setCreatingNewTask(true)}
-            className="px-3 py-1 bg-blue-700 hover:bg-blue-600 rounded text-white text-xs"
+            className="px-3 py-1 bg-primary hover:bg-primary/80 rounded primary-foreground text-xs"
           >
             + Add Task
           </button>
@@ -335,18 +335,18 @@ export default function TaskEditor({
 
       {/* Create New Task Form */}
       {creatingNewTask && (
-        <div className="px-4 py-3 bg-slate-800 border-b border-slate-700">
-          <h4 className="text-sm font-medium text-white mb-3">Create New Task in {categoryName}</h4>
+        <div className="px-4 py-3 bg-card border-b border-border">
+          <h4 className="text-sm font-medium bg-primary-foreground mb-3">Create New Task in {categoryName}</h4>
           <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
             {/* Name */}
             <div>
-              <label className="text-xs text-slate-400 block mb-1">Task Name*</label>
+              <label className="text-xs bg-primary-foreground block mb-1">Task Name*</label>
               <input
                 type="text"
                 value={newTaskData.name}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTaskData({ ...newTaskData, name: e.target.value })}
                 placeholder="Enter task name"
-                className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm placeholder-slate-500"
+                className="w-full px-2 py-1 bg-input border border-border rounded text-foreground text-sm placeholder-muted-foreground"
               />
             </div>
 
@@ -357,7 +357,7 @@ export default function TaskEditor({
                 value={newTaskData.description}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setNewTaskData({ ...newTaskData, description: e.target.value })}
                 placeholder="Enter task description (optional)"
-                className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs placeholder-slate-500"
+                className="w-full px-2 py-1 bg-primary-foreground border rounded text-xs"
                 rows={2}
               />
             </div>
@@ -369,7 +369,7 @@ export default function TaskEditor({
                 <select
                   value={newTaskData.priority}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNewTaskData({ ...newTaskData, priority: parseInt(e.target.value) })}
-                  className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
+                  className="w-full px-2 py-1 bg-primary-foreground border rounded text-xs"
                 >
                   <option value="0">NORMAL</option>
                   <option value="1">URGENT</option>
@@ -382,7 +382,7 @@ export default function TaskEditor({
                   type="date"
                   value={newTaskData.dueDate}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTaskData({ ...newTaskData, dueDate: e.target.value })}
-                  className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
+                  className="w-full px-2 py-1 bg-primary-foreground border rounded text-xs"
                 />
               </div>
             </div>
@@ -394,9 +394,9 @@ export default function TaskEditor({
                 id="new-couple-assign"
                 checked={newTaskData.assignToCouple}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTaskData({ ...newTaskData, assignToCouple: e.target.checked })}
-                className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500 cursor-pointer"
+                className="w-4 h-4 rounded bg-primary-foreground text-blue-500 focus:ring-blue-500 cursor-pointer"
               />
-              <label htmlFor="new-couple-assign" className="text-xs text-slate-300 cursor-pointer">
+              <label htmlFor="new-couple-assign" className="text-xs text-foreground cursor-pointer">
                 Assign to couple
               </label>
             </div>
@@ -408,7 +408,7 @@ export default function TaskEditor({
                 value={newTaskData.notes}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setNewTaskData({ ...newTaskData, notes: e.target.value })}
                 placeholder="Add notes (optional)"
-                className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs placeholder-slate-500"
+                className="w-full px-2 py-1 bg-primary-foreground border rounded text-xs placeholder-slate-500"
                 rows={2}
               />
             </div>
@@ -429,7 +429,7 @@ export default function TaskEditor({
                     notes: ''
                   });
                 }}
-                className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white text-xs"
+                className="px-3 py-1 bg-primary-foreground h rounded text-xs"
               >
                 Cancel
               </button>
@@ -440,7 +440,7 @@ export default function TaskEditor({
                   createNewTask();
                 }}
                 disabled={savingTaskId === 'new'}
-                className="px-3 py-1 bg-green-700 hover:bg-green-600 rounded text-white text-xs disabled:opacity-50"
+                className="px-3 py-1 bg-green-700 hover:bg-green-600 rounded text-xs disabled:opacity-50"
               >
                 {savingTaskId === 'new' ? 'Creating...' : 'Create Task'}
               </button>
@@ -472,7 +472,7 @@ export default function TaskEditor({
                     type="text"
                     value={editingTask.name}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditingTask({ ...editingTask, name: e.target.value })}
-                    className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm"
+                    className="w-full px-2 py-1 bg-primary-foreground border rounded text-sm"
                   />
                 </div>
 
@@ -483,7 +483,7 @@ export default function TaskEditor({
                     <select
                       value={editingTask.currentStatus}
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEditingTask({ ...editingTask, currentStatus: e.target.value })}
-                      className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
+                      className="w-full px-2 py-1 bg-primary-foreground border rounded text-xs"
                     >
                       <option value="PENDING">PENDING</option>
                       <option value="IN_PROGRESS">IN_PROGRESS</option>
@@ -497,7 +497,7 @@ export default function TaskEditor({
                     <select
                       value={editingTask.priority}
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEditingTask({ ...editingTask, priority: parseInt(e.target.value) })}
-                      className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
+                      className="w-full px-2 py-1 bg-primary-foreground border rounded text-xs"
                     >
                       <option value="0">NORMAL</option>
                       <option value="1">URGENT</option>
@@ -514,7 +514,7 @@ export default function TaskEditor({
                       type="date"
                       value={editingTask.dueDate.split('T')[0]}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditingTask({ ...editingTask, dueDate: e.target.value })}
-                      className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs"
+                      className="w-full px-2 py-1 bg-primary-foreground border rounded text-xs"
                     />
                   </div>
                   <div className="flex items-center gap-2 pb-1">
@@ -523,9 +523,9 @@ export default function TaskEditor({
                       id={`couple-${editingTask.id}`}
                       checked={editingTask.assignToCouple}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditingTask({ ...editingTask, assignToCouple: e.target.checked })}
-                      className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500 cursor-pointer"
+                      className="w-4 h-4 rounded bg-primary-foreground text-blue-500 focus:ring-blue-500 cursor-pointer"
                     />
-                    <label htmlFor={`couple-${editingTask.id}`} className="text-xs text-slate-300 cursor-pointer">
+                    <label htmlFor={`couple-${editingTask.id}`} className="text-xs text-foreground cursor-pointer">
                       Assign to couple
                     </label>
                   </div>
@@ -538,7 +538,7 @@ export default function TaskEditor({
                     value={editingTask.notes}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEditingTask({ ...editingTask, notes: e.target.value })}
                     placeholder="Add notes..."
-                    className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-xs placeholder-slate-400"
+                    className="w-full px-2 py-1 bg-primary-foreground border rounded text-xs placeholder-slate-400"
                     rows={2}
                   />
                 </div>
@@ -551,7 +551,7 @@ export default function TaskEditor({
                       e.stopPropagation();
                       setEditingTask(null);
                     }}
-                    className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white text-xs"
+                    className="px-3 py-1 bg-primary-foreground h rounded text-xs"
                   >
                     Cancel
                   </button>
@@ -562,7 +562,7 @@ export default function TaskEditor({
                       updateTask(task.id);
                     }}
                     disabled={savingTaskId === task.id}
-                    className="px-3 py-1 bg-green-700 hover:bg-green-600 rounded text-white text-xs disabled:opacity-50"
+                    className="px-3 py-1 bg-green-700 hover:bg-green-600 rounded text-xs disabled:opacity-50"
                   >
                     {savingTaskId === task.id ? 'Saving...' : 'Save'}
                   </button>
@@ -573,7 +573,7 @@ export default function TaskEditor({
               <div onClick={() => startEditingTask(task)}>
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="flex-1">
-                    <h4 className="font-medium text-white wrap-break-word">{task.name}</h4>
+                    <h4 className="font-medium wrap-break-word">{task.name}</h4>
                     {task.description && (
                       <p className="text-xs text-slate-400 mt-1 wrap-break-word">{task.description}</p>
                     )}
@@ -597,7 +597,7 @@ export default function TaskEditor({
                   <span className={`text-xs px-2 py-1 rounded ${getStatusColor(task.currentStatus)}`}>
                     {task.currentStatus}
                   </span>
-                  <span className="text-xs px-2 py-1 rounded bg-slate-700 text-slate-200">
+                  <span className="text-xs px-2 py-1 rounded bg-primary-foreground text-slate-200">
                     {getPriorityLabel(task.priority)}
                   </span>
                   <span className={`text-xs px-2 py-1 rounded ${getUrgencyColor(daysUntil)}`}>

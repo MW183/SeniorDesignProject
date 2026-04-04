@@ -93,7 +93,7 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
     <div className="max-w-5xl mx-auto mt-8">
       <Card className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">Manage Weddings</h2>
-        <p className="text-slate-400">View all weddings and manage planner assignments</p>
+        <p className="text-black">View all weddings and manage planner assignments</p>
       </Card>
 
       {error && <Card className="mb-6 border border-red-700 bg-red-950"><p className="text-red-300">{error}</p></Card>}
@@ -109,11 +109,11 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
       </Card>
 
       {loading ? (
-        <Card><p className="text-slate-400">Loading weddings...</p></Card>
+        <Card><p className="text-pink-400">Loading weddings...</p></Card>
       ) : filteredWeddings.length === 0 && weddings.length > 0 ? (
-        <Card><p className="text-slate-400">No weddings match your search.</p></Card>
+        <Card><p className="text-pink-400">No weddings match your search.</p></Card>
       ) : weddings.length === 0 ? (
-        <Card><p className="text-slate-400">No weddings found.</p></Card>
+        <Card><p className="text-pink-400">No weddings found.</p></Card>
       ) : (
         <div className="space-y-3">
           {filteredWeddings.map((wedding) => {
@@ -128,19 +128,19 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-white">{getWeddingName(wedding)}</h3>
-                      <div className="text-sm text-slate-400 mt-1">
+                      <h3 className="text-lg font-semibold text-black">{getWeddingName(wedding)}</h3>
+                      <div className="text-sm text-black mt-1">
                         <div>{formatDate(wedding.date)}</div>
                         <div className="text-xs mt-1">
                           {daysUntil < 0 ? `${Math.abs(daysUntil)} days ago` : `${daysUntil} days away`}
                         </div>
                       </div>
                       {wedding.planners && wedding.planners.length > 0 && (
-                        <div className="mt-2 text-sm text-slate-300">
+                        <div className="mt-2 text-sm text-black">
                           <span className="font-medium">Assigned Planners:</span>
                           <div className="mt-1 flex flex-wrap gap-2">
                             {wedding.planners.map((p) => (
-                              <span key={p.planner.id} className="bg-slate-700 px-2 py-1 rounded text-xs">
+                              <span key={p.planner.id} className="bg-primary-foreground px-2 py-1 rounded text-xs">
                                 {p.planner.name}
                               </span>
                             ))}
@@ -148,13 +148,13 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         </div>
                       )}
                     </div>
-                    <div className="text-slate-500 text-xs pt-1">
+                    <div className="text-pink-500 text-xs pt-1">
                     </div>
                   </div>
                 </button>
 
                 {isExpanded && (
-                  <div className="mt-4 pt-4 border-t border-slate-700 space-y-0">
+                  <div className="mt-4 pt-4 border-t border-pink-700 space-y-0">
                     {/* Couple Members Section */}
                     <Collapsible
                       open={editingCouplemembersWeddingId === wedding.id}
@@ -162,18 +162,18 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         setEditingCouplemembersWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
                         Couple Members
                       </CollapsibleTrigger>
-                      <div className="bg-slate-800 border border-slate-700 rounded p-3 text-sm space-y-1 mb-2">
+                      <div className="bg-pink-800 border border-pink-700 rounded p-3 text-sm space-y-1 mb-2">
                         <div>
-                          <span className="text-slate-400">Member 1: </span>
+                          <span className="text-pink-400">Member 1: </span>
                           <span className="font-medium text-white">
                             {wedding.spouse1?.name || 'Not set'}
                           </span>
                         </div>
                         <div>
-                          <span className="text-slate-400">Member 2: </span>
+                          <span className="text-pink-400">Member 2: </span>
                           <span className="font-medium text-white">
                             {wedding.spouse2?.name || 'Not set'}
                           </span>
@@ -197,18 +197,18 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         setEditingVenueWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
                         Venue
                       </CollapsibleTrigger>
                       {wedding.location ? (
-                        <div className="bg-slate-800 border border-slate-700 rounded p-3 text-sm space-y-1 mb-2">
+                        <div className="bg-pink-800 border border-pink-700 rounded p-3 text-sm space-y-1 mb-2">
                           <p className="font-medium text-white">{wedding.location.street}</p>
-                          <p className="text-slate-400">
+                          <p className="text-pink-400">
                             {wedding.location.city}, {wedding.location.state} {wedding.location.zip}
                           </p>
                         </div>
                       ) : (
-                        <div className="text-sm text-slate-500 mb-2">No venue set</div>
+                        <div className="text-sm text-pink-500 mb-2">No venue set</div>
                       )}
                       <CollapsibleContent>
                         <VenueEditor
@@ -228,10 +228,10 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         setEditingVendorsWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
                         Vendors
                       </CollapsibleTrigger>
-                      <div className="text-sm text-slate-500 mb-2">Manage vendors for this wedding</div>
+                      <div className="text-sm text-pink-500 mb-2">Manage vendors for this wedding</div>
                       <CollapsibleContent>
                         <VendorEditor
                           weddingId={wedding.id}
@@ -250,20 +250,20 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         setExpandedPlannersWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-slate-200 transition-colors">
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 hover:text-pink-200 transition-colors">
                         Assign Planners
                       </CollapsibleTrigger>
                       {wedding.planners && wedding.planners.length > 0 ? (
-                        <div className="bg-slate-800 border border-slate-700 rounded p-3 text-sm space-y-1 mb-2">
+                        <div className="bg-pink-800 border border-pink-700 rounded p-3 text-sm space-y-1 mb-2">
                           {wedding.planners.map((p) => (
                             <div key={p.planner.id} className="flex items-center justify-between">
                               <span className="text-white font-medium">{p.planner.name}</span>
-                              <span className="text-xs text-slate-400">{p.planner.email}</span>
+                              <span className="text-xs text-pink-400">{p.planner.email}</span>
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <div className="text-sm text-slate-500 mb-2">No planners assigned</div>
+                        <div className="text-sm text-pink-500 mb-2">No planners assigned</div>
                       )}
                       <CollapsibleContent>
                         <PlannerAssignment

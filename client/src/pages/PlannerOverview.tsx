@@ -99,7 +99,7 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
       render: (stat: PlannerStats) => (
         <>
           <div className="font-medium">{stat.planner.name}</div>
-          <div className="text-sm text-slate-400">{stat.planner.email}</div>
+          <div className="text-sm text-secondary-foreground">{stat.planner.email}</div>
         </>
       )
     },
@@ -113,7 +113,7 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
       label: 'Pending', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
-        <span className="text-yellow-400">{stat.pending}</span>
+        <span className="text-secondary-foreground">{stat.pending}</span>
       )
     },
     { 
@@ -121,7 +121,7 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
       label: 'In Progress', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
-        <span className="text-blue-400">{stat.inProgress}</span>
+        <span className="text-secondary-foreground">{stat.inProgress}</span>
       )
     },
     { 
@@ -129,7 +129,7 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
       label: 'Completed', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
-        <span className="text-green-400">{stat.completed}</span>
+        <span className="text-primary-foreground">{stat.completed}</span>
       )
     },
     { 
@@ -137,7 +137,7 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
       label: 'Blocked', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
-        <span className="text-red-400">{stat.blocked}</span>
+        <span className="text-destructive-foreground">{stat.blocked}</span>
       )
     },
     { 
@@ -145,7 +145,7 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
       label: 'Cancelled', 
       className: 'text-center pb-2 w-[100px]',
       render: (stat: PlannerStats) => (
-        <span className="text-gray-400">{stat.cancelled}</span>
+        <span className="text-muted-foreground">{stat.cancelled}</span>
       )
     },
   ];
@@ -155,7 +155,7 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
       <Card>
         <div className="flex items-baseline justify-between gap-4 mb-4">
           <h2 className="text-2xl font-semibold m-0">Planner Overview</h2>
-          <p className="m-0 text-sm text-slate-400">Task distribution across planners</p>
+          <p className="m-0 text-sm text-pink-400">Task distribution across planners</p>
         </div>
         <Input
           type="text"
@@ -167,9 +167,9 @@ export default function PlannerOverview({ currentUser }: { currentUser?: any }) 
         {loading ? (
           <p>Loading...</p>
         ) : filteredStats.length === 0 && stats.length > 0 ? (
-          <p className="text-slate-400 mt-4">No planners match your search.</p>
+          <p className="text-pink-400 mt-4">No planners match your search.</p>
         ) : stats.length === 0 ? (
-          <p className="text-slate-400 mt-4">No planners found.</p>
+          <p className="text-pink-400 mt-4">No planners found.</p>
         ) : (
           <div className="mt-4">
             <Table columns={columns} data={filteredStats} />

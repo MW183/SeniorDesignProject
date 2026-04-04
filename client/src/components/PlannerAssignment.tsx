@@ -135,7 +135,7 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
       <h4 className="text-lg font-semibold mb-4">Assign Planners</h4>
 
       <div className="mb-6">
-        <h5 className="text-sm font-medium text-slate-300 mb-3">Currently Assigned</h5>
+        <h5 className="text-sm font-medium text-foreground mb-3">Currently Assigned</h5>
         {planners.length === 0 ? (
           <p className="text-xs text-slate-400">No planners assigned yet</p>
         ) : (
@@ -143,7 +143,7 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
             {planners.map(planner => (
               <div
                 key={planner.id}
-                className="flex items-center justify-between bg-slate-800 border border-slate-700 rounded p-3"
+                className="flex items-center justify-between bg-card border border-border rounded p-3"
               >
                 <div>
                   <p className="font-medium text-white">{planner.name}</p>
@@ -151,7 +151,7 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
                 </div>
                 <button
                   onClick={() => handleRemovePlanner(planner.id)}
-                  className="text-xs text-red-400 hover:text-red-300 underline"
+                  className="text-xs text-destructive hover:text-destructive/80 underline"
                 >
                   Remove
                 </button>
@@ -161,8 +161,8 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
         )}
       </div>
 
-      <div className="border-t border-slate-700 pt-4">
-        <h5 className="text-sm font-medium text-slate-300 mb-3">Add Planner</h5>
+      <div className="border-t border-border pt-4">
+        <h5 className="text-sm font-medium text-foreground mb-3">Add Planner</h5>
 
         <div className="space-y-3">
           <FormField label="Search Planners" id="planner-search">
@@ -176,7 +176,7 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
           </FormField>
 
           {searchTerm && (
-            <div className="border border-slate-600 rounded bg-slate-800 max-h-48 overflow-y-auto">
+            <div className="border border-border rounded bg-card max-h-48 overflow-y-auto">
               {filteredPlanners.length === 0 ? (
                 <p className="text-xs text-slate-400 p-3">No planners found</p>
               ) : (
@@ -191,10 +191,10 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
                         setSelectedPlannerId(planner.id);
                         setSearchTerm('');
                       }}
-                      className={`w-full text-left px-3 py-2 border-b border-slate-700 last:border-b-0 ${
+                      className={`w-full text-left px-3 py-2 border-b border-border last:border-b-0 ${
                         isAssigned
-                          ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-                          : 'hover:bg-slate-700 text-white'
+                          ? 'bg-card/50 text-muted-foreground cursor-not-allowed'
+                          : 'hover:bg-card text-foreground'
                       }`}
                     >
                       <div className="font-medium">{planner.name}</div>
@@ -212,7 +212,7 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
           {selectedPlannerId && (
             <div>
               <p className="text-xs text-slate-400 mb-2">Selected:</p>
-              <div className="bg-slate-800 border border-slate-600 rounded p-2 mb-3">
+              <div className="bg-card border border-border rounded p-2 mb-3">
                 <p className="text-sm font-medium text-white">
                   {availablePlanners.find(p => p.id === selectedPlannerId)?.name}
                 </p>
@@ -220,7 +220,7 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
             </div>
           )}
 
-          {error && <div className="text-xs text-red-400">{error}</div>}
+          {error && <div className="text-xs text-destructive">{error}</div>}
 
           <div className="flex gap-2">
             <Button
@@ -236,7 +236,7 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
                   setSelectedPlannerId('');
                   setSearchTerm('');
                 }}
-                className="px-3 py-2 text-sm text-slate-400 hover:text-slate-300"
+                className="px-3 py-2 text-sm text-muted-foreground hover:text-muted-foreground/80"
               >
                 Cancel
               </button>
