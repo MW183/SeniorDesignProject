@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
   // Development: Allow local + curl/Postman requests
   corsOptions.origin = function (origin, callback) {
     const devOrigins = [
-      'http://localhost:5173',
+      'http://localhost:5174',
       'http://localhost:3000',
       'http://localhost:3001',
       process.env.CORS_ORIGIN
