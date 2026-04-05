@@ -36,7 +36,7 @@ export default function Header({ currentUser, onLogout }: { currentUser?: any, o
             ) : isAdmin || isSupport ? (
               <>
                 <Link to="/planners" className="text-foreground bg-primary px-2 py-1 rounded-lg hover:bg-primary/80">Dashboard</Link>
-                <Link to="/manage-weddings" className="text-foreground bg-primary px-2 py-1 rounded-lg hover:bg-primary/80">Manage Weddings</Link>
+                {/*<Link to="/manage-weddings" className="text-foreground bg-primary px-2 py-1 rounded-lg hover:bg-primary/80">Manage Weddings</Link> deprecated */} 
                 <Link to="/manage-planners" className="text-foreground bg-primary px-2 py-1 rounded-lg hover:bg-primary/80">Manage Planners</Link>
                 <Link to="/manage-vendors" className="text-foreground bg-primary px-2 py-1 rounded-lg hover:bg-primary/80">Manage Vendors</Link>
                 <button className="logout-btn text-foreground bg-primary px-2 py-1 rounded-lg hover:bg-primary/80" onClick={() => { onLogout?.(); navigate('/login'); }}>Logout</button>

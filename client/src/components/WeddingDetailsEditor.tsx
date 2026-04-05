@@ -6,6 +6,8 @@ import {Input} from './ui/input';
 import FormField from './ui/formField';
 import AddressSelector from './AddressSelector';
 import PlannerAssignment from './PlannerAssignment';
+import CouplemembersEditor from './CouplemembersEditor';
+import VendorEditor from './VendorEditor';
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from './ui/collapsible';
 import ConfirmDialog from './ConfirmDialog';
 import { ChevronDown, Loader } from 'lucide-react';
@@ -53,9 +55,13 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
   const [error, setError] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Address | null>(null);
   const [weddingDate, setWeddingDate] = useState<string>('');
+  const [weddingTime, setWeddingTime] = useState<string>('12:00');
   const [locationOpen, setLocationOpen] = useState(false);
   const [showDateConfirm, setShowDateConfirm] = useState(false);
   const [pendingUpdates, setPendingUpdates] = useState<any>(null);
+  const [editingCouplemembersOpen, setEditingCouplemembersOpen] = useState(false);
+  const [editingVendorsOpen, setEditingVendorsOpen] = useState(false);
+  const [expandedPlannersOpen, setExpandedPlannersOpen] = useState(false);
 
   useEffect(() => {
     fetchWeddingDetails();
@@ -68,10 +74,17 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
       if (res.ok) {
         setWedding(res.body);
         setSelectedLocation(res.body.location || null);
-        // Format date as YYYY-MM-DD for input field
-        const date = new Date(res.body.date);
-        const dateStr = date.toISOString().split('T')[0];
+        // Format date as YYYY-MM-DD for input field (extract from ISO string safely)
+        const dateStr = res.body.date.split('T')[0];
         setWeddingDate(dateStr);
+        
+        // Extract time from ISO string (e.g., "2027-04-07T14:30:00.000Z" -> "14:30")
+        const timeMatch = res.body.date.match(/T(\d{2}):(\d{2}):/);
+        if (timeMatch) {
+          setWeddingTime(`${timeMatch[1]}:${timeMatch[2]}`);
+        } else {
+          setWeddingTime('12:00');
+        }
       } else {
         setError('Failed to load wedding details');
       }
@@ -89,12 +102,19 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
 
     const updates: any = {};
     
-    // Check for date changes
-    const currentDateStr = new Date(wedding.date).toISOString().split('T')[0];
+    // Check for date/time changes
+    const currentDateStr = wedding.date.split('T')[0];
     const dateHasChanged = weddingDate && weddingDate !== currentDateStr;
     
-    if (dateHasChanged) {
-      updates.date = new Date(weddingDate).toISOString();
+    // Extract current time from ISO string
+    const currentTimeMatch = wedding.date.match(/T(\d{2}):(\d{2}):/);
+    const currentTime = currentTimeMatch ? `${currentTimeMatch[1]}:${currentTimeMatch[2]}` : '12:00';
+    const timeHasChanged = weddingTime !== currentTime;
+    
+    if (dateHasChanged || timeHasChanged) {
+      // Combine date and time into ISO format
+      const [hours, minutes] = weddingTime.split(':');
+      updates.date = new Date(`${weddingDate}T${hours}:${minutes}:00Z`).toISOString();
     }
     
     if (selectedLocation?.id && selectedLocation.id !== wedding.locationId) {
@@ -106,14 +126,14 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
       return;
     }
 
-    // If date changed, show confirmation dialog
+    // Only show confirmation dialog if DATE changed (time changes don't recalculate due dates)
     if (dateHasChanged) {
       setPendingUpdates(updates);
       setShowDateConfirm(true);
       return;
     }
 
-    // Otherwise proceed directly with save
+    // Otherwise proceed directly with save (for time-only changes or location changes)
     await performSave(updates);
   };
 
@@ -133,10 +153,16 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
         setWedding(updatedWedding);
         // Update the date state if it was changed
         if (updates.date) {
-          const date = new Date(updates.date);
-          const dateStr = date.toISOString().split('T')[0];
+          const dateStr = updates.date.split('T')[0];
           setWeddingDate(dateStr);
+          
+          // Extract and set time
+          const timeMatch = updates.date.match(/T(\d{2}):(\d{2}):/);
+          if (timeMatch) {
+            setWeddingTime(`${timeMatch[1]}:${timeMatch[2]}`);
+          }
         }
+
         onUpdate?.(updatedWedding);
         setError(null);
         onSaveComplete?.();
@@ -154,10 +180,17 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
     }
   };
 
+
   const hasChanges = () => {
     if (!wedding) return false;
-    const currentDateStr = new Date(wedding.date).toISOString().split('T')[0];
+    const currentDateStr = wedding.date.split('T')[0];
+    
+    // Extract current time from ISO string
+    const currentTimeMatch = wedding.date.match(/T(\d{2}):(\d{2}):/);
+    const currentTime = currentTimeMatch ? `${currentTimeMatch[1]}:${currentTimeMatch[2]}` : '12:00';
+    
     return weddingDate !== currentDateStr ||
+           weddingTime !== currentTime ||
            selectedLocation?.id !== wedding.locationId;
   };
 
@@ -169,7 +202,7 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
     return <Card><p className="text-destructive">Wedding not found</p></Card>;
   }
 
-  const dateHasChanged = weddingDate !== new Date(wedding.date).toISOString().split('T')[0];
+  const dateHasChanged = weddingDate !== wedding.date.split('T')[0];
   const locationDisplay = selectedLocation 
     ? `${selectedLocation.street} ${selectedLocation.city}, ${selectedLocation.state}` 
     : 'Set location';
@@ -184,7 +217,7 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
   })();
 
   return (
-    <div className="space-y-4 relative">
+    <div className="space-y-4 relative w-full min-w-0">
       {/* Loading Spinner Overlay */}
       {updating && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 rounded">
@@ -209,13 +242,25 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
         </FormField>
       </div>
 
+      {/* Wedding Time */}
+      <div>
+        <FormField label="Wedding Time" id="wedding-time">
+          <Input
+            id="wedding-time"
+            type="time"
+            value={weddingTime}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWeddingTime(e.target.value)}
+          />
+        </FormField>
+      </div>
+
       {/* Location - Collapsible */}
       <Collapsible open={locationOpen} onOpenChange={setLocationOpen}>
         <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-foreground/80 w-full">
           <ChevronDown className={`h-4 w-4 transition-transform ${locationOpen ? 'rotate-180' : ''}`} />
           <span>{locationDisplay}</span>
         </CollapsibleTrigger>
-        <CollapsibleContent className="mt-2 pl-0">
+        <CollapsibleContent className="mt-2 pl-0 w-full min-w-0">
           {selectedLocation ? (
             <div className="bg-card border border-border rounded p-3 mb-2">
               <p className="font-medium text-card-foreground text-sm">
@@ -259,10 +304,92 @@ export default function WeddingDetailsEditor({ weddingId, onUpdate, currentUser,
       >
         {updating ? 'Saving...' : 'Save'}
       </Button>
+      
 
       {!showOnlyLocation && currentUser?.role === 'ADMIN' && (
-        <div className="pt-4 border-t border-border">
-          <PlannerAssignment weddingId={weddingId} onAssignmentChanged={() => onUpdate?.(wedding!)} />
+        <div className="pt-4 space-y-4 border-t border-border w-full min-w-0">
+          {/* Couple Members Section */}
+          <Collapsible
+            open={editingCouplemembersOpen}
+            onOpenChange={setEditingCouplemembersOpen}
+          >
+            <CollapsibleTrigger className="w-full text-left font-semibold py-2 text-foreground hover:text-foreground transition-colors flex items-center gap-2">
+              <ChevronDown className={`h-4 w-4 transition-transform ${editingCouplemembersOpen ? 'rotate-180' : ''}`} />
+              <span>Couple Members</span>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 w-full min-w-0">
+{/*               <div className="bg-card border rounded p-3 mb-2">
+                <div className="space-y-1 mb-3">
+                  <div>
+                    <span className="text-xs muted-foreground">Member 1: </span>
+                    <span className="font-medium text-foreground text-sm">
+                      {wedding?.spouse1?.name || 'Not set'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-xs muted-foreground">Member 2: </span>
+                    <span className="font-medium text-foreground text-sm">
+                      {wedding?.spouse2?.name || 'Not set'}
+                    </span>
+                  </div>
+                </div>
+              </div> */}
+              <CouplemembersEditor
+                weddingId={weddingId}
+                onUpdate={() => {
+                  fetchWeddingDetails();
+                  onUpdate?.(wedding!);
+                }}
+                onSaveComplete={() => setEditingCouplemembersOpen(false)}
+              />
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Vendors Section */}
+          <Collapsible
+            open={editingVendorsOpen}
+            onOpenChange={setEditingVendorsOpen}
+          >
+            <CollapsibleTrigger className="w-full text-left font-semibold py-2 text-foreground hover:text-foreground transition-colors flex items-center gap-2">
+              <ChevronDown className={`h-4 w-4 transition-transform ${editingVendorsOpen ? 'rotate-180' : ''}`} />
+              <span>Vendors</span>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 w-full min-w-0">
+              <div className="bg-card border rounded p-3 mb-2 text-sm text-foreground">
+                Manage vendors for this wedding
+              </div>
+              <VendorEditor
+                weddingId={weddingId}
+                onUpdate={() => {
+                  fetchWeddingDetails();
+                  onUpdate?.(wedding!);
+                }}
+                onSaveComplete={() => setEditingVendorsOpen(false)}
+              />
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Planners Section */}
+          <Collapsible
+            open={expandedPlannersOpen}
+            onOpenChange={setExpandedPlannersOpen}
+          >
+            <CollapsibleTrigger className="w-full text-left font-semibold py-2 text-foreground hover:text-foreground transition-colors flex items-center gap-2">
+              <ChevronDown className={`h-4 w-4 transition-transform ${expandedPlannersOpen ? 'rotate-180' : ''}`} />
+              <span>Assign Planners</span>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 w-full min-w-0">
+              <div className="w-full min-w-0 overflow-x-auto">
+                <PlannerAssignment 
+                  weddingId={weddingId} 
+                  onAssignmentChanged={() => {
+                    fetchWeddingDetails();
+                    onUpdate?.(wedding!);
+                  }} 
+                />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
       )}
 

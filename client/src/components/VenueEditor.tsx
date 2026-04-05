@@ -141,7 +141,7 @@ export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: Ven
           </Button>
         )}
         {!hasChanges() && selectedAddress && (
-          <span className="text-xs text-muted-foreground flex items-center">✓ Venue set</span>
+          <span className="text-xs text-muted-foreground flex items-center">Venue set</span>
         )}
       </div>
     </div>

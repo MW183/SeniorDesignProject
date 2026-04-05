@@ -143,10 +143,8 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
 
   return (
     <Card>
-      <h4 className="text-lg font-semibold mb-4">Assign Planners</h4>
-            <div>
-        <h5 className="text-sm font-medium text-foreground mb-3">Add Planner</h5>
-        <div className="space-y-3">
+      {/* <h4 className="text-lg font-semibold mb-4">Assign Planners</h4> */}
+        <div>
           <FormField label="Search Planners" id="planner-search">
             <Input
               id="planner-search"
@@ -180,9 +178,9 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
                       }`}
                     >
                       <div className="font-medium">{planner.name}</div>
-                      <div className="text-xs text-slate-400">{planner.email}</div>
+                      <div className="text-xs text-foreground">{planner.email}</div>
                       {isAssigned && (
-                        <div className="text-xs text-slate-500 mt-1"> Already assigned</div>
+                        <div className="text-xs text-foreground mt-1"> Already assigned</div>
                       )}
                     </button>
                   );
@@ -227,7 +225,6 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
             )}
           </div>
         </div>
-      </div>
       <div className="mb-6">
         <h5 className="text-sm font-medium text-foreground mb-3">Currently Assigned</h5>
         {planners.length === 0 ? (

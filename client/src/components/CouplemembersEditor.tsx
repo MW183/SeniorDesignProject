@@ -174,7 +174,7 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
 
       {error && <div className="text-sm text-destructive mt-4">{error}</div>}
 
-      <div className="flex gap-2 mt-3">
+      <div className="flex gap-2">
         {hasChanges() && (
           <Button
             onClick={handleSaveDetails}
@@ -182,9 +182,6 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
           >
             {updating ? 'Saving...' : 'Save'}
           </Button>
-        )}
-        {!hasChanges() && selectedSpouse1 && selectedSpouse2 && (
-          <span className="text-xs text-muted-foreground flex items-center\"> Couple members set</span>
         )}
       </div>
     </div>

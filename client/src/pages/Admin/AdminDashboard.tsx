@@ -5,8 +5,29 @@ import { Button } from '../../components/ui';
 import { Input } from '../../components/ui';
 import { Popover, PopoverContent, PopoverTrigger } from '../../components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '../../components/ui/command';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../../components/ui';
 import Table from '../../components/ui/table';
+import WeddingDetailsEditor from '../../components/WeddingDetailsEditor';
 import { api } from '../../lib/api';
+
+type Task = {
+  id: string;
+  name: string;
+  description?: string;
+  currentStatus: string;
+  priority: number;
+  dueDate: string;
+  notes?: string;
+  category?: {
+    id: string;
+    name: string;
+  };
+  assignedTo?: {
+    id: string;
+    name: string;
+    email: string;
+  };
+};
 
 
 type PlannerStats = {
@@ -49,6 +70,9 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedWeddingId, setExpandedWeddingId] = useState<string | null>(null);
+  const [blockedTasks, setBlockedTasks] = useState<Map<string, Task[]>>(new Map());
+  const [loadingBlockedTasks, setLoadingBlockedTasks] = useState<Set<string>>(new Set());
 
   const filteredStats = stats.filter(stat =>
     stat.planner.name.toLowerCase().includes(SearchTerm.toLowerCase()) ||
@@ -173,13 +197,31 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
 
       setStats(Array.from(plannerMap.values()));
       setWeddingStats(Array.from(weddingMap.values()).sort((a, b) => 
-        new Date(b.wedding.date).getTime() - new Date(a.wedding.date).getTime()
+        new Date(b.wedding.date.split('T')[0] + 'T00:00:00Z').getTime() - new Date(a.wedding.date.split('T')[0] + 'T00:00:00Z').getTime()
       ));
     } catch (err) {
       setError('Failed to load statistics');
       console.error('Error loading stats:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadBlockedTasks = async (weddingId: string) => {
+    try {
+      setLoadingBlockedTasks(prev => new Set(prev).add(weddingId));
+      const res = await api(`/tasks?weddingId=${weddingId}&status=BLOCKED`);
+      if (res.ok && Array.isArray(res.body)) {
+        setBlockedTasks(prev => new Map(prev).set(weddingId, res.body));
+      }
+    } catch (err) {
+      console.error('Failed to load blocked tasks:', err);
+    } finally {
+      setLoadingBlockedTasks(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(weddingId);
+        return newSet;
+      });
     }
   };
 
@@ -253,7 +295,7 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
           className="text-left hover:opacity-70 transition"
         >
           <div className="font-medium text-foreground hover:underline cursor-pointer">{stat.wedding.spouse1Name} & {stat.wedding.spouse2Name}</div>
-          <div className="text-sm text-foreground">{new Date(stat.wedding.date).toLocaleDateString()}</div>
+          <div className="text-sm text-foreground">{(() => { const [year, month, day] = stat.wedding.date.split('T')[0].split('-'); return `${month}/${day}/${year}`; })()}</div>
         </button>
       )
     },
@@ -341,13 +383,139 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
           ) : weddingStats.length === 0 ? (
             <p className="secondary-foreground">No weddings found.</p>
           ) : (
-            <Table 
-              columns={weddingColumns} 
-              data={weddingStats.map(stat => ({
-                ...stat,
-                id: stat.wedding.id
-              }))}
-            />
+            <div className="space-y-3">
+              {weddingStats.map((stat) => {
+                const isExpanded = expandedWeddingId === stat.wedding.id;
+
+                return (
+                  <div key={stat.wedding.id} className="border rounded-lg overflow-hidden">
+                    {/* Header - Planner Stats (visible when collapsed) */}
+                    {!isExpanded && (
+                      <div className="p-4 hover:bg-accent/30 transition">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 text-left">
+                            <h4 className="font-medium text-foreground text-lg">{stat.wedding.spouse1Name} & {stat.wedding.spouse2Name}</h4>
+                            <p className="text-sm text-muted-foreground mt-1">{(() => { const [year, month, day] = stat.wedding.date.split('T')[0].split('-'); return `${month}/${day}/${year}`; })()}</p>
+                            {stat.planner && (
+                              <p className="text-sm text-muted-foreground mt-1">Planner: <span className="font-medium">{stat.planner.name}</span></p>
+                            )}
+                          </div>
+                          <div className="flex gap-4 text-sm">
+                            <div className="text-center">
+                              <div className="font-medium text-foreground">{stat.pending}</div>
+                              <div className="text-xs text-muted-foreground">Pending</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-medium text-foreground">{stat.inProgress}</div>
+                              <div className="text-xs text-muted-foreground">In Progress</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-medium text-foreground">{stat.completed}</div>
+                              <div className="text-xs text-muted-foreground">Completed</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-medium text-destructive-foreground">{stat.blocked}</div>
+                              <div className="text-xs text-muted-foreground">Blocked</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-medium text-muted-foreground">{stat.cancelled}</div>
+                              <div className="text-xs text-muted-foreground">Cancelled</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Two-Part Collapsible Container */}
+                    <div className="flex border-t">
+                      {/* LEFT: Wedding Details Editor */}
+                      <Collapsible
+                        open={isExpanded}
+                        onOpenChange={(isOpen) => setExpandedWeddingId(isOpen ? stat.wedding.id : null)}
+                        className="flex-1 w-1/2"
+                      >
+                        <CollapsibleTrigger className="w-full p-4 text-left hover:bg-accent/30 transition border-r">
+                          <div className="font-semibold text-foreground">Wedding Management</div>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="col-span-1">
+                          <div className="p-4 bg-muted/50 border-t border-r">
+                            <WeddingDetailsEditor
+                              weddingId={stat.wedding.id}
+                              currentUser={currentUser}
+                              onUpdate={() => loadStats()}
+                            />
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+
+                      {/* RIGHT: Blocked Tasks */}
+                      <Collapsible
+                        open={isExpanded}
+                        onOpenChange={(isOpen) => {
+                          setExpandedWeddingId(isOpen ? stat.wedding.id : null);
+                          if (isOpen) {
+                            loadBlockedTasks(stat.wedding.id);
+                          }
+                        }}
+                        className="flex-1"
+                      >
+                        <CollapsibleTrigger className="w-full p-4 text-left hover:bg-accent/30 transition">
+                          <div className="font-semibold text-foreground">Blocked Tasks</div>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="col-span-1">
+                          <div className="p-4 bg-muted/50 border-t">
+                            {loadingBlockedTasks.has(stat.wedding.id) ? (
+                              <p className="text-sm text-foreground">Loading blocked tasks...</p>
+                            ) : blockedTasks.get(stat.wedding.id)?.length === 0 ? (
+                              <p className="text-sm text-foreground">No blocked tasks for this wedding</p>
+                            ) : (
+                              <div className="space-y-3">
+                                {blockedTasks.get(stat.wedding.id)?.map((task) => (
+                                  <div key={task.id} className="bg-card border rounded-sm p-3 space-y-2">
+                                    <div className="flex items-start justify-between gap-3">
+                                      <div>
+                                        <h4 className="font-medium text-foreground">{task.name}</h4>
+                                        {task.description && (
+                                          <p className="text-xs text-muted-foreground mt-1">{task.description}</p>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="flex gap-2 flex-wrap">
+                                      <span className="text-xs px-2 py-1 rounded bg-destructive text-destructive-foreground">
+                                        BLOCKED
+                                      </span>
+                                      <span className="text-xs px-2 py-1 rounded bg-secondary text-secondary-foreground">
+                                        Priority: {task.priority === 1 ? 'URGENT' : task.priority === 2 ? 'HIGH' : 'NORMAL'}
+                                      </span>
+                                      {task.category && (
+                                        <span className="text-xs px-2 py-1 rounded bg-background text-foreground">
+                                          {task.category.name}
+                                        </span>
+                                      )}
+                                    </div>
+                                    {task.notes && (
+                                      <p className="text-xs text-muted-foreground italic">{task.notes}</p>
+                                    )}
+                                    {task.assignedTo && (
+                                      <p className="text-xs text-muted-foreground">
+                                        Assigned to: <span className="font-medium">{task.assignedTo.name}</span>
+                                      </p>
+                                    )}
+                                    <p className="text-xs text-muted-foreground">
+                                      Due: {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </CardContent>
       </Card>
