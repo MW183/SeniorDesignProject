@@ -3,8 +3,12 @@ import prisma from '../prismaClient.js';
 import { handlePrismaError, ensureExistsOrRespond } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
+import sgMail from '@sendgrid/mail';
 
 const router = express.Router();
+
+// Set up SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // GET /tasks — filter by status/assigned user/category/wedding and return tasks
 router.get('/', async (req, res) => {
@@ -287,8 +291,18 @@ router.post('/:id/couple', requireAuth, requireRole(['ADMIN', 'SUPPORT', 'USER']
       return res.status(400).json({ error: 'assignedToId is required' });
     }
 
-    // Verify task exists
-    const task = await prisma.task.findUnique({ where: { id } });
+    // Verify task exists and get full details
+    const task = await prisma.task.findUnique({
+      where: { id },
+      include: {
+        category: {
+          select: {
+            name: true,
+            weddingId: true
+          }
+        }
+      }
+    });
     if (!task) return res.status(404).json({ error: 'Task not found' });
 
     // Verify user exists
@@ -322,6 +336,62 @@ router.post('/:id/couple', requireAuth, requireRole(['ADMIN', 'SUPPORT', 'USER']
       }
       throw err;
     });
+
+    // Send email to the assigned client if email is provided
+    if (user.email && user.role === 'CLIENT') {
+      try {
+        // Fetch wedding info for email
+        const wedding = await prisma.wedding.findUnique({
+          where: { id: task.category.weddingId },
+          select: {
+            id: true,
+            date: true,
+            spouse1: { select: { name: true } },
+            spouse2: { select: { name: true } }
+          }
+        });
+
+        const weddingDate = wedding?.date ? new Date(wedding.date).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        }) : 'TBD';
+
+        const coupleNames = [wedding?.spouse1?.name, wedding?.spouse2?.name]
+          .filter(Boolean)
+          .join(' & ') || 'Your Wedding';
+
+        const mailOptions = {
+          to: user.email,
+          from: process.env.SENDGRID_FROM_EMAIL || 'noreply@weddingplanner.com',
+          subject: `Action Required: ${task.name} - ${coupleNames}'s Wedding`,
+          html: `
+            <h2>Action Required for Your Wedding!</h2>
+            <p>Hi ${user.name},</p>
+            <p>Your wedding planner has assigned you a task that needs your input:</p>
+            <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="margin-top: 0;">${task.name}</h3>
+              ${task.description ? `<p><strong>Description:</strong> ${task.description}</p>` : ''}
+              <p><strong>Due Date:</strong> ${new Date(task.dueDate).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}</p>
+              <p><strong>Category:</strong> ${task.category.name}</p>
+              ${task.notes ? `<p><strong>Notes from Planner:</strong> ${task.notes}</p>` : ''}
+            </div>
+            <p>Please log in to your wedding planning portal to complete this task.</p>
+            <p>If you have any questions, please reach out to your wedding planner.</p>
+            <p>Best regards,<br/>Wedding Planning Team</p>
+          `
+        };
+
+        await sgMail.send(mailOptions);
+      } catch (emailErr) {
+        console.error('Failed to send couple task notification email:', emailErr);
+        // Don't fail the API response if email fails, just log it
+      }
+    }
 
     res.status(201).json(coupleTask);
   } catch (err) { handlePrismaError(res, err); }

@@ -65,7 +65,7 @@ const PRIORITY_ENUM = {
  * @param {string} templateId - The ID of the template to use
  * @returns {Promise<Object>} - Summary of created categories and tasks
  */
-async function instantiateWeddingTemplate(weddingId, templateId) {
+async function instantiateWeddingFromTemplate(weddingId, templateId) {
   try {
     // Fetch the wedding and template
     const wedding = await prisma.wedding.findUnique({
@@ -330,7 +330,7 @@ async function createWeddingWithTemplate(weddingData, templateId) {
     });
 
     // Instantiate the template for this wedding
-    const result = await instantiateWeddingTemplate(wedding.id, templateId);
+    const result = await instantiateWeddingFromTemplate(wedding.id, templateId);
 
     return {
       wedding,
@@ -343,7 +343,7 @@ async function createWeddingWithTemplate(weddingData, templateId) {
 }
 
 export {
-  instantiateWeddingTemplate,
+  instantiateWeddingFromTemplate,
   createWeddingWithTemplate,
   calculateDueDate,
   shiftWeekendToFriday,

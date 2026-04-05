@@ -4,7 +4,7 @@ import prisma from '../prismaClient.js';
 import { handlePrismaError, ensureExistsOrRespond, hashPassword, signJwt } from '../utils.js';
 import requireAuth from '../middleware/requireAuth.js';
 import requireRole from '../middleware/requireRole.js';
-import { instantiateWeddingTemplate, calculateDueDate, shiftWeekendToFriday } from '../utils/instantiateWeddingTemplate.js';
+import { instantiateWeddingFromTemplate, calculateDueDate, shiftWeekendToFriday } from '../utils/instantiateWeddingFromTemplate.js';
 import sgMail from '@sendgrid/mail';
 
 const router = express.Router();
@@ -54,9 +54,9 @@ async function createOrGetClientUser(email, name) {
     await sgMail.send({
       to: email,
       from: process.env.SENDGRID_FROM_EMAIL || process.env.SENDER_EMAIL || 'mikeweinstein183@gmail.com',
-      subject: 'Welcome to Wedding Planner - Set Your Password',
+      subject: 'Welcome to Tenamore Planning - Set Your Password',
       html: `
-        <h2>Welcome to Wedding Planner!</h2>
+        <h2>Welcome to Tenamore Planning!</h2>
         <p>Hi ${name},</p>
         <p>Your wedding planning account has been created. Please click the link below to set your password and verify your email:</p>
         <a href="${setPasswordLink}" style="display: inline-block; padding: 10px 20px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0;">
@@ -209,7 +209,7 @@ router.post('/', requireAuth, async (req, res) => {
     // If templateId provided, auto-populate tasks
     if (templateId) {
       try {
-        await instantiateWeddingTemplate(wedding.id, templateId);
+        await instantiateWeddingFromTemplate(wedding.id, templateId);
         // Refetch to include newly created tasks
         const updatedWedding = await prisma.wedding.findUnique({
           where: { id: wedding.id },
