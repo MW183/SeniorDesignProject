@@ -128,8 +128,8 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-black">{getWeddingName(wedding)}</h3>
-                      <div className="text-sm text-black mt-1">
+                      <h3 className="text-lg font-semibold text-foreground">{getWeddingName(wedding)}</h3>
+                      <div className="text-sm text-foreground mt-1">
                         <div>{formatDate(wedding.date)}</div>
                         <div className="text-xs mt-1">
                           {daysUntil < 0 ? `${Math.abs(daysUntil)} days ago` : `${daysUntil} days away`}
@@ -154,7 +154,7 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                 </button>
 
                 {isExpanded && (
-                  <div className="mt-4 pt-4 border-t border space-y-0">
+                  <div className="mt-4 pt-4 p-4 border rounded-sm">
                     {/* Couple Members Section */}
                     <Collapsible
                       open={editingCouplemembersWeddingId === wedding.id}
@@ -163,24 +163,27 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                       }
                     >
                       <CollapsibleTrigger className="w-full text-left font-semibold py-2 text-foreground hover:accent-foreground/20 transition-colors">
-                        Couple Members
-                      </CollapsibleTrigger>
-                      {editingCouplemembersWeddingId !== wedding.id && (
-                        <div className="bg-card rounded p-3 text-sm space-y-1 mb-2">
+                        <div className="flex flex-col gap-2">
+                          <span>Couple Members</span>
+                        {editingCouplemembersWeddingId !== wedding.id && (
+                        <div className="bg-card border rounded p-3 text-sm space-y-1">
                           <div>
                             <span className="muted-foreground">Member 1: </span>
-                            <span className="font-medium text-white">
+                            <span className="font-medium text-foreground">
                               {wedding.spouse1?.name || 'Not set'}
                             </span>
                           </div>
                           <div>
                             <span className="muted-foreground">Member 2: </span>
-                            <span className="font-medium text-white">
+                            <span className="font-medium text-foreground">
                               {wedding.spouse2?.name || 'Not set'}
                             </span>
                           </div>
                         </div>
                       )}
+                        </div>
+                      </CollapsibleTrigger>
+
                       <CollapsibleContent>
                         <CouplemembersEditor
                           weddingId={wedding.id}
@@ -199,21 +202,23 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         setEditingVenueWeddingId(isOpen ? wedding.id : null)
                       }
                     >
-                      <CollapsibleTrigger className="w-auto text-left font-semibold py-2 text-foreground">
-                        Venue
+                      <CollapsibleTrigger className="w-full text-left font-semibold py-2 text-foreground hover:text-foreground transition-colors">
+                        <div className="flex flex-col gap-2">
+                          <span>Venue</span>
+                          {editingVenueWeddingId !== wedding.id && (
+                            wedding.location ? (
+                              <div className="bg-card border rounded p-3 text-sm space-y-1">
+                                <p className="font-medium text-card-foreground">{wedding.location.street}</p>
+                                <p className="text-card-foreground">
+                                  {wedding.location.city}, {wedding.location.state} {wedding.location.zip}
+                                </p>
+                              </div>
+                            ) : (
+                              <div className="text-sm text-foreground">No venue set</div>
+                            )
+                          )}
+                        </div>
                       </CollapsibleTrigger>
-                      {editingVenueWeddingId !== wedding.id && (
-                        wedding.location ? (
-                          <div className="bg-card border rounded p-3 text-sm space-y-1 mb-2">
-                            <p className="font-medium text-card-foreground">{wedding.location.street}</p>
-                            <p className="text-card-foreground">
-                              {wedding.location.city}, {wedding.location.state} {wedding.location.zip}
-                            </p>
-                          </div>
-                        ) : (
-                          <div className="text-sm text-foreground mb-2">No venue set</div>
-                        )
-                      )}
                       <CollapsibleContent>
                         <VenueEditor
                           weddingId={wedding.id}
@@ -233,11 +238,15 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                       }
                     >
                       <CollapsibleTrigger className="w-full text-left font-semibold py-2 text-foreground hover:text-foreground transition-colors">
-                        Vendors
+                        <div className="flex flex-col gap-2">
+                          <span>Vendors</span>
+                          {editingVendorsWeddingId !== wedding.id && (
+                            <div className="bg-card border rounded p-3 text-sm text-foreground">
+                              Manage vendors for this wedding
+                            </div>
+                          )}
+                        </div>
                       </CollapsibleTrigger>
-                      {editingVendorsWeddingId !== wedding.id && (
-                        <div className="text-sm text-foreground mb-2">Manage vendors for this wedding</div>
-                      )}
                       <CollapsibleContent>
                         <VendorEditor
                           weddingId={wedding.id}
@@ -257,22 +266,24 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                       }
                     >
                       <CollapsibleTrigger className="w-full text-left font-semibold py-2 text-foreground hover:text-foreground transition-colors">
-                        Assign Planners
-                      </CollapsibleTrigger>
-                      {expandedPlannersWeddingId !== wedding.id && (
-                        wedding.planners && wedding.planners.length > 0 ? (
-                          <div className="bg-backgroundground border rounded p-3 text-sm space-y-1 mb-2">
-                            {wedding.planners.map((p) => (
-                              <div key={p.planner.id} className="flex items-center justify-between">
-                                <span className="text-white font-medium">{p.planner.name}</span>
-                                <span className="text-xs muted-foreground">{p.planner.email}</span>
+                        <div className="flex flex-col gap-2">
+                          <span>Assign Planners</span>
+                          {expandedPlannersWeddingId !== wedding.id && (
+                            wedding.planners && wedding.planners.length > 0 ? (
+                              <div className="bg-card border rounded p-3 text-sm space-y-1">
+                                {wedding.planners.map((p) => (
+                                  <div key={p.planner.id} className="flex items-center justify-between">
+                                    <span className="text-foreground font-medium">{p.planner.name}</span>
+                                    <span className="text-xs muted-foreground">{p.planner.email}</span>
+                                  </div>
+                                ))}
                               </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-sm text-foreground mb-2">No planners assigned</div>
-                        )
-                      )}
+                            ) : (
+                              <div className="text-sm text-foreground">No planners assigned</div>
+                            )
+                          )}
+                        </div>
+                      </CollapsibleTrigger>
                       <CollapsibleContent>
                         <PlannerAssignment
                           weddingId={wedding.id}

@@ -30,7 +30,7 @@ class TestRunner {
             await testFn();
             this.passed++;
             this.results.push({status: 'Pass', description});
-            console.log(`✓ ${description}`);
+            console.log(` ${description}`);
         } catch (error) {
             this.failed++;
             this.results.push({status: 'Fail', description, error: error.message});
@@ -386,7 +386,7 @@ async function runVendorTests() {
             await prisma.address.delete({ where: { id: locationId } });
             // Delete test user
             await prisma.user.delete({ where: { id: adminUserId } });
-            console.log('✓ Test data cleaned up');
+            console.log(' Test data cleaned up');
         } catch (err) {
             console.error('Error during cleanup:', err.message);
         }

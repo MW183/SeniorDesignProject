@@ -30,7 +30,7 @@ class TestRunner {
             await testFn();
             this.passed++;
             this.results.push({status: 'Pass', description});
-            console.log(`✓ ${description}`);
+            console.log(` ${description}`);
         } catch (error) {
             this.failed++;
             this.results.push({status: 'Fail', description, error: error.message});

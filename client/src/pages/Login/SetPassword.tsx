@@ -88,7 +88,7 @@ export default function SetPassword() {
         <div className="text-center">
           {success ? (
             <>
-              <h2 className="text-2xl font-semibold mb-4 text-green-400">✓ Password Set!</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-green-400"> Password Set!</h2>
               <div className="bg-green-900/20 border border-green-600 rounded p-4 mb-6">
                 <p className="text-foreground mb-2">
                   Your password has been set successfully.

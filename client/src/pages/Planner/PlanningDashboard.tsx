@@ -215,7 +215,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
 
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
-                      <h4 className="font-medium text-white wrap-break-word">{task.name}</h4>
+                      <h4 className="font-medium text-foreground wrap-break-word">{task.name}</h4>
                       <div className="text-xs text-foreground mt-1">
                         <div className="font-semibold">{getWeddingName(wedding)}</div>
                         <div className="flex gap-2 mt-1">
@@ -239,7 +239,7 @@ export default function PlanningDashboard({ currentUser }: { currentUser?: any }
                         {getPriorityLabel(task.priority)}
                       </span>
                       <div className="text-right">
-                        <div className="font-medium text-white text-sm">
+                        <div className="font-medium text-foreground text-sm">
                           {new Date(task.dueDate).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric'

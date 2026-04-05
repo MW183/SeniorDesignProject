@@ -248,10 +248,13 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
       label: 'Wedding', 
       className: 'text-left pb-2 min-w-[200px]',
       render: (stat: WeddingStats) => (
-        <div>
-          <div className="font-medium">{stat.wedding.spouse1Name} & {stat.wedding.spouse2Name}</div>
+        <button
+          onClick={() => navigate(`/weddings/${stat.wedding.id}`)}
+          className="text-left hover:opacity-70 transition"
+        >
+          <div className="font-medium text-foreground hover:underline cursor-pointer">{stat.wedding.spouse1Name} & {stat.wedding.spouse2Name}</div>
           <div className="text-sm text-foreground">{new Date(stat.wedding.date).toLocaleDateString()}</div>
-        </div>
+        </button>
       )
     },
     { 
@@ -321,34 +324,16 @@ export default function AdminDashboard({ currentUser }: { currentUser?: any }) {
         </Card>
       )}
 
-      {/* Management Actions */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Management</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-3">
-            <Button onClick={() => navigate('/manage-weddings')} variant="secondary">
-              Manage Weddings
-            </Button>
-            <Button onClick={() => navigate('/manage-planners')} variant="secondary">
-              Manage Planners
-            </Button>
-            <Button onClick={() => navigate('/create-wedding')} variant="secondary">
-              Create New Wedding
-            </Button>
-            <Button onClick={() => loadStats()} variant="secondary" disabled={loading}>
-              {loading ? 'Refreshing...' : 'Refresh Data'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Wedding Stats */}
       <Card className="mt-6">
-        <CardHeader>
-          <CardTitle className="text-lg">Wedding Stats</CardTitle>
-          <CardDescription>Task breakdown per wedding</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="text-lg">Wedding Stats</CardTitle>
+            <CardDescription>Task breakdown per wedding</CardDescription>
+          </div>
+          <Button onClick={() => navigate('/create-wedding')} className="whitespace-nowrap">
+            + Create New Wedding
+          </Button>
         </CardHeader>
         <CardContent>
           {loading ? (

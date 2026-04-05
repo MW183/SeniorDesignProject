@@ -108,24 +108,18 @@ export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: Ven
     <div className="space-y-4">
       {/* Venue Display */}
       <div>
-        <h4 className="text-sm font-medium text-foreground mb-3">Venue Location</h4>
         {selectedAddress ? (
-          <div className="bg-card border border-border rounded p-3 mb-2">
+          <button
+            type="button"
+            onClick={() => setSelectedAddress(null)}
+            className="w-full text-left bg-card border-2 hover:bg-primary/10 rounded p-3 transition-colors cursor-pointer"
+          >
             <p className="font-medium text-card-foreground">{selectedAddress.street}</p>
             <p className="text-sm text-foreground">
               {selectedAddress.city}, {selectedAddress.state} {selectedAddress.zipCode}
             </p>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedAddress(null);
-              }}
-              className="text-xs text-accent hover:text-accent/80 mt-2 underline"
-            >
-              Change
-            </button>
-          </div>
+            <p className="text-xs text-primary mt-2">Click to change</p>
+          </button>
         ) : (
           <AddressSelector
             onAddressSelected={setSelectedAddress}
@@ -138,12 +132,14 @@ export default function VenueEditor({ weddingId, onUpdate, onSaveComplete }: Ven
       {error && <div className="text-sm text-destructive mt-4">{error}</div>}
 
       <div className="flex gap-2 mt-4">
-        <Button
-          onClick={handleSaveVenue}
-          disabled={updating || !hasChanges()}
-        >
-          {updating ? 'Saving...' : 'Save'}
-        </Button>
+        {hasChanges() && (
+          <Button 
+            onClick={handleSaveVenue}
+            disabled={updating}
+          >
+            {updating ? 'Saving...' : 'Save'}
+          </Button>
+        )}
         {!hasChanges() && selectedAddress && (
           <span className="text-xs text-muted-foreground flex items-center">✓ Venue set</span>
         )}

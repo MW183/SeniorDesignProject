@@ -51,7 +51,7 @@ export default function ResendVerification() {
         {sent ? (
           <div>
             <div className="bg-green-900/20 border border-green-600 rounded p-4 mb-6">
-              <p className="text-foreground mb-2">✓ Verification email sent!</p>
+              <p className="text-foreground mb-2"> Verification email sent!</p>
               <p className="text-sm text-foreground">
                 We've sent a new verification link to <strong>{email}</strong>. Please check your inbox and click the link to verify your email.
               </p>

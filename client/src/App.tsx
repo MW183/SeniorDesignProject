@@ -25,9 +25,12 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 function App() {
   const [currentUser, setCurrentUser] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
+  const allowDark = false; // Set to true to enable dark mode
 
   // Apply dark mode based on system preference
   useEffect(() => {
+    if (!allowDark) return;
+
     const html = document.documentElement;
     
     // Check system preference

@@ -119,12 +119,15 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Spouse 1 */}
       <>
-        <h4 className="text-sm font-medium text-foreground mb-3">Couple Member 1</h4>
         {selectedSpouse1 ? (
-          <div className="bg-card border rounded-lg p-3 m-5">
+          <button
+            type="button"
+            onClick={() => setSelectedSpouse1(null)}
+            className="w-full text-left bg-card border-2 hover:border-primary hover:bg-primary/10 rounded-lg p-3 transition-colors cursor-pointer"
+          >
             <p className="font-medium text-card-foreground">{selectedSpouse1.name}</p>
             {selectedSpouse1.email && (
               <p className="text-xs text-muted-foreground">{selectedSpouse1.email}</p>
@@ -132,17 +135,8 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
             {selectedSpouse1.phone && (
               <p className="text-xs text-muted-foreground">{selectedSpouse1.phone}</p>
             )}
-            <button
-              type="button"
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                e.stopPropagation();
-                setSelectedSpouse1(null);
-              }}
-              className="text-xs text-primary hover:text-primary-foreground mt-2 underline"
-            >
-              Change
-            </button>
-          </div>
+            <p className="text-xs text-primary mt-2">Change</p>
+          </button>
         ) : (
           <ClientSelector
             onClientSelected={setSelectedSpouse1}
@@ -154,9 +148,12 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
 
       {/* Spouse 2 */}
       <>
-        <h4 className="text-sm font-medium text-foreground mb-3">Couple Member 2</h4>
         {selectedSpouse2 ? (
-          <div className="bg-card border border-border rounded p-3 m-5">
+          <button
+            type="button"
+            onClick={() => setSelectedSpouse2(null)}
+            className="w-full text-left bg-card border-2 hover:bg-primary/10 hover:border-primary rounded-lg p-3 transition-colors cursor-pointer"
+          >
             <p className="font-medium text-card-foreground">{selectedSpouse2.name}</p>
             {selectedSpouse2.email && (
               <p className="text-xs text-muted-foreground">{selectedSpouse2.email}</p>
@@ -164,17 +161,8 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
             {selectedSpouse2.phone && (
               <p className="text-xs text-muted-foreground">{selectedSpouse2.phone}</p>
             )}
-            <button
-              type="button"
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                e.stopPropagation();
-                setSelectedSpouse2(null);
-              }}
-              className="text-xs text-primary hover:text-primary-foreground mt-2 underline"
-            >
-              Change
-            </button>
-          </div>
+            <p className="text-xs text-primary mt-2">Change</p>
+          </button>
         ) : (
           <ClientSelector
             onClientSelected={setSelectedSpouse2}
@@ -186,15 +174,17 @@ export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplet
 
       {error && <div className="text-sm text-destructive mt-4">{error}</div>}
 
-      <div className="flex gap-2 mt-6">
-        <Button
-          onClick={handleSaveDetails}
-          disabled={updating || !hasChanges()}
-        >
-          {updating ? 'Saving...' : 'Save'}
-        </Button>
+      <div className="flex gap-2 mt-3">
+        {hasChanges() && (
+          <Button
+            onClick={handleSaveDetails}
+            disabled={updating}
+          >
+            {updating ? 'Saving...' : 'Save'}
+          </Button>
+        )}
         {!hasChanges() && selectedSpouse1 && selectedSpouse2 && (
-          <span className="text-xs text-muted-foreground flex items-center\">✓ Couple members set</span>
+          <span className="text-xs text-muted-foreground flex items-center\"> Couple members set</span>
         )}
       </div>
     </div>

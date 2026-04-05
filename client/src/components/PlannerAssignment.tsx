@@ -4,6 +4,7 @@ import {Card} from './ui/card';
 import {Button} from './ui/button';
 import FormField from './ui/formField';
 import {Input} from './ui/input';
+import ConfirmDialog from './ConfirmDialog';
 
 interface User {
   id: string;
@@ -31,6 +32,10 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
   const [assigning, setAssigning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [removeConfirm, setRemoveConfirm] = useState<{ isOpen: boolean; plannerId: string | null }>({
+    isOpen: false,
+    plannerId: null
+  });
 
   useEffect(() => {
     loadPlanners();
@@ -96,14 +101,16 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
   };
 
   const handleRemovePlanner = async (plannerId: string) => {
-    if (!confirm('Remove this planner from the wedding?')) return;
+    setRemoveConfirm({ isOpen: true, plannerId });
+  };
+
+  const confirmRemovePlanner = async () => {
+    if (!removeConfirm.plannerId) return;
 
     try {
-      const res = await api(`/weddings/${weddingId}/planners/${plannerId}`, {
+      const res = await api(`/weddings/${weddingId}/planners/${removeConfirm.plannerId}`, {
         method: 'DELETE'
       });
-
-      
 
       if (res.ok) {
         await loadPlanners();
@@ -113,6 +120,8 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
       }
     } catch (err) {
       setError('An error occurred while removing planner');
+    } finally {
+      setRemoveConfirm({ isOpen: false, plannerId: null });
     }
   };
 
@@ -135,37 +144,8 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
   return (
     <Card>
       <h4 className="text-lg font-semibold mb-4">Assign Planners</h4>
-
-      <div className="mb-6">
-        <h5 className="text-sm font-medium text-foreground mb-3">Currently Assigned</h5>
-        {planners.length === 0 ? (
-          <p className="text-xs text-muted-foreground">No planners assigned yet</p>
-        ) : (
-          <div className="space-y-2">
-            {planners.map(planner => (
-              <div
-                key={planner.id}
-                className="flex items-center justify-between bg-card border border-border rounded p-3"
-              >
-                <div>
-                  <p className="font-medium text-card-foreground">{planner.name}</p>
-                  <p className="text-xs text-muted-foreground">{planner.email}</p>
-                </div>
-                <button
-                  onClick={() => handleRemovePlanner(planner.id)}
-                  className="text-xs text-destructive hover:text-destructive/80 underline"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="border-t border-border pt-4">
+            <div>
         <h5 className="text-sm font-medium text-foreground mb-3">Add Planner</h5>
-
         <div className="space-y-3">
           <FormField label="Search Planners" id="planner-search">
             <Input
@@ -202,7 +182,7 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
                       <div className="font-medium">{planner.name}</div>
                       <div className="text-xs text-slate-400">{planner.email}</div>
                       {isAssigned && (
-                        <div className="text-xs text-slate-500 mt-1">✓ Already assigned</div>
+                        <div className="text-xs text-slate-500 mt-1"> Already assigned</div>
                       )}
                     </button>
                   );
@@ -225,27 +205,64 @@ export default function PlannerAssignment({ weddingId, onAssignmentChanged }: Pl
           {error && <div className="text-xs text-destructive">{error}</div>}
 
           <div className="flex gap-2">
-            <Button
-              onClick={handleAssignPlanner}
-              disabled={assigning || !selectedPlannerId || loading}
-            >
-              {assigning ? 'Assigning...' : 'Assign Planner'}
-            </Button>
             {selectedPlannerId && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedPlannerId('');
-                  setSearchTerm('');
-                }}
-                className="px-3 py-2 text-sm text-muted-foreground hover:text-muted-foreground/80"
-              >
-                Cancel
-              </button>
+              <>
+                <Button
+                  onClick={handleAssignPlanner}
+                  disabled={assigning || loading}
+                >
+                  {assigning ? 'Assigning...' : 'Assign Planner'}
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedPlannerId('');
+                    setSearchTerm('');
+                  }}
+                  className="px-3 py-2 text-sm text-muted-foreground hover:text-muted-foreground/80"
+                >
+                  Cancel
+                </button>
+              </>
             )}
           </div>
         </div>
       </div>
+      <div className="mb-6">
+        <h5 className="text-sm font-medium text-foreground mb-3">Currently Assigned</h5>
+        {planners.length === 0 ? (
+          <p className="text-xs text-muted-foreground">No planners assigned yet</p>
+        ) : (
+          <div className="space-y-2">
+            {planners.map(planner => (
+              <button
+                key={planner.id}
+                type="button"
+                onClick={() => handleRemovePlanner(planner.id)}
+                className="w-full text-left bg-card border-2 hover:bg-destructive/10 rounded p-3 transition-colors cursor-pointer"
+              >
+                <div>
+                  <p className="font-medium text-card-foreground">{planner.name}</p>
+                  <p className="text-xs text-muted-foreground">{planner.email}</p>
+                </div>
+                <p className="text-xs w-sm text-destructive/50 mt-2">Click to remove</p>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+
+      <ConfirmDialog
+        isOpen={removeConfirm.isOpen}
+        title="Remove Planner"
+        message="Are you sure you want to remove this planner from the wedding?"
+        confirmText="Remove"
+        cancelText="Cancel"
+        isDangerous={true}
+        onConfirm={confirmRemovePlanner}
+        onCancel={() => setRemoveConfirm({ isOpen: false, plannerId: null })}
+      />
     </Card>
   );
 }

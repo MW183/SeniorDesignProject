@@ -99,7 +99,7 @@ export default function ResetPassword() {
       <div className="max-w-md mx-auto mt-12">
         <Card>
           <div className="text-center">
-            <h2 className="text-2xl font-semibold mb-4 text-green-400">✓ Password Reset</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-green-400"> Password Reset</h2>
             <div className="bg-green-900/20 border border-green-600 rounded p-4 mb-6">
               <p className="text-card-foreground">
                 Your password has been successfully reset. You can now log in with your new password.

@@ -453,7 +453,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                             Array.from(editTags).map(tagId => {
                               const tag = allTags.find(t => t.id === tagId);
                               return (
-                                <div key={tagId} className="flex items-center gap-1 bg-primary px-2 py-1 rounded text-xs text-white">
+                                <div key={tagId} className="flex items-center gap-1 bg-primary px-2 py-1 rounded text-xs text-foreground">
                                   {tag?.name}
                                   <button
                                     type="button"
@@ -539,7 +539,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                         className={`flex-1 ${canEdit ? 'cursor-pointer' : ''}`}
                       >
                         <div className="flex items-center gap-3 mb-2">
-                          <h4 className="font-semibold text-white">{vendor.name}</h4>
+                          <h4 className="font-semibold text-foreground">{vendor.name}</h4>
                           {vendor.rating > 0 && (
                             <span className="text-sm text-foreground">
                               {'★'.repeat(vendor.rating)}{'☆'.repeat(5 - vendor.rating)}

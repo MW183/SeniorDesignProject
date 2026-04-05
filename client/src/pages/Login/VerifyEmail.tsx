@@ -80,7 +80,7 @@ export default function VerifyEmail() {
             </>
           ) : verified ? (
             <>
-              <h2 className="text-2xl font-semibold mb-4 text-green-400">✓ Email Verified!</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-green-400"> Email Verified!</h2>
               <div className="bg-green-900/20 border border-green-600 rounded p-4 mb-6">
                 <p className="text-foreground">
                   Your email has been successfully verified. You can now log in to your account.

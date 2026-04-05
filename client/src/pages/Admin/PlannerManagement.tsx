@@ -79,7 +79,7 @@ export default function PlannerManagement({ currentUser }: { currentUser?: any }
       className: 'text-left pb-2 w-[80px]',
       render: (user: User) => (
         <div className="text-center">
-          <Button variant="destructive" size="sm" onClick={() => deleteUser(user)}>
+          <Button variant="destructive" className="text-destructive-foreground" size="sm" onClick={() => deleteUser(user)}>
             Delete
           </Button>
         </div>

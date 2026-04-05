@@ -1,4 +1,5 @@
 import { Collapsible as CollapsiblePrimitive } from "radix-ui"
+import "./collapsible.css"
 
 function Collapsible({
   ...props
@@ -23,6 +24,7 @@ function CollapsibleContent({
   return (
     <CollapsiblePrimitive.CollapsibleContent
       data-slot="collapsible-content"
+      className="collapsible-content"
       {...props}
     />
   )

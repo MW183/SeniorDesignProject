@@ -299,10 +299,10 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
   const filteredAvailableVendors = filterVendors(availableVendors, vendorSearch);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 items-left">
       {/* Display assigned vendors */}
       {weddingVendors.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-3 items-left">
           {/* Search assigned vendors */}
           <Popover open={openAssignedSearch} onOpenChange={setOpenAssignedSearch}>
             <PopoverTrigger asChild>
@@ -317,7 +317,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0" align="start">
-            <div className="flex flex-col">
+            <div className="flex flex-col items-left">
               <Input
                 placeholder="Search vendors by name, email, phone, or tag..."
                 value={assignedVendorSearch}
@@ -377,7 +377,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                   {/* Rating */}
                   <div>
                     <label className="text-sm text-foreground mb-2 block">Rating (0-5 stars)</label>
-                    <div className="flex gap-1 items-center">
+                    <div className="flex gap-1 items-left">
                       {[1, 2, 3, 4, 5].map(star => (
                         <button
                           key={star}
@@ -426,7 +426,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
 
                   {editError && <div className="text-sm text-destructive">{editError}</div>}
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 w-auto">
                     <button
                       type="button"
                       onClick={(e) => {
@@ -512,19 +512,21 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
 
       {/* Add vendor section */}
       {!showAddVendor ? (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowAddVendor(true);
-          }}
-          className="w-full px-3 py-2 bg-primary hover:bg-primary/80 text-primary-foreground text-sm rounded"
-        >
-          + Add Vendor
-        </button>
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowAddVendor(true);
+            }}
+            className="w-1/2 px-3 py-2 bg-primary hover:bg-primary/80 text-primary-foreground text-sm rounded"
+          >
+            + Add Vendor
+          </button>
+        </div>
       ) : (
-        <div className="bg-card border border-border rounded p-3 space-y-3">
-          <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
+        <div className="bg-card border border-border rounded p-3 space-y-3 flex flex-col">
+          <h4 className="text-sm font-medium text-foreground flex items-left gap-2">
             <Plus className="h-4 w-4" /> Search & Add Vendors
           </h4>
 
@@ -542,7 +544,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0" align="start">
-            <div className="flex flex-col">
+            <div className="flex flex-col items-left w-full">
               <Input
                 placeholder="Search vendors..."
                 value={vendorSearch}
@@ -601,13 +603,13 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                 e.stopPropagation();
                 setShowCreateVendorForm(true);
               }}
-              className="w-full px-3 py-2 bg-primary hover:bg-primary/80 text-primary-foreground text-sm rounded"
+              className="w-auto self-center px-3 py-2 bg-primary hover:bg-primary/80 text-primary-foreground text-sm rounded"
             >
               + Create New Vendor
             </button>
           ) : (
             <div className="bg-card border border-border rounded p-3 space-y-2">
-              <h4 className="text-sm font-medium text-card-foreground">New Vendor</h4>
+              <h4 className="text-sm font-medium text-card-foreground self-center w-1/2">New Vendor</h4>
               <Input
                 placeholder="Vendor name *"
                 value={newVendorName}
@@ -631,7 +633,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
               {/* Rating */}
               <div>
                 <label className="text-xs text-foreground mb-1 block">Rating (0-5 stars)</label>
-                <div className="flex gap-1 items-center">
+                <div className="flex gap-1 items-left">
                   {[1, 2, 3, 4, 5].map(star => (
                     <button
                       key={star}
@@ -678,7 +680,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                 />
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col items-left gap-2">
                 <button
                   type="button"
                   onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -686,7 +688,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                     handleCreateVendor();
                   }}
                   disabled={creatingVendor}
-                  className="flex-1 px-2 py-1 bg-primary hover:bg-primary/80 disabled:bg-muted text-primary-foreground text-sm rounded"
+                  className="w-auto self-center px-2 py-1 bg-primary hover:bg-primary/80 rounded-xl disabled:bg-muted text-primary-foreground text-sm"
                 >
                   {creatingVendor ? 'Creating...' : 'Create'}
                 </button>
@@ -701,7 +703,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
                     setNewVendorRating(0);
                     setNewVendorNotes('');
                   }}
-                  className="flex-1 px-2 py-1 bg-input hover:bg-input/80 text-card-foreground text-sm rounded"
+                  className="w-auto self-center px-2 py-1 bg-input hover:bg-input/80 text-background text-sm rounded-xl"
                 >
                   Cancel
                 </button>
@@ -711,24 +713,26 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
 
           {error && <div className="text-sm text-destructive-foreground">{error}</div>}
 
-          <button
-            type="button"
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.stopPropagation();
-              setShowAddVendor(false);
-              setVendorSearch('');
-              setAvailableVendors([]);
-              setNewVendorName('');
-              setNewVendorEmail('');
-              setNewVendorPhone('');
-              setNewVendorRating(0);
-              setNewVendorNotes('');
-              setShowCreateVendorForm(false);
-            }}
-            className="w-full px-3 py-2 bg-input hover:bg-input/80 text-card-foreground text-sm rounded"
-          >
-            Cancel
-          </button>
+          {!showCreateVendorForm && (
+            <button
+              type="button"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.stopPropagation();
+                setShowAddVendor(false);
+                setVendorSearch('');
+                setAvailableVendors([]);
+                setNewVendorName('');
+                setNewVendorEmail('');
+                setNewVendorPhone('');
+                setNewVendorRating(0);
+                setNewVendorNotes('');
+                setShowCreateVendorForm(false);
+              }}
+              className="w-auto self-center px-3 py-2 bg-input hover:bg-input/80 text-card-foreground text-sm rounded"
+            >
+              Cancel
+            </button>
+          )}
         </div>
       )}
 

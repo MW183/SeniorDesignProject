@@ -204,7 +204,7 @@ export default function AddressSelector({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium bg-input">{label}</span>
+        <span className="text-sm font-medium">{label}</span>
         {!showForm && (
           <button
             type="button"
