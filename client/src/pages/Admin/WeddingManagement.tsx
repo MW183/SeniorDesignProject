@@ -136,11 +136,11 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         </div>
                       </div>
                       {wedding.planners && wedding.planners.length > 0 && (
-                        <div className="mt-2 text-sm text-black">
-                          <span className="font-medium">Assigned Planners:</span>
+                        <div className="mt-2 text-sm">
+                          <span className="font-medium text-foreground">Assigned Planners:</span>
                           <div className="mt-1 flex flex-wrap gap-2">
                             {wedding.planners.map((p) => (
-                              <span key={p.planner.id} className="bg-primary-foreground px-2 py-1 rounded text-xs">
+                              <span key={p.planner.id} className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
                                 {p.planner.name}
                               </span>
                             ))}
@@ -148,7 +148,7 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         </div>
                       )}
                     </div>
-                    <div className="primary-foreground text-xs pt-1">
+                    <div className="primary text-xs pt-1">
                     </div>
                   </div>
                 </button>
@@ -166,7 +166,7 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                         Couple Members
                       </CollapsibleTrigger>
                       {editingCouplemembersWeddingId !== wedding.id && (
-                        <div className="bg-accent-foreground rounded p-3 text-sm space-y-1 mb-2">
+                        <div className="bg-card rounded p-3 text-sm space-y-1 mb-2">
                           <div>
                             <span className="muted-foreground">Member 1: </span>
                             <span className="font-medium text-white">
@@ -204,9 +204,9 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                       </CollapsibleTrigger>
                       {editingVenueWeddingId !== wedding.id && (
                         wedding.location ? (
-                          <div className="bg-accent-foreground border rounded p-3 text-sm space-y-1 mb-2">
-                            <p className="font-medium text-white">{wedding.location.street}</p>
-                            <p className="muted-foreground">
+                          <div className="bg-card border rounded p-3 text-sm space-y-1 mb-2">
+                            <p className="font-medium text-card-foreground">{wedding.location.street}</p>
+                            <p className="text-card-foreground">
                               {wedding.location.city}, {wedding.location.state} {wedding.location.zip}
                             </p>
                           </div>
@@ -261,7 +261,7 @@ export default function WeddingManagement({ currentUser }: { currentUser?: any }
                       </CollapsibleTrigger>
                       {expandedPlannersWeddingId !== wedding.id && (
                         wedding.planners && wedding.planners.length > 0 ? (
-                          <div className="bg-accent-foreground border rounded p-3 text-sm space-y-1 mb-2">
+                          <div className="bg-backgroundground border rounded p-3 text-sm space-y-1 mb-2">
                             {wedding.planners.map((p) => (
                               <div key={p.planner.id} className="flex items-center justify-between">
                                 <span className="text-white font-medium">{p.planner.name}</span>
