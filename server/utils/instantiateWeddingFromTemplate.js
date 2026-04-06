@@ -103,7 +103,7 @@ async function instantiateWeddingFromTemplate(weddingId, templateId) {
       });
       
       if (!clientUser) {
-        const tempPassword = generateTemporaryPassword();
+        const tempPassword = "password" //generateTemporaryPassword();
         const hashedPassword = await bcrypt.hash(tempPassword, 10);
         
         clientUser = await prisma.user.create({
@@ -150,7 +150,7 @@ async function instantiateWeddingFromTemplate(weddingId, templateId) {
       });
       
       if (!clientUser) {
-        const tempPassword = generateTemporaryPassword();
+        const tempPassword = "password" //generateTemporaryPassword();
         const hashedPassword = await bcrypt.hash(tempPassword, 10);
         
         clientUser = await prisma.user.create({
