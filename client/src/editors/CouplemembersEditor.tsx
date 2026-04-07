@@ -1,0 +1,189 @@
+import React, { useState, useEffect } from 'react';
+import { api } from '../lib/api';
+import {Button} from '../components/ui/button';
+import ClientSelector from '../components/ClientSelector';
+
+interface Client {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+}
+
+interface Wedding {
+  id: string;
+  spouse1Id?: string | null;
+  spouse2Id?: string | null;
+  spouse1?: Client | null;
+  spouse2?: Client | null;
+}
+
+interface CouplemembersEditorProps {
+  weddingId: string;
+  onUpdate?: (wedding: Wedding) => void;
+  onSaveComplete?: () => void;
+}
+
+export default function CouplemembersEditor({ weddingId, onUpdate, onSaveComplete }: CouplemembersEditorProps) {
+  const [wedding, setWedding] = useState<Wedding | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedSpouse1, setSelectedSpouse1] = useState<Client | null>(null);
+  const [selectedSpouse2, setSelectedSpouse2] = useState<Client | null>(null);
+
+  useEffect(() => {
+    fetchWeddingDetails();
+  }, [weddingId]);
+
+  const fetchWeddingDetails = async () => {
+    try {
+      setLoading(true);
+      const res = await api(`/weddings/${weddingId}`);
+      if (res.ok) {
+        setWedding(res.body);
+        setSelectedSpouse1(res.body.spouse1 || null);
+        setSelectedSpouse2(res.body.spouse2 || null);
+      } else {
+        setError('Failed to load wedding details');
+      }
+    } catch (err) {
+      setError('An error occurred while loading wedding details');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveDetails = async () => {
+    if (!wedding) return;
+
+    setError(null);
+    setUpdating(true);
+
+    try {
+      const updates: any = {};
+
+      if (selectedSpouse1?.id && selectedSpouse1.id !== wedding.spouse1Id) {
+        updates.spouse1Id = selectedSpouse1.id;
+      }
+      if (selectedSpouse2?.id && selectedSpouse2.id !== wedding.spouse2Id) {
+        updates.spouse2Id = selectedSpouse2.id;
+      }
+
+      if (Object.keys(updates).length === 0) {
+        setError('No changes to save');
+        setUpdating(false);
+        return;
+      }
+
+      const res = await api(`/weddings/${weddingId}`, {
+        method: 'PUT',
+        body: updates
+      });
+
+      if (res.ok) {
+        const updatedWedding = {
+          ...wedding,
+          ...updates,
+          spouse1: selectedSpouse1,
+          spouse2: selectedSpouse2
+        };
+        setWedding(updatedWedding);
+        onUpdate?.(updatedWedding);
+        setError(null);
+        onSaveComplete?.();
+      } else {
+        setError(res.body?.error || 'Failed to save wedding details');
+      }
+    } catch (err) {
+      setError('An error occurred while saving');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const hasChanges = () => {
+    if (!wedding) return false;
+    return (
+      selectedSpouse1?.id !== wedding.spouse1Id ||
+      selectedSpouse2?.id !== wedding.spouse2Id
+    );
+  };
+
+  if (loading) {
+    return <p className="text-muted-foreground">Loading couple members...</p>;
+  }
+
+  if (!wedding) {
+    return <p className="text-destructive">Wedding not found</p>;
+  }
+
+  return (
+    <div className="space-y-3">
+      {/* Spouse 1 */}
+      <>
+        {selectedSpouse1 ? (
+          <button
+            type="button"
+            onClick={() => setSelectedSpouse1(null)}
+            className="w-full text-left bg-card border-2 hover:border-primary hover:bg-primary/10 rounded-lg p-3 transition-colors cursor-pointer"
+          >
+            <p className="font-medium text-card-foreground">{selectedSpouse1.name}</p>
+            {selectedSpouse1.email && (
+              <p className="text-xs text-muted-foreground">{selectedSpouse1.email}</p>
+            )}
+            {selectedSpouse1.phone && (
+              <p className="text-xs text-muted-foreground">{selectedSpouse1.phone}</p>
+            )}
+            <p className="text-xs text-primary mt-2">Change</p>
+          </button>
+        ) : (
+          <ClientSelector
+            onClientSelected={setSelectedSpouse1}
+            label="Add couple member 1"
+            placeholder="Search for couple member 1..."
+          />
+        )}
+      </>
+
+      {/* Spouse 2 */}
+      <>
+        {selectedSpouse2 ? (
+          <button
+            type="button"
+            onClick={() => setSelectedSpouse2(null)}
+            className="w-full text-left bg-card border-2 hover:bg-primary/10 hover:border-primary rounded-lg p-3 transition-colors cursor-pointer"
+          >
+            <p className="font-medium text-card-foreground">{selectedSpouse2.name}</p>
+            {selectedSpouse2.email && (
+              <p className="text-xs text-muted-foreground">{selectedSpouse2.email}</p>
+            )}
+            {selectedSpouse2.phone && (
+              <p className="text-xs text-muted-foreground">{selectedSpouse2.phone}</p>
+            )}
+            <p className="text-xs text-primary mt-2">Change</p>
+          </button>
+        ) : (
+          <ClientSelector
+            onClientSelected={setSelectedSpouse2}
+            label="Add couple member 2"
+            placeholder="Search for couple member 2..."
+          />
+        )}
+      </>
+
+      {error && <div className="text-sm text-destructive mt-4">{error}</div>}
+
+      <div className="flex gap-2">
+        {hasChanges() && (
+          <Button
+            onClick={handleSaveDetails}
+            disabled={updating}
+          >
+            {updating ? 'Saving...' : 'Save'}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
