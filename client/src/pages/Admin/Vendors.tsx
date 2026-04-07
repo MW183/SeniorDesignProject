@@ -252,7 +252,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                     <Input
                       value={createName}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreateName(e.target.value)}
-                      className="bg-input"
+                      className="bg-input hover:bg-input/80"
                     />
                   </>
                   <>
@@ -261,7 +261,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                       type="email"
                       value={createEmail}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreateEmail(e.target.value)}
-                      className="bg-input"
+                      className="bg-input hover:bg-input/80"
                     />
                   </>
                 </div>
@@ -272,7 +272,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                     <Input
                       value={createPhone}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreatePhone(e.target.value)}
-                      className="bg-input"
+                      className="bg-input hover:bg-input/80"
                     />
                   </>
                   <>
@@ -312,7 +312,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                   <textarea
                     value={createNotes}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCreateNotes(e.target.value)}
-                    className="w-full px-3 py-2 bg-input text-sm focus:border-ring"
+                    className="w-full px-3 py-2 bg-input hover:bg-input/80 text-sm focus:border-ring"
                     rows={3}
                   />
                 </>
@@ -320,7 +320,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                 <div className="flex gap-2 justify-end pt-2">
                   <Button
                     onClick={() => setShowCreateForm(false)}
-                    className="bg-primary hover:bg-primary/80"
+                    className="bg-card hover:bg-card/80"
                   >
                     Cancel
                   </Button>
@@ -345,7 +345,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
           placeholder="Search vendors by name, email, phone, or tag..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="bg-input"
+          className="bg-input hover:bg-input/80 border"
         />
       </Card>
 
@@ -366,8 +366,8 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
               return (
                 <div
                   key={vendor.id}
-                  className={`p-4 rounded border ${
-                    isEditing ? 'border-blue-600 bg-primary' : 'border-pink-700 bg-primary hover:bg-primary'
+                  className={`p-4 rounded bg-card border ${
+                    isEditing ? 'border-blue-600 bg-card/40' : 'border-pink-700 bg-card hover:bg-input'
                   } transition`}
                 >
                   {isEditing ? (
@@ -379,7 +379,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                           <Input
                             value={editName}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditName(e.target.value)}
-                            className="bg-primary border"
+                            className="bg-input border"
                           />
                         </div>
                         <div>
@@ -435,25 +435,25 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                       </div>
 
                       <div>
-                        <label className="text-xs text-foreground block border mb-1">Notes</label>
+                        <label className="text-xs text-foreground block mb-1">Notes</label>
                         <textarea
                           value={editNotes}
                           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEditNotes(e.target.value)}
-                          className="w-full px-3 py-2 border bg-card text-sm"
+                          className="w-full px-3 py-2 border focus:border-primary bg-input hover:bg-input/80 text-sm"
                           rows={2}
                         />
                       </div>
 
                       <div>
                         <label className="text-xs text-foreground block mb-2">Tags</label>
-                        <div className="flex flex-wrap gap-2 mb-2 p-2 bg-primary rounded min-h-10 items-start">
+                        <div className="flex flex-wrap gap-2 mb-2 p-2 bg-card rounded min-h-10 items-start">
                           {editTags.size === 0 ? (
-                            <span className="text-xs text-foreground self-center">No tags selected</span>
+                            <span className="text-xs text-card-foreground bg-card self-center">No tags selected</span>
                           ) : (
                             Array.from(editTags).map(tagId => {
                               const tag = allTags.find(t => t.id === tagId);
                               return (
-                                <div key={tagId} className="flex items-center gap-1 bg-primary px-2 py-1 rounded text-xs text-foreground">
+                                <div key={tagId} className="flex items-center gap-1 bg-input hover:bg-input/80 px-2 py-1 rounded text-xs text-foreground">
                                   {tag?.name}
                                   <button
                                     type="button"
@@ -462,7 +462,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                                       newTags.delete(tagId);
                                       setEditTags(newTags);
                                     }}
-                                    className="ml-1 text-foreground hover:text-red-400 font-bold"
+                                    className="ml-1 text-foreground hover:text-red-400 font-bold bg-input"
                                   >
                                     ✕
                                   </button>
@@ -516,7 +516,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                             setTagInput('');
                           }}
                           size="sm"
-                          className="bg-primary hover:bg-primary/80"
+                          className="bg-card hover:bg-card/80"
                           disabled={isSaving}
                         >
                           Cancel
@@ -551,9 +551,9 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                           {vendor.email && <div>📧 {vendor.email}</div>}
                           {vendor.phone && <div>📱 {vendor.phone}</div>}
                           {vendor.notes && (
-                            <div className="text-xs mt-2 bg-primary focus:border-primary p-2 rounded">
-                              <span className="font-semibold">Notes:</span> {vendor.notes}
-                            </div>
+                            <>
+                              <span className="font-semibold">Notes</span> {vendor.notes}
+                            </>
                           )}
                           {vendor.tags && vendor.tags.length > 0 && (
                             <div className="text-xs mt-2">
@@ -575,7 +575,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                           <Button
                             onClick={() => startEditVendor(vendor)}
                             size="sm"
-                            className="bg-blue-700 hover:bg-blue-600"
+                            className="bg-primary hover:bg-primary/80 hover:border-secondary"
                             disabled={isSaving}
                           >
                             Edit
@@ -584,7 +584,7 @@ export default function Vendors({ currentUser }: { currentUser?: any }) {
                             <Button
                               onClick={() => deleteVendor(vendor.id)}
                               size="sm"
-                              className="bg-red-700 hover:bg-red-600"
+                              className="bg-destructive/50 hover:bg-destructive"
                               disabled={isSaving}
                             >
                               Delete

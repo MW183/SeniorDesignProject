@@ -519,7 +519,7 @@ export default function VendorEditor({ weddingId, onUpdate, onSaveComplete }: Ve
               e.stopPropagation();
               setShowAddVendor(true);
             }}
-            className="w-1/2 px-3 py-2 bg-primary hover:bg-primary/80 text-primary-foreground text-sm rounded"
+            className="w-1/2 px-3 py-2 bg-pcard hover:bg-primary/80 text-primary-foreground text-sm rounded"
           >
             + Add Vendor
           </button>

@@ -28,12 +28,26 @@ async function createOrGetClientUser(email, name) {
     return clientUser.id;
   }
   
-  // Generate verification token and expiration
-  const verificationToken = signJwt({ type: 'email_verify' }, process.env.EMAIL_VERIFY_EXPIRES || '24h');
-  const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  const isDevelopment = process.env.NODE_ENV !== 'production';
   
-  // Create new CLIENT user with NO password (will be set after verification)
-  const tempPassword = await hashPassword(Math.random().toString(36).slice(2)); // Random hash, never used
+  // In development, use default password and skip email verification
+  let tempPassword;
+  let emailVerified = false;
+  let emailVerificationToken = null;
+  let emailVerificationExpires = null;
+  
+  if (isDevelopment) {
+    // Development: use "password" as default, mark verified, no token needed
+    tempPassword = await hashPassword('password');
+    emailVerified = true;
+    console.log(`[Weddings] DEV MODE: Created CLIENT user ${email} with password "password" (verified)`);
+  } else {
+    // Production: generate unique verification token, random password
+    const randomToken = Math.random().toString(36).slice(2, 15) + Math.random().toString(36).slice(2, 15);
+    emailVerificationToken = signJwt({ type: 'email_verify', token: randomToken }, process.env.EMAIL_VERIFY_EXPIRES || '24h');
+    emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    tempPassword = await hashPassword(Math.random().toString(36).slice(2));
+  }
   
   clientUser = await prisma.user.create({
     data: {
@@ -41,36 +55,38 @@ async function createOrGetClientUser(email, name) {
       email,
       password: tempPassword,
       role: 'CLIENT',
-      emailVerified: false,
-      emailVerificationToken: verificationToken,
-      emailVerificationExpires: verificationExpires
+      emailVerified,
+      emailVerificationToken,
+      emailVerificationExpires
     }
   });
   
-  // Send verification email with set password link
-  const setPasswordLink = `${process.env.APP_URL || 'http://localhost:5173'}/set-password?token=${verificationToken}`;
-  
-  try {
-    await sgMail.send({
-      to: email,
-      from: process.env.SENDGRID_FROM_EMAIL || process.env.SENDER_EMAIL || 'mikeweinstein183@gmail.com',
-      subject: 'Welcome to Tenamore Planning - Set Your Password',
-      html: `
-        <h2>Welcome to Tenamore Planning!</h2>
-        <p>Hi ${name},</p>
-        <p>Your wedding planning account has been created. Please click the link below to set your password and verify your email:</p>
-        <a href="${setPasswordLink}" style="display: inline-block; padding: 10px 20px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0;">
-          Set Your Password
-        </a>
-        <p>Or copy this link: ${setPasswordLink}</p>
-        <p>This link expires in 24 hours.</p>
-        <p>Once you've set your password, you'll be able to log in and start viewing your wedding planning tasks.</p>
-        <p>Happy planning!</p>
-      `
-    });
-    console.log(`[Weddings] Verification email sent to ${email}`);
-  } catch (emailErr) {
-    console.error(`[Weddings] Failed to send verification email to ${email}:`, emailErr);
+  // Only send verification email in production
+  if (!isDevelopment && emailVerificationToken) {
+    const setPasswordLink = `${process.env.APP_URL || 'http://localhost:5173'}/set-password?token=${emailVerificationToken}`;
+    
+    try {
+      await sgMail.send({
+        to: email,
+        from: process.env.SENDGRID_FROM_EMAIL || process.env.SENDER_EMAIL || 'mikeweinstein183@gmail.com',
+        subject: 'Welcome to Tenamore Planning - Set Your Password',
+        html: `
+          <h2>Welcome to Tenamore Planning!</h2>
+          <p>Hi ${name},</p>
+          <p>Your wedding planning account has been created. Please click the link below to set your password and verify your email:</p>
+          <a href="${setPasswordLink}" style="display: inline-block; padding: 10px 20px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0;">
+            Set Your Password
+          </a>
+          <p>Or copy this link: ${setPasswordLink}</p>
+          <p>This link expires in 24 hours.</p>
+          <p>Once you've set your password, you'll be able to log in and start viewing your wedding planning tasks.</p>
+          <p>Happy planning!</p>
+        `
+      });
+      console.log(`[Weddings] Verification email sent to ${email}`);
+    } catch (emailErr) {
+      console.error(`[Weddings] Failed to send verification email to ${email}:`, emailErr);
+    }
   }
   
   return clientUser.id;

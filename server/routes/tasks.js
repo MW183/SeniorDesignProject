@@ -84,6 +84,18 @@ router.get('/assigned/me', requireAuth, async (req, res) => {
             name: true,
             email: true
           }
+        },
+        taskNotes: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+                email: true
+              }
+            }
+          },
+          orderBy: { createdAt: 'asc' }
         }
       }
     });
@@ -124,6 +136,18 @@ router.get('/couple/me', requireAuth, async (req, res) => {
                 weddingId: true,
                 sortOrder: true
               }
+            },
+            taskNotes: {
+              include: {
+                author: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true
+                  }
+                }
+              },
+              orderBy: { createdAt: 'asc' }
             }
           }
         }

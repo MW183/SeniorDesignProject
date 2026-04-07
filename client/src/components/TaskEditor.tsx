@@ -7,6 +7,18 @@ interface TaskDependency {
   currentStatus: string;
 }
 
+interface TaskNote {
+  id: string;
+  content: string;
+  author: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface Task {
   id: string;
   name: string;
@@ -74,6 +86,10 @@ export default function TaskEditor({
   });
   const [savingTaskId, setSavingTaskId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [expandedNoteTaskId, setExpandedNoteTaskId] = useState<string | null>(null);
+  const [taskNotes, setTaskNotes] = useState<{ [key: string]: TaskNote[] }>({});
+  const [loadingNoteTaskId, setLoadingNoteTaskId] = useState<string | null>(null);
+  const [newNoteContent, setNewNoteContent] = useState<{ [key: string]: string }>({});
 
   const getDaysUntil = (dateStr: string) => {
     const dueDate = new Date(dateStr);
@@ -314,6 +330,67 @@ export default function TaskEditor({
     });
   };
 
+  const loadTaskNotes = async (taskId: string) => {
+    // Notes should always be loaded from task data
+    const task = tasks.find(t => t.id === taskId);
+    if (task?.taskNotes) {
+      setTaskNotes({ ...taskNotes, [taskId]: task.taskNotes });
+      setExpandedNoteTaskId(expandedNoteTaskId === taskId ? null : taskId);
+      return;
+    }
+    
+    // If notes aren't in task data, just toggle expansion (shouldn't happen with new API)
+    setExpandedNoteTaskId(expandedNoteTaskId === taskId ? null : taskId);
+  };
+
+  const addNewNote = async (taskId: string) => {
+    const content = newNoteContent[taskId]?.trim();
+    if (!content) {
+      setError('Note content cannot be empty');
+      return;
+    }
+
+    setSavingTaskId(taskId);
+    setError(null);
+    try {
+      const res = await api(`/notes/task/${taskId}`, {
+        method: 'POST',
+        body: { content }
+      });
+
+      if (res.ok) {
+        setTaskNotes({
+          ...taskNotes,
+          [taskId]: [...(taskNotes[taskId] || []), res.body]
+        });
+        setNewNoteContent({ ...newNoteContent, [taskId]: '' });
+      } else {
+        setError(res.body?.error || 'Failed to add note');
+      }
+    } catch (err) {
+      console.error('Error adding note:', err);
+      setError('An error occurred while adding the note');
+    } finally {
+      setSavingTaskId(null);
+    }
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return `Today at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return `Yesterday at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+    } else {
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+             ' at ' + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    }
+  };
+
   const tasksToShow = showCompleted ? tasks : tasks.filter(t => t.currentStatus !== 'COMPLETED' && t.currentStatus !== 'CANCELLED');
 
   return (
@@ -414,6 +491,22 @@ export default function TaskEditor({
                   />
                 </div>
 
+                {/* Note History in Edit Mode */}
+                {taskNotes[editingTask.id] && taskNotes[editingTask.id].length > 0 && (
+                  <div className="mt-3 p-2 bg-muted/30 rounded text-xs space-y-2">
+                    <p className="text-muted-foreground font-medium">Note History:</p>
+                    {taskNotes[editingTask.id].map((note) => (
+                      <div key={note.id} className="bg-card p-2 rounded border border-border">
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-muted-foreground font-medium">{note.author.name}</span>
+                          <span className="text-muted-foreground text-xs">{formatDate(note.createdAt)}</span>
+                        </div>
+                        <p className="text-foreground whitespace-pre-wrap">{note.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 {/* Save/Cancel Buttons */}
                 <div className="flex gap-2 justify-end pt-2">
                   <button
@@ -479,6 +572,61 @@ export default function TaskEditor({
                 {task.notes && (
                   <p className="text-xs text-card-foreground mb-2 italic">{task.notes}</p>
                 )}
+
+                {/* Note History Section */}
+                <div className="mt-3 pt-3 border-t border-border" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    type="button"
+                    onClick={() => loadTaskNotes(task.id)}
+                    disabled={loadingNoteTaskId === task.id}
+                    className="text-xs text-primary hover:text-primary/80 underline disabled:opacity-50"
+                  >
+                    {loadingNoteTaskId === task.id ? 'Loading notes...' : `${taskNotes[task.id]?.length || 0} note${taskNotes[task.id]?.length !== 1 ? 's' : ''}`}
+                  </button>
+
+                  {/* Expanded Note History */}
+                  {expandedNoteTaskId === task.id && (
+                    <div className="mt-3 space-y-3 bg-muted/30 p-2 rounded text-xs">
+                      {/* Existing Notes */}
+                      {taskNotes[task.id] && taskNotes[task.id].length > 0 ? (
+                        <div className="space-y-2">
+                          <p className="text-muted-foreground font-medium text-xs">Note History:</p>
+                          {taskNotes[task.id].map((note) => (
+                            <div key={note.id} className="bg-card p-2 rounded border border-border">
+                              <div className="flex justify-between items-start mb-1">
+                                <span className="text-muted-foreground font-medium">{note.author.name}</span>
+                                <span className="text-muted-foreground text-xs">{formatDate(note.createdAt)}</span>
+                              </div>
+                              <p className="text-foreground whitespace-pre-wrap">{note.content}</p>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-muted-foreground">No notes yet</p>
+                      )}
+
+                      {/* Add New Note Form */}
+                      <div className="mt-3 pt-3 border-t border-border">
+                        <label className="text-muted-foreground font-medium text-xs block mb-1">Add a note:</label>
+                        <textarea
+                          value={newNoteContent[task.id] || ''}
+                          onChange={(e) => setNewNoteContent({ ...newNoteContent, [task.id]: e.target.value })}
+                          placeholder="Type your note here..."
+                          className="w-full px-2 py-1 bg-input border border-border rounded text-xs placeholder-muted-foreground resize-none"
+                          rows={2}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => addNewNote(task.id)}
+                          disabled={savingTaskId === task.id}
+                          className="mt-2 px-2 py-1 bg-primary hover:bg-primary/80 text-primary-foreground text-xs rounded disabled:opacity-50"
+                        >
+                          {savingTaskId === task.id ? 'Saving...' : 'Add Note'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* {task.assignedTo && (
                   <p className="text-xs text-muted-foreground">

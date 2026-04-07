@@ -35,7 +35,7 @@ function getPriorityValue(priorityStr) {
  */
 const WEDDING_PLANNING_TEMPLATE = {
   name: 'Onboarding + Planning + Finalization',
-  version: 3,
+  version: 4,
   description: 'Comprehensive wedding planning template with onboarding, planning, and finalization phases',
   categories: [
     {
@@ -48,7 +48,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 0,
         },
         {
@@ -57,7 +57,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 1,
         },
         {
@@ -66,7 +66,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 2,
         },
         {
@@ -75,7 +75,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 3,
         },
         {
@@ -84,7 +84,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 4,
         },
       ],
@@ -99,7 +99,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 5,
         },
         {
@@ -108,7 +108,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 6,
         },
         {
@@ -117,7 +117,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 7,
         },
         {
@@ -126,7 +126,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 8,
         },
         {
@@ -135,7 +135,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 9,
         },
         {
@@ -144,7 +144,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 10,
         },
       ],
@@ -159,7 +159,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 371,
           sortOrder: 11,
         },
         {
@@ -168,7 +168,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 371,
           sortOrder: 12,
         },
         {
@@ -177,7 +177,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 371,
           sortOrder: 13,
         },
         {
@@ -186,7 +186,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 14,
         },
         {
@@ -195,7 +195,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 15,
         },
         {
@@ -204,7 +204,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 371,
           sortOrder: 16,
         },
         {
@@ -213,7 +213,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 371,
           sortOrder: 17,
         },
         {
@@ -222,7 +222,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 371,
           sortOrder: 18,
         },
       ],
@@ -237,7 +237,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 19,
         },
         {
@@ -246,7 +246,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 20,
         },
       ],
@@ -261,7 +261,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 21,
         },
         {
@@ -270,7 +270,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 22,
         },
         {
@@ -279,7 +279,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 23,
         },
         {
@@ -288,7 +288,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 24,
         },
         {
@@ -297,7 +297,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 350,
           sortOrder: 25,
         },
         {
@@ -306,7 +306,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 26,
         },
         {
@@ -315,7 +315,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 27,
         },
         {
@@ -324,7 +324,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 28,
         },
         {
@@ -333,7 +333,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 29,
         },
         {
@@ -342,7 +342,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 30,
         },
       ],
@@ -357,7 +357,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 31,
         },
         {
@@ -366,7 +366,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 32,
         },
         {
@@ -375,7 +375,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 378,
           sortOrder: 33,
         },
         {
@@ -384,7 +384,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 371,
           sortOrder: 34,
         },
       ],
@@ -399,7 +399,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 371,
           sortOrder: 35,
         },
         {
@@ -408,7 +408,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 371,
           sortOrder: 36,
         },
         {
@@ -417,7 +417,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 37,
         },
         {
@@ -426,7 +426,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 38,
         },
         {
@@ -435,7 +435,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 39,
         },
         {
@@ -444,7 +444,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 40,
         },
         {
@@ -453,7 +453,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 41,
         },
         {
@@ -462,7 +462,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 42,
         },
         {
@@ -471,7 +471,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 43,
         },
         {
@@ -480,7 +480,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 44,
         },
       ],
@@ -495,7 +495,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 45,
         },
         {
@@ -504,7 +504,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 46,
         },
         {
@@ -513,7 +513,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 350,
           sortOrder: 47,
         },
         {
@@ -522,7 +522,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 48,
         },
         {
@@ -531,7 +531,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 364,
           sortOrder: 49,
         },
         {
@@ -540,7 +540,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 50,
         },
         {
@@ -549,7 +549,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 51,
         },
         {
@@ -558,7 +558,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 52,
         },
         {
@@ -582,7 +582,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 54,
         },
         {
@@ -591,7 +591,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 350,
           sortOrder: 55,
         },
         {
@@ -600,7 +600,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 350,
           sortOrder: 56,
         },
         {
@@ -609,7 +609,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 57,
         },
         {
@@ -618,7 +618,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 357,
           sortOrder: 58,
         },
       ],
@@ -633,7 +633,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 336,
           sortOrder: 59,
         },
         {
@@ -642,7 +642,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 336,
           sortOrder: 60,
         },
       ],
@@ -657,7 +657,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 329,
           sortOrder: 61,
         },
         {
@@ -675,7 +675,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 329,
           sortOrder: 63,
         },
         {
@@ -684,7 +684,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 329,
           sortOrder: 64,
         },
         {
@@ -693,7 +693,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 329,
           sortOrder: 65,
         },
       ],
@@ -708,7 +708,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: 'Research Videographer',
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 336,
           sortOrder: 66,
         },
         {
@@ -717,7 +717,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 336,
           sortOrder: 67,
         },
         {
@@ -735,7 +735,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 329,
           sortOrder: 69,
         },
         {
@@ -744,7 +744,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 322,
           sortOrder: 70,
         },
         {
@@ -789,7 +789,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 336,
           sortOrder: 75,
         },
         {
@@ -798,7 +798,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 336,
           sortOrder: 76,
         },
       ],
@@ -813,7 +813,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: 'Research Specialty Vendor',
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 336,
           sortOrder: 77,
         },
         {
@@ -822,7 +822,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 329,
           sortOrder: 78,
         },
         {
@@ -831,7 +831,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 336,
           sortOrder: 79,
         },
         {
@@ -840,7 +840,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 322,
           sortOrder: 80,
         },
         {
@@ -849,7 +849,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 322,
           sortOrder: 81,
         },
         {
@@ -858,7 +858,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 322,
           sortOrder: 82,
         },
       ],
@@ -873,7 +873,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 315,
           sortOrder: 83,
         },
         {
@@ -882,7 +882,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 315,
           sortOrder: 84,
         },
         {
@@ -891,7 +891,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 85,
         },
         {
@@ -900,7 +900,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 315,
           sortOrder: 86,
         },
         {
@@ -909,7 +909,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 308,
           sortOrder: 87,
         },
         {
@@ -927,7 +927,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 308,
           sortOrder: 89,
         },
       ],
@@ -942,7 +942,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 308,
           sortOrder: 90,
         },
         {
@@ -951,7 +951,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 308,
           sortOrder: 91,
         },
         {
@@ -960,7 +960,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 308,
           sortOrder: 92,
         },
         {
@@ -969,7 +969,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 301,
           sortOrder: 93,
         },
         {
@@ -978,7 +978,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 301,
           sortOrder: 94,
         },
         {
@@ -987,7 +987,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 294,
           sortOrder: 95,
         },
       ],
@@ -1002,7 +1002,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 301,
           sortOrder: 96,
         },
         {
@@ -1011,7 +1011,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 294,
           sortOrder: 97,
         },
         {
@@ -1020,7 +1020,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 294,
           sortOrder: 98,
         },
         {
@@ -1029,7 +1029,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 287,
           sortOrder: 99,
         },
         {
@@ -1053,7 +1053,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 308,
           sortOrder: 101,
         },
         {
@@ -1062,7 +1062,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 308,
           sortOrder: 102,
         },
       ],
@@ -1077,7 +1077,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 301,
           sortOrder: 103,
         },
         {
@@ -1086,7 +1086,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 301,
           sortOrder: 104,
         },
       ],
@@ -1101,7 +1101,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 105,
         },
         {
@@ -1110,7 +1110,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 106,
         },
         {
@@ -1119,7 +1119,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 301,
           sortOrder: 107,
         },
         {
@@ -1128,7 +1128,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 294,
           sortOrder: 108,
         },
         {
@@ -1137,7 +1137,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 294,
           sortOrder: 109,
         },
       ],
@@ -1152,7 +1152,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 294,
           sortOrder: 110,
         },
         {
@@ -1161,7 +1161,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 294,
           sortOrder: 111,
         },
         {
@@ -1170,7 +1170,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 112,
         },
         {
@@ -1179,7 +1179,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 287,
           sortOrder: 113,
         },
         {
@@ -1188,7 +1188,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 287,
           sortOrder: 114,
         },
       ],
@@ -1203,7 +1203,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 287,
           sortOrder: 115,
         },
         {
@@ -1212,7 +1212,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 287,
           sortOrder: 116,
         },
         {
@@ -1221,7 +1221,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 117,
         },
         {
@@ -1230,7 +1230,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 118,
         },
         {
@@ -1239,7 +1239,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 119,
         },
       ],
@@ -1254,7 +1254,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 120,
         },
         {
@@ -1263,7 +1263,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 147,
           sortOrder: 188,
         },
         {
@@ -1272,7 +1272,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.URGENT,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 119,
           sortOrder: 196,
         },
         {
@@ -1281,7 +1281,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.HIGH,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 35,
           sortOrder: 353,
         },
         {
@@ -1290,7 +1290,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 1,
           sortOrder: 354,
         },
       ],
@@ -1305,7 +1305,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 121,
         },
         {
@@ -1314,7 +1314,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 122,
         },
       ],
@@ -1329,7 +1329,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 123,
         },
         {
@@ -1338,7 +1338,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 124,
         },
         {
@@ -1347,7 +1347,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 125,
         },
         {
@@ -1356,7 +1356,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 126,
         },
       ],
@@ -1371,7 +1371,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 127,
         },
         {
@@ -1380,7 +1380,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 128,
         },
         {
@@ -1389,7 +1389,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 129,
         },
         {
@@ -1407,7 +1407,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 280,
           sortOrder: 131,
         },
       ],
@@ -1422,7 +1422,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 132,
         },
         {
@@ -1431,7 +1431,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 266,
           sortOrder: 133,
         },
         {
@@ -1440,7 +1440,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 134,
         },
       ],
@@ -1455,7 +1455,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 259,
           sortOrder: 135,
         },
         {
@@ -1464,7 +1464,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 136,
         },
         {
@@ -1473,7 +1473,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 137,
         },
         {
@@ -1482,7 +1482,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 210,
           sortOrder: 138,
         },
       ],
@@ -1497,7 +1497,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 139,
         },
         {
@@ -1521,7 +1521,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 308,
           sortOrder: 141,
         },
         {
@@ -1530,7 +1530,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 142,
         },
         {
@@ -1539,7 +1539,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 143,
         },
         {
@@ -1548,7 +1548,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 144,
         },
       ],
@@ -1563,7 +1563,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 145,
         },
         {
@@ -1572,7 +1572,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 146,
         },
         {
@@ -1581,7 +1581,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 147,
         },
         {
@@ -1590,7 +1590,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 148,
         },
       ],
@@ -1605,7 +1605,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 238,
           sortOrder: 149,
         },
         {
@@ -1614,7 +1614,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 140,
           sortOrder: 150,
         },
       ],
@@ -1629,7 +1629,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 231,
           sortOrder: 151,
         },
         {
@@ -1638,7 +1638,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 231,
           sortOrder: 152,
         },
         {
@@ -1647,7 +1647,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 210,
           sortOrder: 153,
         },
         {
@@ -1656,7 +1656,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 231,
           sortOrder: 154,
         },
         {
@@ -1665,7 +1665,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 231,
           sortOrder: 155,
         },
       ],
@@ -1680,7 +1680,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: 'Research Dessert Providers',
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 224,
           sortOrder: 156,
         },
       ],
@@ -1695,7 +1695,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: 'Couple Tasks -  9 Months Out',
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 224,
           sortOrder: 157,
         },
         {
@@ -1704,7 +1704,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 224,
           sortOrder: 158,
         },
         {
@@ -1713,7 +1713,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 224,
           sortOrder: 159,
         },
         {
@@ -1722,7 +1722,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 224,
           sortOrder: 160,
         },
       ],
@@ -1737,7 +1737,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 203,
           sortOrder: 161,
         },
         {
@@ -1746,7 +1746,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 203,
           sortOrder: 162,
         },
         {
@@ -1755,7 +1755,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 203,
           sortOrder: 163,
         },
         {
@@ -1764,7 +1764,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 140,
           sortOrder: 164,
         },
       ],
@@ -1779,7 +1779,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 203,
           sortOrder: 165,
         },
       ],
@@ -1794,7 +1794,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 196,
           sortOrder: 166,
         },
         {
@@ -1803,7 +1803,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 196,
           sortOrder: 167,
         },
         {
@@ -1812,7 +1812,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 196,
           sortOrder: 168,
         },
       ],
@@ -1827,7 +1827,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 189,
           sortOrder: 169,
         },
         {
@@ -1836,7 +1836,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 189,
           sortOrder: 170,
         },
         {
@@ -1845,7 +1845,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 189,
           sortOrder: 171,
         },
       ],
@@ -1860,7 +1860,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 182,
           sortOrder: 172,
         },
         {
@@ -1869,7 +1869,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 168,
           sortOrder: 173,
         },
       ],
@@ -1884,7 +1884,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 168,
           sortOrder: 174,
         },
         {
@@ -1893,7 +1893,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 168,
           sortOrder: 175,
         },
         {
@@ -1902,7 +1902,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 168,
           sortOrder: 176,
         },
         {
@@ -1911,7 +1911,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 168,
           sortOrder: 177,
         },
       ],
@@ -1926,7 +1926,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 182,
           sortOrder: 178,
         },
         {
@@ -1935,7 +1935,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 168,
           sortOrder: 179,
         },
         {
@@ -1944,7 +1944,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 182,
           sortOrder: 180,
         },
       ],
@@ -1959,7 +1959,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 161,
           sortOrder: 181,
         },
         {
@@ -1968,7 +1968,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 154,
           sortOrder: 182,
         },
       ],
@@ -1983,7 +1983,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 154,
           sortOrder: 183,
         },
         {
@@ -1992,7 +1992,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 184,
         },
         {
@@ -2001,7 +2001,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 185,
         },
         {
@@ -2010,7 +2010,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 161,
           sortOrder: 186,
         },
         {
@@ -2019,7 +2019,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 161,
           sortOrder: 187,
         },
       ],
@@ -2034,7 +2034,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 140,
           sortOrder: 189,
         },
         {
@@ -2043,7 +2043,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 140,
           sortOrder: 190,
         },
         {
@@ -2052,7 +2052,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'CoupleTask',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 140,
           sortOrder: 191,
         },
       ],
@@ -2067,7 +2067,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 140,
           sortOrder: 192,
         },
         {
@@ -2076,7 +2076,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 252,
           sortOrder: 193,
         },
         {
@@ -2085,7 +2085,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 140,
           sortOrder: 194,
         },
         {
@@ -2094,7 +2094,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 133,
           sortOrder: 195,
         },
       ],
@@ -2118,7 +2118,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 198,
         },
         {
@@ -2136,7 +2136,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 119,
           sortOrder: 200,
         },
       ],
@@ -2151,7 +2151,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 201,
         },
         {
@@ -2160,7 +2160,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 202,
         },
         {
@@ -2169,7 +2169,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 203,
         },
         {
@@ -2178,7 +2178,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 84,
           sortOrder: 204,
         },
         {
@@ -2187,7 +2187,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.HIGH,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 70,
           sortOrder: 205,
         },
         {
@@ -2196,7 +2196,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 206,
         },
       ],
@@ -2211,7 +2211,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 207,
         },
         {
@@ -2220,7 +2220,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 208,
         },
         {
@@ -2229,7 +2229,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 56,
           sortOrder: 209,
         },
         {
@@ -2238,7 +2238,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 70,
           sortOrder: 210,
         },
         {
@@ -2247,7 +2247,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 70,
           sortOrder: 211,
         },
         {
@@ -2256,7 +2256,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 7,
           sortOrder: 212,
         },
         {
@@ -2298,7 +2298,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 216,
         },
         {
@@ -2307,7 +2307,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 217,
         },
         {
@@ -2316,7 +2316,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 218,
         },
         {
@@ -2325,7 +2325,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 56,
           sortOrder: 219,
         },
         {
@@ -2334,7 +2334,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 220,
         },
         {
@@ -2343,7 +2343,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 221,
         },
         {
@@ -2385,7 +2385,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 225,
         },
         {
@@ -2427,7 +2427,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 229,
         },
         {
@@ -2436,7 +2436,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 230,
         },
         {
@@ -2445,7 +2445,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 231,
         },
         {
@@ -2454,7 +2454,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 232,
         },
         {
@@ -2463,7 +2463,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 233,
         },
         {
@@ -2472,7 +2472,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 234,
         },
         {
@@ -2481,7 +2481,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 235,
         },
         {
@@ -2490,7 +2490,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 236,
         },
         {
@@ -2541,7 +2541,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 241,
         },
         {
@@ -2550,7 +2550,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 242,
         },
         {
@@ -2559,7 +2559,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 243,
         },
         {
@@ -2568,7 +2568,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 244,
         },
         {
@@ -2610,7 +2610,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 248,
         },
         {
@@ -2619,7 +2619,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 56,
           sortOrder: 249,
         },
         {
@@ -2628,7 +2628,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 250,
         },
         {
@@ -2637,7 +2637,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 84,
           sortOrder: 251,
         },
         {
@@ -2646,7 +2646,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 252,
         },
         {
@@ -2655,7 +2655,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 253,
         },
         {
@@ -2706,7 +2706,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 258,
         },
         {
@@ -2715,7 +2715,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 259,
         },
         {
@@ -2724,7 +2724,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 56,
           sortOrder: 260,
         },
         {
@@ -2733,7 +2733,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 261,
         },
         {
@@ -2742,7 +2742,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 7,
           sortOrder: 262,
         },
         {
@@ -2784,7 +2784,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 266,
         },
         {
@@ -2793,7 +2793,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 267,
         },
         {
@@ -2802,7 +2802,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 268,
         },
         {
@@ -2811,7 +2811,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 269,
         },
         {
@@ -2820,7 +2820,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 42,
           sortOrder: 270,
         },
         {
@@ -2829,7 +2829,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 271,
         },
         {
@@ -2838,7 +2838,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 272,
         },
         {
@@ -2847,7 +2847,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 273,
         },
         {
@@ -2856,7 +2856,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 274,
         },
         {
@@ -2907,7 +2907,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 279,
         },
         {
@@ -2916,7 +2916,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 280,
         },
         {
@@ -2925,7 +2925,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 281,
         },
         {
@@ -2934,7 +2934,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 282,
         },
         {
@@ -2943,7 +2943,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 283,
         },
         {
@@ -2952,7 +2952,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 284,
         },
         {
@@ -3003,7 +3003,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 56,
           sortOrder: 289,
         },
         {
@@ -3012,7 +3012,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 290,
         },
         {
@@ -3021,7 +3021,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 291,
         },
         {
@@ -3030,7 +3030,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 292,
         },
         {
@@ -3081,7 +3081,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 84,
           sortOrder: 297,
         },
         {
@@ -3090,7 +3090,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 70,
           sortOrder: 298,
         },
         {
@@ -3099,7 +3099,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 299,
         },
         {
@@ -3108,7 +3108,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 84,
           sortOrder: 300,
         },
         {
@@ -3117,7 +3117,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 56,
           sortOrder: 301,
         },
         {
@@ -3126,7 +3126,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 7,
           sortOrder: 302,
         },
         {
@@ -3168,7 +3168,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 306,
         },
         {
@@ -3177,7 +3177,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 307,
         },
         {
@@ -3186,7 +3186,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 308,
         },
         {
@@ -3195,7 +3195,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 309,
         },
         {
@@ -3204,7 +3204,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 310,
         },
         {
@@ -3213,7 +3213,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 311,
         },
         {
@@ -3255,7 +3255,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 315,
         },
         {
@@ -3264,7 +3264,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 316,
         },
       ],
@@ -3279,7 +3279,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 84,
           sortOrder: 317,
         },
         {
@@ -3288,7 +3288,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 56,
           sortOrder: 318,
         },
         {
@@ -3297,7 +3297,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 319,
         },
         {
@@ -3306,7 +3306,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 14,
           sortOrder: 320,
         },
         {
@@ -3315,7 +3315,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 321,
         },
         {
@@ -3357,7 +3357,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 325,
         },
         {
@@ -3366,7 +3366,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 326,
         },
         {
@@ -3375,7 +3375,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 327,
         },
         {
@@ -3384,7 +3384,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 112,
           sortOrder: 328,
         },
         {
@@ -3480,7 +3480,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.HIGH,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 56,
           sortOrder: 338,
         },
       ],
@@ -3531,7 +3531,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 56,
           sortOrder: 343,
         },
       ],
@@ -3582,7 +3582,7 @@ const WEDDING_PLANNING_TEMPLATE = {
           taskType: 'Task',
           dependencyMetadata: null,
           defaultPriority: PRIORITY.NORMAL,
-          defaultDueOffsetDays: 0,
+          defaultDueOffsetDays: 28,
           sortOrder: 348,
         },
       ],

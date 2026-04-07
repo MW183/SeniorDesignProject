@@ -58,6 +58,7 @@ model User {
   tasksCompleted  Task[] @relation("TasksCompleted")
   planningWeddings PlannerWedding[]
   coupleTasksAssigned CoupleTask[] @relation("TasksAssignedToCouple")
+  taskNotes TaskNote[]
   
   // User can be a spouse in a wedding
   weddingsAsSpouse1 Wedding[] @relation("Spouse1")
@@ -191,6 +192,7 @@ model Task {
   completedById String?
 
   notes       String?
+  taskNotes   TaskNote[]
 
   category    TaskCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId  String
@@ -315,4 +317,22 @@ model CoupleTask {
   @@unique([taskId, assignedToId])
   @@index([taskId])
   @@index([assignedToId])
+}
+
+model TaskNote {
+  id        String   @id @default(uuid())
+  content   String
+  
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId    String
+  
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([taskId])
+  @@index([authorId])
+  @@index([createdAt])
 }

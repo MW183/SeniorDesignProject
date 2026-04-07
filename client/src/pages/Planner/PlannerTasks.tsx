@@ -21,6 +21,17 @@ interface Task {
   priority: number;
   currentStatus: string;
   notes?: string | null;
+  taskNotes?: Array<{
+    id: string;
+    content: string;
+    author: {
+      id: string;
+      name: string;
+      email: string;
+    };
+    createdAt: string;
+    updatedAt: string;
+  }>;
   category: {
     id: string;
     name: string;

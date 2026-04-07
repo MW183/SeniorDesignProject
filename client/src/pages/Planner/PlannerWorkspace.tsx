@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { api } from '../../lib/api';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import PlannerTasks from './PlannerTasks';
 import WeddingDetailsEditor from '../../components/WeddingDetailsEditor';
 import VendorEditor from '../../components/VendorEditor';
 
 export default function PlannerWorkspace({ currentUser }: { currentUser?: any }) {
   const { weddingId } = useParams<{ weddingId?: string }>();
-  const navigate = useNavigate();
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(false);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);

@@ -13,6 +13,7 @@ import weddingTemplatesRouter from "./routes/weddingTemplates.js";
 import templateCategoriesRouter from "./routes/templateCategories.js";
 import templateTasksRouter from "./routes/templateTasks.js";
 import taskCategoriesRouter from "./routes/taskCategories.js";
+import notesRouter from "./routes/notes.js";
 
 const app = express();
 
@@ -138,6 +139,7 @@ app.use('/wedding-templates', weddingTemplatesRouter);
 app.use('/template-categories', templateCategoriesRouter);
 app.use('/template-tasks', templateTasksRouter);
 app.use('/task-categories', taskCategoriesRouter);
+app.use('/notes', notesRouter);
 
 const PORT = process.env.PORT || 3000;
 

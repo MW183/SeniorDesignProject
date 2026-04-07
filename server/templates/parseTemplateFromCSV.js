@@ -143,7 +143,7 @@ function parseCsvTemplate(csvFileName) {
   const records = parseCSV(fileContent);
 
   // Extract header row to map columns
-  const headerRow = records[0];
+  const headerRow = records[0].map(h => h.trim()); // Trim whitespace/carriage returns
   const columnMap = {
     TaskType: headerRow.indexOf('Task Type'),
     TaskName: headerRow.indexOf('Task Name'),
@@ -152,6 +152,14 @@ function parseCsvTemplate(csvFileName) {
     Priority: headerRow.indexOf('Priority'),
     TimeAnchor: headerRow.indexOf('Time Anchor (drop down)'),
   };
+  
+  console.log('\n=== CSV COLUMN MAPPING ===');
+  console.log('Header row:', headerRow);
+  console.log('Header row length:', headerRow.length);
+  headerRow.forEach((col, idx) => {
+    console.log(`  [${idx}]: "${col}" (length: ${col.length}, bytes: ${Buffer.from(col).toString('hex')})`);
+  });
+  console.log('Column map:', columnMap);
 
   // Parse records, filtering out header and non-task rows
   const tasks = records
@@ -165,7 +173,17 @@ function parseCsvTemplate(csvFileName) {
     .map((record, index) => {
       const taskTypeStr = record[columnMap.TaskType]?.trim() || 'Task';
       const priority = PRIORITY_MAP[record[columnMap.Priority]?.toUpperCase()] || PRIORITY_MAP.NORMAL;
-      const dueOffsetDays = parseTimeAnchor(record[columnMap.TimeAnchor]);
+      const timeAnchorRaw = record[columnMap.TimeAnchor]?.trim(); // Trim here too
+      const dueOffsetDays = parseTimeAnchor(timeAnchorRaw);
+      
+      // Debug logging for first few tasks
+      if (index < 5) {
+        console.log(`Task: ${record[columnMap.TaskName]?.trim()}`);
+        console.log(`  TimeAnchor raw: "${timeAnchorRaw}"`);
+        console.log(`  TimeAnchor index: ${columnMap.TimeAnchor}`);
+        console.log(`  Record length: ${record.length}`);
+        console.log(`  Parsed offset days: ${dueOffsetDays}`);
+      }
 
       return {
         taskType: taskTypeStr === 'Couple Tasks' ? 'CoupleTask' : 'Task',

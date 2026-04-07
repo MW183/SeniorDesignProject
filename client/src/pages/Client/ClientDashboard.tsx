@@ -3,6 +3,8 @@ import { api } from '../../lib/api';
 import { Card } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 
+import TaskEditor from '../../components/TaskEditor';
+
 /** id, name, description, currentStatus, dueDate, priority
  *  categories: id, name, weddingId, sortOrder */
 interface Task {
@@ -12,6 +14,18 @@ interface Task {
   currentStatus: 'PENDING' | 'IN_PROGRESS' | 'BLOCKED' | 'COMPLETED' | 'CANCELLED';
   dueDate: string;
   priority: number;
+  notes?: string | null;
+  taskNotes?: Array<{
+    id: string;
+    content: string;
+    author: {
+      id: string;
+      name: string;
+      email: string;
+    };
+    createdAt: string;
+    updatedAt: string;
+  }>;
   category: {
     id: string;
     name: string;
@@ -37,6 +51,9 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [newStatus, setNewStatus] = useState<string>('');
+  const [editingNoteTaskId, setEditingNoteTaskId] = useState<string | null>(null);
+  const [noteText, setNoteText] = useState<string>('');
+  const [savingNoteId, setSavingNoteId] = useState<string | null>(null);
 
   useEffect(() => {
     loadCoupleTasksFunc();
@@ -77,6 +94,29 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
       }
     } catch (err) {
       setError('An error occurred while updating the task');
+    }
+  }
+
+  /** function to update task notes */
+  async function saveTaskNotes(taskId: string, notes: string) {
+    try {
+      setSavingNoteId(taskId);
+      const res = await api(`/tasks/${taskId}`, {
+        method: 'PUT',
+        body: { notes }
+      });
+
+      if (res.ok) {
+        setTasks(tasks.map(t => t.id === taskId ? {...t, notes} : t));
+        setEditingNoteTaskId(null);
+        setNoteText('');
+      } else {
+        setError(res.body?.error || 'Failed to save notes');
+      }
+    } catch (err) {
+      setError('An error occurred while saving notes');
+    } finally {
+      setSavingNoteId(null);
     }
   }
 
@@ -180,7 +220,7 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
 
             {Object.entries(weddingData.categories).map(([categoryName, categoryTasks]) => (
               <div key={categoryName} className="mb-8 last:mb-0">
-                <h3 className="text-lg font-semibold bg-accent-foreground mb-4 pb-2 border-b border-accent">
+                <h3 className="text-lg font-semibold bg-card text-card-foreground mb-4 pb-2 border-b border-accent">
                   {categoryName}
                 </h3>
 
@@ -188,7 +228,7 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
                   {categoryTasks.map((task) => (
                     <div
                       key={task.id}
-                      className="p-4 bg-secondary/30 rounded border border-secondary hover:border-secondary/80 transition-colors"
+                      className="p-4 bg-background/30 rounded border border-secondary hover:border-secondary/80 transition-colors"
                     >
                       <div className="flex items-start justify-between gap-4 mb-2">
                         <div className="flex-1">
@@ -202,14 +242,14 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-4 text-sm text-secondary-foreground mb-3">
+                      <div className="flex items-center gap-4 text-sm text-secondary-foreground bg-card mb-3">
                         <>
-                          <span className="bg-accent">Priority: </span>
-                          <span className="bg-accent-foreground">{priorityLabels[task.priority] || 'Unknown'}</span>
+                          <span className="bg-card text-card-foreground">Priority: </span>
+                          <span className="bg-card text-card-foreground">{priorityLabels[task.priority] || 'Unknown'}</span>
                         </>
                         <>
-                          <span className="bg-accent">Due: </span>
-                          <span className="bg-accent-foreground">
+                          <span className="bg-card">Due: </span>
+                          <span className="bg-card text-card-foreground">
                             {new Date(task.dueDate).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
@@ -219,13 +259,63 @@ export default function ClientDashboard({ currentUser }: { currentUser: any }) {
                         </>
                       </div>
 
+                      {/* Notes Section */}
+                      {task.notes && !editingNoteTaskId && editingNoteTaskId !== task.id && (
+                        <div className="mb-4 p-3 bg-card rounded border border-accent/50">
+                          <p className="text-xs font-semibold text-secondary-foreground mb-1">Notes:</p>
+                          <p className="text-sm text-foreground whitespace-pre-wrap">{task.notes}</p>
+                        </div>
+                      )}
+
+                      {/* Notes Editor */}
+                      {editingNoteTaskId === task.id ? (
+                        <div className="mb-4 space-y-2">
+                          <p className="text-xs font-semibold text-secondary-foreground">Edit Notes:</p>
+                          <textarea
+                            value={noteText}
+                            onChange={e => setNoteText(e.target.value)}
+                            className="w-full px-3 py-2 bg-card border border-secondary rounded text-sm text-card-foreground focus:outline-none focus:border-accent resize-none"
+                            rows={4}
+                            placeholder="Add notes about this task..."
+                          />
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => saveTaskNotes(task.id, noteText)}
+                              disabled={savingNoteId === task.id}
+                              className="px-3 py-2 bg-primary hover:bg-primary/80 text-xs"
+                            >
+                              {savingNoteId === task.id ? 'Saving...' : 'Save Notes'}
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                setEditingNoteTaskId(null);
+                                setNoteText('');
+                              }}
+                              className="px-3 py-2 bg-secondary hover:bg-secondary/80 text-xs"
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <Button
+                          onClick={() => {
+                            setEditingNoteTaskId(task.id);
+                            setNoteText(task.notes || '');
+                          }}
+                          className="text-xs bg-accent/20 hover:bg-accent/30 text-accent-foreground mb-3"
+                        >
+                          {task.notes ? 'Edit Notes' : 'Add Notes'}
+                        </Button>
+                      )}
+
                       {/* Status Update */}
                       {editingTaskId === task.id ? (
                         <div className="flex gap-2 items-center">
                           <select
                             value={newStatus}
                             onChange={e => setNewStatus(e.target.value)}
-                            className="flex-1 px-3 py-2 bg-secondary border border-secondary rounded text-sm text-secondary-foreground focus:outline-none focus:border-accent"
+                            className="flex-1 px-3 py-2 bg-card border border-secondary rounded text-sm text-card-foreground focus:outline-none focus:border-accent"
                           >
                             <option value="">Select status...</option>
                             <option value="PENDING">Pending</option>
