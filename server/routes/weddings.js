@@ -126,7 +126,34 @@ router.get('/', requireAuth, async (req, res) => {
       include: { 
         planners: { include: { planner: true } }, 
         categories: { 
-          include: { tasks: true },
+          include: { 
+            tasks: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+                priority: true,
+                dueDate: true,
+                sortOrder: true,
+                createdAt: true,
+                currentStatus: true,
+                assignedToId: true,
+                assignToCouple: true,
+                completedOn: true,
+                completedById: true,
+                categoryId: true,
+                templateTaskId: true,
+                assignedTo: true,
+                taskNotes: true,
+                coupleTasks: true,
+                category: true,
+                dependencies: true,
+                dependedOnBy: true,
+                templateTask: true,
+                completedBy: true
+              }
+            }
+          },
           orderBy: { sortOrder: 'asc' }
         },
         spouse1: true,
@@ -213,7 +240,34 @@ router.post('/', requireAuth, async (req, res) => {
       }, 
       include: {
         categories: {
-          include: { tasks: true },
+          include: { 
+            tasks: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+                priority: true,
+                dueDate: true,
+                sortOrder: true,
+                createdAt: true,
+                currentStatus: true,
+                assignedToId: true,
+                assignToCouple: true,
+                completedOn: true,
+                completedById: true,
+                categoryId: true,
+                templateTaskId: true,
+                assignedTo: true,
+                taskNotes: true,
+                coupleTasks: true,
+                category: true,
+                dependencies: true,
+                dependedOnBy: true,
+                templateTask: true,
+                completedBy: true
+              }
+            }
+          },
           orderBy: { sortOrder: 'asc' }
         },
         template: true,
@@ -231,7 +285,34 @@ router.post('/', requireAuth, async (req, res) => {
           where: { id: wedding.id },
           include: {
             categories: {
-              include: { tasks: true },
+              include: { 
+                tasks: {
+                  select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                    priority: true,
+                    dueDate: true,
+                    sortOrder: true,
+                    createdAt: true,
+                    currentStatus: true,
+                    assignedToId: true,
+                    assignToCouple: true,
+                    completedOn: true,
+                    completedById: true,
+                    categoryId: true,
+                    templateTaskId: true,
+                    assignedTo: true,
+                    taskNotes: true,
+                    coupleTasks: true,
+                    category: true,
+                    dependencies: true,
+                    dependedOnBy: true,
+                    templateTask: true,
+                    completedBy: true
+                  }
+                }
+              },
               orderBy: { sortOrder: 'asc' }
             },
             template: true,

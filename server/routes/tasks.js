@@ -74,7 +74,6 @@ router.get('/assigned/me', requireAuth, async (req, res) => {
           select: {
             id: true,
             name: true,
-            weddingId: true,
             sortOrder: true
           }
         },
@@ -133,7 +132,6 @@ router.get('/couple/me', requireAuth, async (req, res) => {
               select: {
                 id: true,
                 name: true,
-                weddingId: true,
                 sortOrder: true
               }
             },
@@ -159,10 +157,6 @@ router.get('/couple/me', requireAuth, async (req, res) => {
     
     if (status) {
       tasks = tasks.filter(t => t.currentStatus === status);
-    }
-    
-    if (weddingId) {
-      tasks = tasks.filter(t => t.category.weddingId === weddingId);
     }
 
     // Sort by category's sortOrder and then by name
@@ -240,7 +234,7 @@ router.post('/', requireAuth, async (req, res) => {
 router.put('/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, priority, dueDate, sortOrder, assignedToId, currentStatus, completedOn, completedById, notes, assignToCouple } = req.body;
+    const { name, description, priority, dueDate, sortOrder, assignedToId, currentStatus, completedOn, completedById, assignToCouple } = req.body;
     const update = {};
     if (name !== undefined) update.name = name.trim();
     if (description !== undefined) update.description = description?.trim() || null;
@@ -251,7 +245,6 @@ router.put('/:id', requireAuth, async (req, res) => {
     if (currentStatus !== undefined) update.currentStatus = currentStatus;
     if (completedOn !== undefined) update.completedOn = completedOn ? new Date(completedOn) : null;
     if (completedById !== undefined) update.completedById = completedById;
-    if (notes !== undefined) update.notes = notes;
     if (assignToCouple !== undefined) update.assignToCouple = assignToCouple;
 
     // validate FK references if provided
@@ -402,7 +395,6 @@ router.post('/:id/couple', requireAuth, requireRole(['ADMIN', 'SUPPORT', 'USER']
                 day: 'numeric' 
               })}</p>
               <p><strong>Category:</strong> ${task.category.name}</p>
-              ${task.notes ? `<p><strong>Notes from Planner:</strong> ${task.notes}</p>` : ''}
             </div>
             <p>Please log in to your wedding planning portal to complete this task.</p>
             <p>If you have any questions, please reach out to your wedding planner.</p>
