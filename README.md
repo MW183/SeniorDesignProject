@@ -50,6 +50,7 @@ The planner dashboard displays all tasks that are due. Planners can leave notes 
 The vendor management interface allows vendors to be assigned to weddings, created, and updated. It also supports custom tag creation and sorting by tags.
 
 ![Vendor Creation](Documentation/screenshots/vendor1.png)
+
 ![Vendor Management](Documentation/screenshots/vendor2.png)
 
 ### Client Dashboard
