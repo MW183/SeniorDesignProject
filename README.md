@@ -34,7 +34,7 @@ The Tenamore Wedding Planner Application is a comprehensive web-based system des
 ### Login
 The application provides an authentication-controlled login system that ensures only authorized users can access the platform.
 
-![Login](client/src/assets/login.png)
+![Login](Documentation/screenshots/login.png)
 
 ### Admin Dashboard
 The admin dashboard provides a comprehensive view of weddings, blocked tasks, assigned planners, and assigned vendors. Administrators can also edit couple members and modify wedding details such as the wedding date.
