@@ -39,18 +39,18 @@ The application provides an authentication-controlled login system that ensures 
 ### Admin Dashboard
 The admin dashboard provides a comprehensive view of weddings, blocked tasks, assigned planners, and assigned vendors. Administrators can also edit couple members and modify wedding details such as the wedding date.
 
-![Admin Dashboard](client/src/assets/Wedding Management.png)
+![Admin Dashboard](client/src/assets/Wedding_Management.png)
 
 ### Planner Dashboard
 The planner dashboard displays all tasks that are due. Planners can leave notes for couples and assign tasks, which triggers automatic notifications.
 
-![Planner Dashboard](client/src/assets/Wedding Overview.png)
+![Planner Dashboard](client/src/assets/Wedding_Overview.png)
 
 ### Manage Vendors Screen
 The vendor management interface allows vendors to be assigned to weddings, created, and updated. It also supports custom tag creation and sorting by tags.
 
-![Vendor Creation](client/src/assets/Vendor Creation.png)
-![Vendor Management](client/src/assets/Vendors assignment.png)
+![Vendor Creation](client/src/assets/Vendor_Creation.png)
+![Vendor Management](client/src/assets/Vendors_assignment.png)
 
 ### Client Dashboard
 The client dashboard presents a simplified view that shows only assigned tasks and related notes.
