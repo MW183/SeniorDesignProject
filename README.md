@@ -68,7 +68,7 @@ Testing was performed using:
 
 All tests are automated using a custom test runner that provides detailed reporting on pass/fail status. This ensures all API endpoints function correctly under both normal and edge case conditions.
 
-See: [Testing Documents](Documentation/Testing Documents.pdf)
+See: [Testing Documents](Documentation/testdocs.pdf)
 
 ---
 
@@ -86,7 +86,7 @@ User documentation is divided into the following:
 
 ## Spring Final PPT Presentation
 
-See [Final Design Presentation](Documentation/Final Design Presentation.pdf)
+See [Final Design Presentation](Documentation/presentation.pdf)
 
 ---
 
