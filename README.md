@@ -34,23 +34,23 @@ The Tenamore Wedding Planner Application is a comprehensive web-based system des
 ### Login
 The application provides an authentication-controlled login system that ensures only authorized users can access the platform.
 
-![Login](client/src/assets/login.png)
+![Login](client/src/assets/Login.png)
 
 ### Admin Dashboard
 The admin dashboard provides a comprehensive view of weddings, blocked tasks, assigned planners, and assigned vendors. Administrators can also edit couple members and modify wedding details such as the wedding date.
 
-![Admin Dashboard](Documentation/screenshots/admin.png)
+[Admin Dashboard](Documentation/screenshots/admin.png)
 
 ### Planner Dashboard
 The planner dashboard displays all tasks that are due. Planners can leave notes for couples and assign tasks, which triggers automatic notifications.
 
-![Planner Dashboard](Documentation/screenshots/planner.png)
+[Planner Dashboard](Documentation/screenshots/planner.png)
 
 ### Manage Vendors Screen
 The vendor management interface allows vendors to be assigned to weddings, created, and updated. It also supports custom tag creation and sorting by tags.
 
-![Vendor Creation](Documentation/screenshots/vendor1.png)
-![Vendor Management](Documentation/screenshots/vendor2.png)
+[Vendor Creation](Documentation/screenshots/vendor1.png)
+[Vendor Management](Documentation/screenshots/vendor2.png)
 
 ### Client Dashboard
 The client dashboard presents a simplified view that shows only assigned tasks and related notes.
