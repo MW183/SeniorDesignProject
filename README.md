@@ -68,7 +68,7 @@ Testing was performed using:
 
 All tests are automated using a custom test runner that provides detailed reporting on pass/fail status. This ensures all API endpoints function correctly under both normal and edge case conditions.
 
-See: (Documentation/Testing Documents.pdf)
+See: [Testing Documents](Documentation/Testing Documents.pdf)
 
 ---
 
@@ -76,31 +76,31 @@ See: (Documentation/Testing Documents.pdf)
 
 User documentation is divided into the following:
 
-- (Documentation/userdocs.md): General description, FAQ, and developer guidance  
-- (Documentation/stack.md): Overview of technologies, libraries, and versions used  
-- (Documentation/frontend.md): Structure and conventions of the React + TypeScript frontend  
-- (Documentation/backend.md): Architecture and features of the Express.js + Prisma backend  
-- (Documentation/database.md): PostgreSQL schema documentation  
+- [User Docs](Documentation/userdocs.md): General description, FAQ, and developer guidance  
+- [Tech Stack](Documentation/stack.md): Overview of technologies, libraries, and versions used  
+- [Frontend](Documentation/frontend.md): Structure and conventions of the React + TypeScript frontend  
+- [Backend](Documentation/backend.md): Architecture and features of the Express.js + Prisma backend  
+- [Database](Documentation/database.md): PostgreSQL schema documentation  
 
 ---
 
 ## Spring Final PPT Presentation
 
-See: (Documentation/Final Design Presentation.pdf)
+See [Final Design Presentation](Documentation/Final Design Presentation.pdf)
 
 ---
 
 ## Final Expo Poster
 
-See: (Documentation/Poster.pdf)
+See [Poster](Documentation/Poster.pdf)
 
 ---
 
 ## Assessments
 
-- (Documentation/fall_advisor_rubric.pdf)  
-- (Documentation/spring_advisor_rubric.pdf)  
-- (Documentation/self-assessment.pdf)  
+- [Fall Advisor Rubric](Documentation/fall_advisor_rubric.pdf)  
+- [Spring Advisor Rubric](Documentation/spring_advisor_rubric.pdf)  
+- [Self Assessment](Documentation/self-assessment.pdf)  
 
 ---
 
